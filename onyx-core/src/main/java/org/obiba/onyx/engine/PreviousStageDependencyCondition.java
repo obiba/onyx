@@ -36,6 +36,9 @@ public class PreviousStageDependencyCondition implements StageDependencyConditio
     this.stageName = name;
   }
 
+  @Override
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "NP_BOOLEAN_RETURN_NULL",
+      justification = "Null is checked")
   public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService) {
     log.info("stageName={}", stageName);
     IStageExecution stageExecution = activeInterviewService.getStageExecution(stageName);

@@ -31,6 +31,9 @@ public class ModuleDependencyCondition implements StageDependencyCondition {
   public ModuleDependencyCondition() {
   }
 
+  @Override
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "NP_BOOLEAN_RETURN_NULL",
+      justification = "Null is checked")
   public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService) {
 
     Module module = moduleRegistry.getModule(moduleName);

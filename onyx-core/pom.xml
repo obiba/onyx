@@ -243,6 +243,12 @@
       <groupId>org.obiba.wicket</groupId>
       <artifactId>wicket-nanogong</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>net.sourceforge.findbugs</groupId>
+      <artifactId>annotations</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>

@@ -38,6 +38,8 @@ public class JavascriptStageDependencyCondition implements StageDependencyCondit
   private transient ValueSource source;
 
   @Override
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "NP_BOOLEAN_RETURN_NULL",
+      justification = "Null is checked")
   public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService) {
     // if stage is defined, check it is completed first
     if(stages != null) {

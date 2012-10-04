@@ -640,6 +640,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-pmd-plugin</artifactId>
+          <version>${maven-pmd-plugin.version}</version>
           <configuration>
             <linkXref>false</linkXref>
             <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
@@ -901,6 +902,7 @@
     <maven-findbugs-plugin.version>2.5.2</maven-findbugs-plugin.version>
     <maven-javadoc-plugin.version>2.9</maven-javadoc-plugin.version>
     <maven-buildnumber-plugin.version>1.0-beta-4</maven-buildnumber-plugin.version>
+    <maven-pmd-plugin.version>2.7.1</maven-pmd-plugin.version>
 
   </properties>
 

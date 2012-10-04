@@ -59,6 +59,9 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
    * if a comparison operator is provided, else the value of the dependent stage's data if it is a boolean, or simply
    * the fact that the data is not null.
    */
+  @Override
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "NP_BOOLEAN_RETURN_NULL",
+      justification = "Null is checked")
   public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService) {
     // if stage is defined, check it is completed first
     if(stageName != null) {

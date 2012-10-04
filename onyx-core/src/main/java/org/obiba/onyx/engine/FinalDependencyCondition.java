@@ -35,6 +35,9 @@ public class FinalDependencyCondition implements StageDependencyCondition {
     this.moduleRegistry = moduleRegistry;
   }
 
+  @Override
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "NP_BOOLEAN_RETURN_NULL",
+      justification = "Null is checked")
   public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService) {
     // every other stages need to be completed except itself
     for(Module module : moduleRegistry.getModules()) {

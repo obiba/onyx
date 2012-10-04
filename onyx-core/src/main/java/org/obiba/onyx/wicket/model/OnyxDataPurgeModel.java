@@ -35,6 +35,8 @@ public class OnyxDataPurgeModel extends SpringDetachableModel<List<Participant>>
   private transient List<Participant> unexportedInterviews;
 
   @SpringBean
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   private OnyxDataPurge onyxDataPurge;
 
   @SpringBean

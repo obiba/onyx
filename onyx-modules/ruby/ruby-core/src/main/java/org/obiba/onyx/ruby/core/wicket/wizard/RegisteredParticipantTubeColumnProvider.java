@@ -50,6 +50,8 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
   //
 
   @SpringBean(name = "tubeRegistrationConfigurationMap")
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   private Map<String, TubeRegistrationConfiguration> tubeRegistrationConfigurationMap;
 
   private List<IColumn> columns = new ArrayList<IColumn>();

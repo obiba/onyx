@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire;
 
-import static org.obiba.onyx.wicket.Images.ERROR;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -72,6 +70,8 @@ import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.obiba.onyx.wicket.Images.ERROR;
+
 public class QuestionnaireListPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
@@ -79,9 +79,13 @@ public class QuestionnaireListPanel extends Panel {
   private final transient Logger log = LoggerFactory.getLogger(getClass());
 
   @SpringBean
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   private QuestionnaireBundleManager questionnaireBundleManager;
 
   @SpringBean
+  @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_BAD_FIELD",
+      justification = "Need to be be re-initialized upon deserialization")
   private QuestionnairePersistenceUtils questionnairePersistenceUtils;
 
   @SpringBean
