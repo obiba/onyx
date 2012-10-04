@@ -120,13 +120,6 @@
             <element id="module-output" name="ruby-core" />
           </element>
           <element id="library" level="project" name="Maven: org.obiba:obiba-security:1.3-SNAPSHOT" />
-          <element id="library" level="project" name="Maven: com.atlassian.crowd:crowd-integration-client:2.5.1" />
-          <element id="library" level="project" name="Maven: org.codehaus.xfire:xfire-core:1.2.6" />
-          <element id="library" level="project" name="Maven: javax.activation:activation:1.1" />
-          <element id="library" level="project" name="Maven: wsdl4j:wsdl4j:1.6.1" />
-          <element id="library" level="project" name="Maven: jaxen:jaxen:1.1-beta-9" />
-          <element id="library" level="project" name="Maven: jdom:jdom:1.0" />
-          <element id="library" level="project" name="Maven: org.apache.ws.commons:XmlSchema:1.1" />
           <element id="library" level="project" name="Maven: org.apache.shiro:shiro-core:1.2.1" />
           <element id="library" level="project" name="Maven: commons-beanutils:commons-beanutils:1.8.3" />
           <element id="library" level="project" name="Maven: commons-dbcp:commons-dbcp:1.3" />
