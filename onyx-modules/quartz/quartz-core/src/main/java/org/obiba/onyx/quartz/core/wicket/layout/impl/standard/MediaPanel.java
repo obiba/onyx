@@ -106,7 +106,7 @@ public class MediaPanel extends Panel {
     protected void onComponentTag(final ComponentTag tag) {
       checkComponentTag(tag, "source");
       super.onComponentTag(tag);
-      String url = (String) urlFor(INTERFACE);
+      String url = (String) urlFor(INTERFACE).toString();
       tag.put("src", RequestCycle.get().getOriginalResponse().encodeURL(Strings.replaceAll(url, "&", "&amp;")));
       tag.put("type", getResource().getContentType());
     }
