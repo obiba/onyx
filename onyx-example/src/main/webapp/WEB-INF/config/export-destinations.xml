@@ -324,12 +324,12 @@
   <destination>
     <name>Appointment Unit</name>
 
-    <encrypt>
+    <!--<encrypt>
       <algorithm>DESede</algorithm>
       <mode>CBC</mode>
       <padding>PKCS5Padding</padding>
       <keySize>112</keySize>
-    </encrypt>
+    </encrypt>-->
 
     <valueset entityType="Participant" valueTable="Participants">
       <entities>
