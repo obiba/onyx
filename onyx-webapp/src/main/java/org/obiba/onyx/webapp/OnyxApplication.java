@@ -22,6 +22,7 @@ import org.apache.wicket.Session;
 import org.apache.wicket.authorization.IUnauthorizedComponentInstantiationListener;
 import org.apache.wicket.authorization.UnauthorizedInstantiationException;
 import org.apache.wicket.authorization.strategies.role.RoleAuthorizationStrategy;
+import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.apache.wicket.markup.html.pages.AccessDeniedPage;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
@@ -208,6 +209,10 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
     getApplicationSettings().setPageExpiredErrorPage(HomePage.class);
     getApplicationSettings().setInternalErrorPage(InternalErrorPage.class);
 
+    SecurePackageResourceGuard guard = new SecurePackageResourceGuard();
+    guard.addPattern("+*.*");
+    getResourceSettings().setPackageResourceGuard(guard);
+    
     log.info("Onyx Web Application [{}] v{} has started", getServletContext().getContextPath(), this.getVersion());
   }
 
