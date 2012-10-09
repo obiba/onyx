@@ -154,7 +154,7 @@ public class SuggestionItemListPanel extends Panel {
 
     @Override
     public Iterator<String> iterator(int first, int count) {
-      return openAnswerSuggestion.getSuggestionItems().iterator();
+      return openAnswerSuggestion.getSuggestionItems().subList(first, first + count).iterator();
     }
 
     @Override
