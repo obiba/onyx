@@ -2069,54 +2069,54 @@
         <attribute id="882" name="script" valueType="text">$(&apos;HealthQuestionnaireSelfAdministered:SEX.MALE&apos;).value() &amp;&amp; ($(&apos;HealthQuestionnaireSelfAdministered:ALCOHOL_FREQUENCY.MONTHLY&apos;).value() || $(&apos;HealthQuestionnaireSelfAdministered:ALCOHOL_FREQUENCY.LESS_MONTHLY&apos;).value())</attribute>
       </attributes>
     </variable>
-    <variable id="883" name="CURRENTLY_USE.condition" valueType="boolean" entityType="Participant">
+    <variable id="883" name="DOB_DAY.validation.1" valueType="integer" entityType="Participant">
       <attributes>
-        <attribute id="884" name="script" valueType="text">$(&apos;HealthQuestionnaireSelfAdministered:EVER_USED.CIGARS_EVER.Y&apos;).value() || $(&apos;HealthQuestionnaireSelfAdministered:EVER_USED.SMALL_CIGARS_EVER.Y&apos;).value() || $(&apos;HealthQuestionnaireSelfAdministered:EVER_USED.PIPES_EVER.Y&apos;).value() || $(&apos;HealthQuestionnaireSelfAdministered:OTHER_NICOTIN_PRODUCT_EVER.Y&apos;).value()</attribute>
+        <attribute id="884" name="script" valueType="text">31</attribute>
       </attributes>
     </variable>
-    <variable id="885" name="DOB_DAY.validation.1" valueType="integer" entityType="Participant">
+    <variable id="885" name="DOB_DAY.validation.2" valueType="integer" entityType="Participant">
       <attributes>
-        <attribute id="886" name="script" valueType="text">31</attribute>
+        <attribute id="886" name="script" valueType="text">1</attribute>
       </attributes>
     </variable>
-    <variable id="887" name="DOB_DAY.validation.2" valueType="integer" entityType="Participant">
+    <variable id="887" name="DOB_MONTH.validation.1" valueType="integer" entityType="Participant">
       <attributes>
-        <attribute id="888" name="script" valueType="text">1</attribute>
+        <attribute id="888" name="script" valueType="text">12</attribute>
       </attributes>
     </variable>
-    <variable id="889" name="DOB_MONTH.validation.1" valueType="integer" entityType="Participant">
+    <variable id="889" name="DOB_MONTH.validation.2" valueType="integer" entityType="Participant">
       <attributes>
-        <attribute id="890" name="script" valueType="text">12</attribute>
+        <attribute id="890" name="script" valueType="text">1</attribute>
       </attributes>
     </variable>
-    <variable id="891" name="DOB_MONTH.validation.2" valueType="integer" entityType="Participant">
+    <variable id="891" name="DOB_YEAR.validation.1" valueType="integer" entityType="Participant">
       <attributes>
-        <attribute id="892" name="script" valueType="text">1</attribute>
+        <attribute id="892" name="script" valueType="text">now().year().value() - 40</attribute>
       </attributes>
     </variable>
-    <variable id="893" name="DOB_YEAR.validation.1" valueType="integer" entityType="Participant">
+    <variable id="893" name="DOB_YEAR.validation.2" valueType="integer" entityType="Participant">
       <attributes>
-        <attribute id="894" name="script" valueType="text">now().year().value() - 40</attribute>
+        <attribute id="894" name="script" valueType="text">now().year().value() - 70</attribute>
       </attributes>
     </variable>
-    <variable id="895" name="DOB_YEAR.validation.2" valueType="integer" entityType="Participant">
+    <variable id="895" name="Date.Now.Year" valueType="integer" entityType="Participant">
       <attributes>
-        <attribute id="896" name="script" valueType="text">now().year().value() - 70</attribute>
+        <attribute id="896" name="script" valueType="text">now().year().value()</attribute>
       </attributes>
     </variable>
-    <variable id="897" name="Date.Now.Year" valueType="integer" entityType="Participant">
+    <variable id="897" name="EVER_WORKED.condition" valueType="boolean" entityType="Participant">
       <attributes>
-        <attribute id="898" name="script" valueType="text">now().year().value()</attribute>
+        <attribute id="898" name="script" valueType="text">$(&apos;HealthQuestionnaireSelfAdministered:IS_LONGEST_TIME_OCCUPATION&apos;).value() &amp;&amp; !$(&apos;HealthQuestionnaireSelfAdministered:IS_LONGEST_TIME_OCCUPATION.Y&apos;).value() &amp;&amp; !$(&apos;HealthQuestionnaireSelfAdministered:CURRENT_SITUATION.EMPLOYED.Y&apos;).value()</attribute>
       </attributes>
     </variable>
-    <variable id="899" name="EVER_WORKED.condition" valueType="boolean" entityType="Participant">
+    <variable id="899" name="RED_WINE_DAY_QTY.condition" valueType="boolean" entityType="Participant">
       <attributes>
-        <attribute id="900" name="script" valueType="text">$(&apos;HealthQuestionnaireSelfAdministered:IS_LONGEST_TIME_OCCUPATION&apos;).value() &amp;&amp; !$(&apos;HealthQuestionnaireSelfAdministered:IS_LONGEST_TIME_OCCUPATION.Y&apos;).value() &amp;&amp; !$(&apos;HealthQuestionnaireSelfAdministered:CURRENT_SITUATION.EMPLOYED.Y&apos;).value()</attribute>
+        <attribute id="900" name="script" valueType="text">$(&apos;HealthQuestionnaireSelfAdministered:ALCOHOL_FREQUENCY.DAILY&apos;).value() || $(&apos;HealthQuestionnaireSelfAdministered:ALCOHOL_FREQUENCY.4TO5_WEEK&apos;).value() || $(&apos;HealthQuestionnaireSelfAdministered:ALCOHOL_FREQUENCY.2TO3_WEEK&apos;).value() || $(&apos;HealthQuestionnaireSelfAdministered:ALCOHOL_FREQUENCY.WEEKLY&apos;).value()</attribute>
       </attributes>
     </variable>
-    <variable id="901" name="RED_WINE_DAY_QTY.condition" valueType="boolean" entityType="Participant">
+    <variable id="901" name="CURRENTLY_USE.condition" valueType="boolean" entityType="Participant">
       <attributes>
-        <attribute id="902" name="script" valueType="text">$(&apos;HealthQuestionnaireSelfAdministered:ALCOHOL_FREQUENCY.DAILY&apos;).value() || $(&apos;HealthQuestionnaireSelfAdministered:ALCOHOL_FREQUENCY.4TO5_WEEK&apos;).value() || $(&apos;HealthQuestionnaireSelfAdministered:ALCOHOL_FREQUENCY.2TO3_WEEK&apos;).value() || $(&apos;HealthQuestionnaireSelfAdministered:ALCOHOL_FREQUENCY.WEEKLY&apos;).value()</attribute>
+        <attribute id="902" name="script" valueType="text">$(&apos;HealthQuestionnaireSelfAdministered:EVER_USED.CIGARS_EVER.Y&apos;).value() || $(&apos;HealthQuestionnaireSelfAdministered:EVER_USED.SMALL_CIGARS_EVER.Y&apos;).value() || $(&apos;HealthQuestionnaireSelfAdministered:EVER_USED.PIPES_EVER.Y&apos;).value() || $(&apos;HealthQuestionnaireSelfAdministered:EVER_USED.OTHER_NICOTIN_PRODUCT_EVER.Y&apos;).value()</attribute>
       </attributes>
     </variable>
   </variables>
