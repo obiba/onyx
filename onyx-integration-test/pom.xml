@@ -3,11 +3,11 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Example Onyx Deployment</name>
+  <name>Onyx Integration Test Deployment</name>
   <description>Example Assessment Center Web Application Deployment</description>
 
   <groupId>org.obiba.onyx</groupId>
-  <artifactId>onyx-example</artifactId>
+  <artifactId>onyx-integration-test</artifactId>
   <packaging>war</packaging>
 
   <parent>
@@ -206,7 +206,7 @@
   </dependencies>
 
   <build>
-    <finalName>example-webapp</finalName>
+    <finalName>onyx-integration-test</finalName>
     <plugins>
 
       <plugin>

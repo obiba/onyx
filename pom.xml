@@ -24,7 +24,7 @@
     <module>onyx-modules</module>
     <module>onyx-webapp</module>
     <module>onyx-deploy-parent</module>
-    <module>onyx-example</module>
+    <module>onyx-integration-test</module>
   </modules>
 
   <dependencyManagement>
