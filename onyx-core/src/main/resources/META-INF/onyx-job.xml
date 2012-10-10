@@ -1,8 +1,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:batch="http://www.springframework.org/schema/batch"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-
-  http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.0.xsd">
+       http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
 
   <import resource="classpath*:/WEB-INF/spring/participant-reader.xml"/>
 
@@ -16,9 +15,9 @@
 
   <batch:job id="appointmentListUpdateJob" incrementer="appointmentListUpdateJobParameterIncrementer">
     <batch:step id="deleteUnreceivedparticipantsStep">
+      <batch:tasklet ref="deleteUnreceivedParticipantsTasklet"/>
       <batch:end on="NO UPDATE"/>
       <batch:next on="UPDATE" to="updateParticipantsStep"/>
-      <batch:tasklet ref="deleteUnreceivedParticipantsTasklet"/>
     </batch:step>
 
     <batch:step id="updateParticipantsStep" next="archiveAppointmentListStep">

@@ -194,7 +194,6 @@ public class ParticipantSearchPage extends BasePage {
     AjaxButton searchByInputField = new AjaxButton("searchByInputField", form) {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-        System.out.println("PATATE!!!!!!!!");
         ParticipantEntityList replacement;
         String inputField = form.get("inputField").getDefaultModelObjectAsString();
 
