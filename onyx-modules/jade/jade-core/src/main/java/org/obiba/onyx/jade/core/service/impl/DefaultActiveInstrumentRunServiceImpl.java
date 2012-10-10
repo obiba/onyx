@@ -366,7 +366,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   private Measure addMeasure(Map<String, Data> repeatableData, InstrumentParameterCaptureMethod captureMethod) {
     InstrumentRun instrumentRun = getInstrumentRun();
     Measure measure = new Measure();
-    measure.setUser(userSessionService.getUser());
+    measure.setUserName(userSessionService.getUserName());
     measure.setTime(new Date());
     measure.setInstrumentBarcode(instrumentRun.getInstrument().getBarcode());
     measure.setInstrumentRun(instrumentRun);
