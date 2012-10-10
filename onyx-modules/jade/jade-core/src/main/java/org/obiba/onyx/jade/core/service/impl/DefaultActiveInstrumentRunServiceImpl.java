@@ -84,7 +84,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
       currentRun.setInstrumentType(instrumentType.getName());
       currentRun.setStatus(InstrumentRunStatus.IN_PROGRESS);
       currentRun.setTimeStart(new Date());
-      currentRun.setUser(userSessionService.getUser());
+      currentRun.setUserName(userSessionService.getUserName());
       currentRun.setWorkstation(userSessionService.getWorkstation());
       getPersistenceManager().save(currentRun);
       currentRunId = currentRun.getId();
