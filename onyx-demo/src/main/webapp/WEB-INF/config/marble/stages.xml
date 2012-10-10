@@ -1,0 +1,8 @@
+<stages>
+
+  <stage>
+    <name>Consent</name>
+    <module>marble</module>
+  </stage>
+
+</stages>

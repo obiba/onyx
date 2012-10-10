@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+
+  <name>StandingHeight</name>
+
+ <!-- <contraindications>
+    <contraIndication>
+      <code>UnableToStandUnassistedHandicap</code>
+      <type>OBSERVED</type>
+    </contraIndication>
+
+    <contraIndication>
+      <code>UnableToStandUnassistedWheelchair</code>
+      <type>OBSERVED</type>
+    </contraIndication>
+
+    <contraIndication>
+      <code>UnableToStandUnassistedCast</code>
+      <type>OBSERVED</type>
+    </contraIndication>
+
+    <contraIndication>
+      <code>Other_CI</code>
+      <requiresDescription>true</requiresDescription>
+      <type>OBSERVED</type>
+    </contraIndication>
+  </contraindications>  -->
+
+  <instrumentParameters>
+    <interpretative>
+      <code>IV_KYPHOSIS</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <type>OBSERVED</type>
+    </interpretative>
+
+    <output>
+      <code>RES_FIRST_HEIGHT</code>
+      <measurementUnit>cm</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          
+          <decimalMinValueMale>70.0</decimalMinValueMale>
+          <decimalMaxValueMale>207.0</decimalMaxValueMale>
+          <decimalMinValueFemale>70.0</decimalMinValueFemale>
+          <decimalMaxValueFemale>207.0</decimalMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          
+          <decimalMinValueMale>148.0</decimalMinValueMale>
+          <decimalMaxValueMale>192.0</decimalMaxValueMale>
+          <decimalMinValueFemale>148.0</decimalMinValueFemale>
+          <decimalMaxValueFemale>192.0</decimalMaxValueFemale>
+        </rangeCheck>
+      </integrityChecks>
+    </output>
+
+    <output>
+      <code>RES_SEC_HEIGHT</code>
+      <measurementUnit>cm</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          
+          <decimalMinValueMale>70.0</decimalMinValueMale>
+          <decimalMaxValueMale>207.0</decimalMaxValueMale>
+          <decimalMinValueFemale>70.0</decimalMinValueFemale>
+          <decimalMaxValueFemale>207.0</decimalMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          
+          <decimalMinValueMale>148.0</decimalMinValueMale>
+          <decimalMaxValueMale>192.0</decimalMaxValueMale>
+          <decimalMinValueFemale>148.0</decimalMinValueFemale>
+          <decimalMaxValueFemale>192.0</decimalMaxValueFemale>
+        </rangeCheck>
+        <parameterSpreadCheck>
+          
+          <parameterCode>RES_FIRST_HEIGHT</parameterCode>
+          <offset>1</offset>
+        </parameterSpreadCheck>
+      </integrityChecks>
+    </output>
+
+    <output>
+      <code>CALC_AVG_HEIGHT</code>
+      <measurementUnit>cm</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>COMPUTED</captureMethod>
+      <dataSource class="computingDataSource">
+        <dataType>DECIMAL</dataType>
+        <unit>cm</unit>
+        
+        <expression>
+          ($1 + $2)/2
+        </expression>
+
+        <dataSources>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>StandingHeight</instrumentType>
+            <parameterCode>RES_FIRST_HEIGHT</parameterCode>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>StandingHeight</instrumentType>
+            <parameterCode>RES_SEC_HEIGHT</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
+  </instrumentParameters>
+</instrumentType>

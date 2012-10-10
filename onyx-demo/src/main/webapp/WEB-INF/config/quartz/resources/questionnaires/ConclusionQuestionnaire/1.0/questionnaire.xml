@@ -1,0 +1,41 @@
+<questionnaire id="1" name="ConclusionQuestionnaire" version="1.0" convertedToMagmaVariables="false">
+  <locales id="2">
+    <locale id="3">en</locale>
+  </locales>
+  <sections id="4">
+    <section id="5" name="CHECKLIST">
+      <pages id="6">
+        <page id="7" name="1" uIFactoryName="quartz.DefaultPageLayoutFactory">
+          <section reference="5"/>
+          <questions id="8">
+            <question id="9" name="PARTICIPANT_OFFERED_DOCUMENT" multiple="true" minCount="2" maxCount="2" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+              <page reference="7"/>
+              <questionCategories id="10">
+                <questionCategory id="11" exportName="1">
+                  <question reference="9"/>
+                  <category id="12" name="CONSENT_FORM" escape="false">
+                    <variableNames id="13"/>
+                    <noAnswer>false</noAnswer>
+                  </category>
+                </questionCategory>
+                <questionCategory id="14" exportName="2">
+                  <question reference="9"/>
+                  <category id="15" name="PHYSICAL_MEASURES_REPORT" escape="false">
+                    <variableNames id="16"/>
+                    <noAnswer>false</noAnswer>
+                  </category>
+                </questionCategory>
+              </questionCategories>
+              <questions id="17"/>
+            </question>
+          </questions>
+        </page>
+      </pages>
+      <sections id="18"/>
+    </section>
+  </sections>
+  <pages id="19">
+    <page reference="7"/>
+  </pages>
+  <variables id="20"/>
+</questionnaire>

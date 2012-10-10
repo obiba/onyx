@@ -1,0 +1,36 @@
+<stages>
+
+  <stage>
+    <name>CIPreliminaryQuestionnaire</name>
+    <module>quartz</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>Consent</stageName>
+      <variablePath>accepted</variablePath>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>HealthQuestionnaireSelfAdministered</name>
+    <module>quartz</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>Consent</stageName>
+      <variablePath>accepted</variablePath>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>QuartzDemoQuestionnaire</name>
+    <module>quartz</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>Consent</stageName>
+      <variablePath>accepted</variablePath>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>ConclusionQuestionnaire</name>
+    <module>quartz</module>
+    <interviewConclusion>true</interviewConclusion>
+  </stage>
+
+</stages>

@@ -1,0 +1,152 @@
+<stages>
+
+  <stage>
+    <name>StandingHeight</name>
+    <module>jade</module>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>Consent</stageName>
+          <variablePath>accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>QuestionnaireRun.timeEnd</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>STAGE_STATUS.SH_CI.active</variablePath>
+          <operator>ne</operator>
+          <data>
+            <type>BOOLEAN</type>
+            <value class="boolean">true</value>
+          </data>
+        </variableCondition>
+      </conditions>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>BloodPressure</name>
+    <module>jade</module>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>Consent</stageName>
+          <variablePath>accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>QuestionnaireRun.timeEnd</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>STAGE_STATUS.BP_CI.active</variablePath>
+          <operator>ne</operator>
+          <data>
+            <type>BOOLEAN</type>
+            <value class="boolean">true</value>
+          </data>
+        </variableCondition>
+      </conditions>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>Impedance310</name>
+    <module>jade</module>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>Consent</stageName>
+          <variablePath>accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>QuestionnaireRun.timeEnd</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>STAGE_STATUS.BI_CI.active</variablePath>
+          <operator>ne</operator>
+          <data>
+            <type>BOOLEAN</type>
+            <value class="boolean">true</value>
+          </data>
+        </variableCondition>
+        <variableCondition>
+          <stageName>StandingHeight</stageName>
+          <variablePath>CALC_AVG_HEIGHT</variablePath>
+        </variableCondition>
+      </conditions>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>Weight</name>
+    <module>jade</module>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>Consent</stageName>
+          <variablePath>accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>QuestionnaireRun.timeEnd</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>STAGE_STATUS.WT_CI.active</variablePath>
+          <operator>ne</operator>
+          <data>
+            <type>BOOLEAN</type>
+            <value class="boolean">true</value>
+          </data>
+        </variableCondition>
+        <inverseCondition>
+          <stageDependencyCondition class="variableCondition">
+            <stageName>Impedance310</stageName>
+            <variablePath>CALC_AVG_WEIGHT</variablePath>
+          </stageDependencyCondition>
+        </inverseCondition>
+      </conditions>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>Spirometry</name>
+    <module>jade</module>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>Consent</stageName>
+          <variablePath>accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>StandingHeight</stageName>
+          <variablePath>CALC_AVG_HEIGHT</variablePath>
+        </variableCondition>
+        <multipleCondition>
+          <operator>OR</operator>
+          <conditions>
+            <variableCondition>
+              <stageName>Impedance310</stageName>
+              <variablePath>CALC_AVG_WEIGHT</variablePath>
+            </variableCondition>
+            <variableCondition>
+              <stageName>Weight</stageName>
+              <variablePath>RES_WEIGHT</variablePath>
+            </variableCondition>
+          </conditions>
+        </multipleCondition>
+      </conditions>
+    </stageDependencyCondition>
+  </stage>
+
+</stages>

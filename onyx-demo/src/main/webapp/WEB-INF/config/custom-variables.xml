@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+  <!--
+    See documentation:
+    http://wiki.obiba.org/confluence/display/ONYX/Onyx+Configuration+Guide#OnyxConfigurationGuide-ConfigurableVariables
+  -->
+<customVariables>
+  <valueTable name="Participants">
+	<variables>
+	  <variable name="Admin.Participant.PostalCodePrefix" valueType="text" entityType="Participant">
+		<attributes>
+		  <attribute name="label" valueType="text" locale="en">Postal Code Prefix</attribute>
+		  <attribute name="label" valueType="text" locale="fr">Préfixe du code postal</attribute>
+		  <attribute name="script" valueType="text">
+			$('Admin.Participant.Postal Code').replace(/^\s*([a-zA-Z]\d[a-zA-Z]).*$/, '$1')
+		  </attribute>
+		</attributes>
+	  </variable>
+	</variables>
+  </valueTable>
+  
+  <valueTable name="CIPreliminaryQuestionnaire">
+	<variables>  
+  <variable name="STAGE_STATUS.BP_CI.active" valueType="boolean" entityType="Participant">
+	<attributes>
+	  <attribute name="label" valueType="text" locale="en"></attribute>
+	  <attribute name="label" valueType="text" locale="fr"></attribute>
+	  <attribute name="script" valueType="text">
+		$('CIPreliminaryQuestionnaire:BP_OBSERVED_CI').any('NC').not()
+	  </attribute>
+	</attributes>
+  </variable>
+  
+  <variable name="STAGE_STATUS.SH_CI.active" valueType="boolean" entityType="Participant">
+	<attributes>
+	  <attribute name="label" valueType="text" locale="en"></attribute>
+	  <attribute name="label" valueType="text" locale="fr"></attribute>
+	  <attribute name="script" valueType="text">
+		$('CIPreliminaryQuestionnaire:SH_OBS_CI').any('NC').not()
+	  </attribute>
+	</attributes>
+  </variable>
+  
+  <variable name="STAGE_STATUS.BI_CI.active" valueType="boolean" entityType="Participant">
+	<attributes>
+	  <attribute name="label" valueType="text" locale="en"></attribute>
+	  <attribute name="label" valueType="text" locale="fr"></attribute>
+	  <attribute name="script" valueType="text">
+		$('CIPreliminaryQuestionnaire:BW_OBS_CI_BIOIMPEDANCE').any('NC').not()
+	  </attribute>
+	</attributes>
+  </variable>   
+
+  <variable name="STAGE_STATUS.WT_CI.active" valueType="boolean" entityType="Participant">
+	<attributes>
+	  <attribute name="label" valueType="text" locale="en"></attribute>
+	  <attribute name="label" valueType="text" locale="fr"></attribute>
+	  <attribute name="script" valueType="text">
+		$('CIPreliminaryQuestionnaire:BW_OBS_CI_BIOIMPEDANCE').any('YES_SPECIFY')
+	  </attribute>
+	</attributes>
+  </variable>   
+  
+  <variable name="STAGE_STATUS.BSC_CI.active" valueType="boolean" entityType="Participant">
+	<attributes>
+	  <attribute name="label" valueType="text" locale="en"></attribute>
+	  <attribute name="label" valueType="text" locale="fr"></attribute>
+	  <attribute name="script" valueType="text">
+		$('CIPreliminaryQuestionnaire:SC_OBS_CI').any('NC').not()
+	  </attribute>
+	</attributes>
+  </variable> 
+	</variables>
+  </valueTable>  
+  
+</customVariables>

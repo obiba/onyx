@@ -1,0 +1,525 @@
+<questionnaire id="1" name="CIPreliminaryQuestionnaire" version="1.0" convertedToMagmaVariables="false">
+  <locales id="2">
+    <locale id="3">en</locale>
+  </locales>
+  <sections id="4">
+    <section id="5" name="S1_COMMON">
+      <pages id="6"/>
+      <sections id="7">
+        <section id="8" name="S1_PARTICIPANT">
+          <parentSection reference="5"/>
+          <pages id="9">
+            <page id="10" name="1" uIFactoryName="quartz.DefaultPageLayoutFactory">
+              <section reference="8"/>
+              <questions id="11">
+                <question id="12" name="SH_OBS_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="10"/>
+                  <questionCategories id="13">
+                    <questionCategory id="14">
+                      <question reference="12"/>
+                      <category id="15" name="NC" escape="false">
+                        <variableNames id="16"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="17">
+                      <question reference="12"/>
+                      <category id="18" name="SEVERE_SPINE_CONDITION" escape="false">
+                        <variableNames id="19"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="20">
+                      <question reference="12"/>
+                      <category id="21" name="OTHER" escape="false">
+                        <openAnswerDefinition id="22" name="OTHER" dataType="TEXT" required="true">
+                          <uIArguments id="23">
+                            <string-array id="24">
+                              <string>size</string>
+                              <string>60</string>
+                            </string-array>
+                          </uIArguments>
+                          <openAnswerDefinitions id="25"/>
+                          <variableNames id="26"/>
+                        </openAnswerDefinition>
+                        <variableNames id="27"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                  </questionCategories>
+                  <questions id="28"/>
+                </question>
+              </questions>
+            </page>
+          </pages>
+          <sections id="29"/>
+        </section>
+      </sections>
+    </section>
+    <section id="30" name="S2_BP_HR">
+      <pages id="31"/>
+      <sections id="32">
+        <section id="33" name="S2_EC_OBS">
+          <parentSection reference="30"/>
+          <pages id="34">
+            <page id="35" name="2" uIFactoryName="quartz.DefaultPageLayoutFactory">
+              <section reference="33"/>
+              <questions id="36">
+                <question id="37" name="BP_OBSERVED_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="35"/>
+                  <questionCategories id="38">
+                    <questionCategory id="39">
+                      <question reference="37"/>
+                      <category reference="15"/>
+                    </questionCategory>
+                    <questionCategory id="40">
+                      <question reference="37"/>
+                      <category id="41" name="RASHES_BOTH_ARMS" escape="false">
+                        <variableNames id="42"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="43">
+                      <question reference="37"/>
+                      <category id="44" name="CAST_BOTH_ARMS" escape="false">
+                        <variableNames id="45"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="46">
+                      <question reference="37"/>
+                      <category id="47" name="PARALYSIS_AMPUTATION_WITHERED" escape="false">
+                        <variableNames id="48"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="49">
+                      <question reference="37"/>
+                      <category reference="21"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <questions id="50"/>
+                </question>
+                <question id="51" name="BP_ARM_CHOSEN" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="35"/>
+                  <questionCategories id="52">
+                    <questionCategory id="53">
+                      <question reference="51"/>
+                      <category id="54" name="RIGHT_ARM" escape="false">
+                        <variableNames id="55"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="56">
+                      <question reference="51"/>
+                      <category id="57" name="LEFT_ARM" escape="false">
+                        <variableNames id="58"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                  </questionCategories>
+                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="59">
+                    <path>CIPreliminaryQuestionnaire:BP_OBSERVED_CI.NC</path>
+                  </condition>
+                  <questions id="60"/>
+                </question>
+              </questions>
+            </page>
+          </pages>
+          <sections id="61"/>
+        </section>
+      </sections>
+    </section>
+    <section id="62" name="S9_BIOIMPEDANCE_WEIGHT">
+      <pages id="63"/>
+      <sections id="64">
+        <section id="65" name="S9_EC_OBS">
+          <parentSection reference="62"/>
+          <pages id="66">
+            <page id="67" name="40" uIFactoryName="quartz.DefaultPageLayoutFactory">
+              <section reference="65"/>
+              <questions id="68">
+                <question id="69" name="CURRENTLY_PREGNANT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="67"/>
+                  <questionCategories id="70">
+                    <questionCategory id="71">
+                      <question reference="69"/>
+                      <category id="72" name="N" escape="false">
+                        <variableNames id="73"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="74">
+                      <question reference="69"/>
+                      <category id="75" name="Y" escape="false">
+                        <variableNames id="76"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="77">
+                      <question reference="69"/>
+                      <category id="78" name="PNA" escape="false">
+                        <variableNames id="79"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="80">
+                      <question reference="69"/>
+                      <category id="81" name="DNK" escape="false">
+                        <variableNames id="82"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                  </questionCategories>
+                  <condition class="comparingDataSource" id="83" comparisonOperator="eq">
+                    <dataSourceLeft class="participantPropertyDataSource" id="84" property="gender"/>
+                    <dataSourceRight class="fixedDataSource" id="85">
+                      <data id="86" type="TEXT">
+                        <value class="string">FEMALE</value>
+                      </data>
+                    </dataSourceRight>
+                  </condition>
+                  <questions id="87"/>
+                </question>
+                <question id="88" name="CURRENT_PREGNANCY_WEEKS" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="67"/>
+                  <questionCategories id="89">
+                    <questionCategory id="90">
+                      <question reference="88"/>
+                      <category id="91" name="OPEN_N40" escape="false">
+                        <openAnswerDefinition id="92" name="OPEN_N40" dataType="INTEGER" required="true">
+                          <uIArguments id="93">
+                            <string-array id="94">
+                              <string>size</string>
+                              <string>2</string>
+                            </string-array>
+                            <string-array id="95">
+                              <string>size</string>
+                              <string>2</string>
+                            </string-array>
+                          </uIArguments>
+                          <validators id="96">
+                            <dataValidator id="97" dataType="INTEGER">
+                              <rangeValidator id="98">
+                                <minimum class="long">0</minimum>
+                                <maximum class="long">40</maximum>
+                              </rangeValidator>
+                            </dataValidator>
+                          </validators>
+                          <openAnswerDefinitions id="99"/>
+                          <variableNames id="100"/>
+                        </openAnswerDefinition>
+                        <variableNames id="101"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="102">
+                      <question reference="88"/>
+                      <category reference="78"/>
+                    </questionCategory>
+                    <questionCategory id="103">
+                      <question reference="88"/>
+                      <category reference="81"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="104">
+                    <path>CIPreliminaryQuestionnaire:CURRENTLY_PREGNANT.Y</path>
+                  </condition>
+                  <questions id="105"/>
+                </question>
+                <question id="106" name="BW_OBS_CI_BIOIMPEDANCE" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="67"/>
+                  <questionCategories id="107">
+                    <questionCategory id="108">
+                      <question reference="106"/>
+                      <category reference="15"/>
+                    </questionCategory>
+                    <questionCategory id="109">
+                      <question reference="106"/>
+                      <category id="110" name="CAST" escape="false">
+                        <variableNames id="111"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="112">
+                      <question reference="106"/>
+                      <category id="113" name="LIMB_AMPUTATION" escape="false">
+                        <variableNames id="114"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="115">
+                      <question reference="106"/>
+                      <category reference="21"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <condition class="computingDataSource" id="116" expression="!$1 || $2" dataType="BOOLEAN">
+                    <dataSources id="117">
+                      <org.obiba.onyx.core.data.VariableDataSource id="118">
+                        <path>CIPreliminaryQuestionnaire:CURRENTLY_PREGNANT_answered</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <org.obiba.onyx.core.data.VariableDataSource id="119">
+                        <path>CIPreliminaryQuestionnaire:CURRENTLY_PREGNANT.N</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                    </dataSources>
+                  </condition>
+                  <questions id="120"/>
+                </question>
+                <question id="121" name="BW_OBS_CI_WEIGHT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="67"/>
+                  <questionCategories id="122">
+                    <questionCategory id="123">
+                      <question reference="121"/>
+                      <category reference="15"/>
+                    </questionCategory>
+                    <questionCategory id="124">
+                      <question reference="121"/>
+                      <category id="125" name="YES_SPECIFY" escape="false">
+                        <openAnswerDefinition id="126" name="SPECIFY" dataType="TEXT" required="true">
+                          <uIArguments id="127">
+                            <string-array id="128">
+                              <string>size</string>
+                              <string>60</string>
+                            </string-array>
+                          </uIArguments>
+                          <openAnswerDefinitions id="129"/>
+                          <variableNames id="130"/>
+                        </openAnswerDefinition>
+                        <variableNames id="131"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                  </questionCategories>
+                  <condition class="computingDataSource" id="132" expression="$1 || $2 || $3 || ($4 &amp;&amp; $5 &gt;= 12)" dataType="BOOLEAN">
+                    <dataSources id="133">
+                      <org.obiba.onyx.core.data.VariableDataSource id="134">
+                        <path>CIPreliminaryQuestionnaire:BW_OBS_CI_BIOIMPEDANCE.CAST</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <org.obiba.onyx.core.data.VariableDataSource id="135">
+                        <path>CIPreliminaryQuestionnaire:BW_OBS_CI_BIOIMPEDANCE.LIMB_AMPUTATION</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <org.obiba.onyx.core.data.VariableDataSource id="136">
+                        <path>CIPreliminaryQuestionnaire:BW_OBS_CI_BIOIMPEDANCE.OTHER</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <org.obiba.onyx.core.data.VariableDataSource id="137">
+                        <path>CIPreliminaryQuestionnaire:CURRENTLY_PREGNANT.Y</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <org.obiba.onyx.core.data.VariableDataSource id="138">
+                        <path>CIPreliminaryQuestionnaire:CURRENT_PREGNANCY_WEEKS.OPEN_N40.OPEN_N40</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                    </dataSources>
+                  </condition>
+                  <questions id="139"/>
+                </question>
+              </questions>
+            </page>
+          </pages>
+          <sections id="140"/>
+        </section>
+      </sections>
+    </section>
+    <section id="141" name="S11_SAMPLES">
+      <pages id="142"/>
+      <sections id="143">
+        <section id="144" name="S11_EC_OBS">
+          <parentSection reference="141"/>
+          <pages id="145">
+            <page id="146" name="45" uIFactoryName="quartz.DefaultPageLayoutFactory">
+              <section reference="144"/>
+              <questions id="147">
+                <question id="148" name="SC_OBS_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <page reference="146"/>
+                  <uIArguments id="149">
+                    <string-array id="150">
+                      <string>rowCount</string>
+                      <string>6</string>
+                    </string-array>
+                  </uIArguments>
+                  <questionCategories id="151">
+                    <questionCategory id="152">
+                      <question reference="148"/>
+                      <category reference="15"/>
+                    </questionCategory>
+                    <questionCategory id="153">
+                      <question reference="148"/>
+                      <category id="154" name="RASHES_BOTH_ARMS" escape="false">
+                        <variableNames id="155"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="156">
+                      <question reference="148"/>
+                      <category id="157" name="CAST_BOTH_ARMS" escape="false">
+                        <variableNames id="158"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="159">
+                      <question reference="148"/>
+                      <category id="160" name="PARALYSIS_AMPUTATION_WITHERED" escape="false">
+                        <variableNames id="161"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="162">
+                      <question reference="148"/>
+                      <category id="163" name="OCCLUDED_VEINS_BOTH_ARMS" escape="false">
+                        <variableNames id="164"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="165">
+                      <question reference="148"/>
+                      <category reference="21"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <questions id="166"/>
+                </question>
+              </questions>
+            </page>
+          </pages>
+          <sections id="167"/>
+        </section>
+      </sections>
+    </section>
+    <section id="168" name="S12_CONCLUSION">
+      <pages id="169">
+        <page id="170" name="51" uIFactoryName="quartz.DefaultPageLayoutFactory">
+          <section reference="168"/>
+          <questions id="171">
+            <question id="172" name="STAGE_STATUS" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+              <page reference="170"/>
+              <questionCategories id="173"/>
+              <questions id="174">
+                <question id="175" name="BP_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="176"/>
+                  <condition class="computingDataSource" id="177" expression="!$1" dataType="BOOLEAN">
+                    <dataSources id="178">
+                      <org.obiba.onyx.core.data.VariableDataSource id="179">
+                        <path>CIPreliminaryQuestionnaire:BP_OBSERVED_CI.NC</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                    </dataSources>
+                  </condition>
+                  <parentQuestion reference="172"/>
+                  <questions id="180"/>
+                </question>
+                <question id="181" name="SH_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="182"/>
+                  <condition class="computingDataSource" id="183" expression="!$1" dataType="BOOLEAN">
+                    <dataSources id="184">
+                      <org.obiba.onyx.core.data.VariableDataSource id="185">
+                        <path>CIPreliminaryQuestionnaire:SH_OBS_CI.NC</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                    </dataSources>
+                  </condition>
+                  <parentQuestion reference="172"/>
+                  <questions id="186"/>
+                </question>
+                <question id="187" name="BI_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="188"/>
+                  <condition class="computingDataSource" id="189" expression="!$1" dataType="BOOLEAN">
+                    <dataSources id="190">
+                      <org.obiba.onyx.core.data.VariableDataSource id="191">
+                        <path>CIPreliminaryQuestionnaire:BW_OBS_CI_BIOIMPEDANCE.NC</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                    </dataSources>
+                  </condition>
+                  <parentQuestion reference="172"/>
+                  <questions id="192"/>
+                </question>
+                <question id="193" name="WT_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="194"/>
+                  <condition class="computingDataSource" id="195" expression="$1" dataType="BOOLEAN">
+                    <dataSources id="196">
+                      <org.obiba.onyx.core.data.VariableDataSource id="197">
+                        <path>CIPreliminaryQuestionnaire:BW_OBS_CI_WEIGHT.YES_SPECIFY</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                    </dataSources>
+                  </condition>
+                  <parentQuestion reference="172"/>
+                  <questions id="198"/>
+                </question>
+                <question id="199" name="BSC_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="200"/>
+                  <condition class="computingDataSource" id="201" expression="!$1" dataType="BOOLEAN">
+                    <dataSources id="202">
+                      <org.obiba.onyx.core.data.VariableDataSource id="203">
+                        <path>CIPreliminaryQuestionnaire:SC_OBS_CI.NC</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                    </dataSources>
+                  </condition>
+                  <parentQuestion reference="172"/>
+                  <questions id="204"/>
+                </question>
+                <question id="205" name="NO_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="206"/>
+                  <condition class="computingDataSource" id="207" expression="!$1 &amp;&amp; !$2 &amp;&amp; !$3 &amp;&amp; !$4 &amp;&amp; !$5" dataType="BOOLEAN">
+                    <dataSources id="208">
+                      <org.obiba.onyx.core.data.VariableDataSource id="209">
+                        <path>CIPreliminaryQuestionnaire:STAGE_STATUS.BP_CI_answered</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <org.obiba.onyx.core.data.VariableDataSource id="210">
+                        <path>CIPreliminaryQuestionnaire:STAGE_STATUS.SH_CI_answered</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <org.obiba.onyx.core.data.VariableDataSource id="211">
+                        <path>CIPreliminaryQuestionnaire:STAGE_STATUS.BI_CI_answered</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <org.obiba.onyx.core.data.VariableDataSource id="212">
+                        <path>CIPreliminaryQuestionnaire:STAGE_STATUS.WT_CI_answered</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <org.obiba.onyx.core.data.VariableDataSource id="213">
+                        <path>CIPreliminaryQuestionnaire:STAGE_STATUS.BSC_CI_answered</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                    </dataSources>
+                  </condition>
+                  <parentQuestion reference="172"/>
+                  <questions id="214"/>
+                </question>
+              </questions>
+            </question>
+          </questions>
+        </page>
+      </pages>
+      <sections id="215"/>
+    </section>
+  </sections>
+  <pages id="216">
+    <page reference="10"/>
+    <page reference="35"/>
+    <page reference="67"/>
+    <page reference="146"/>
+    <page reference="170"/>
+  </pages>
+  <variables id="217">
+    <variable id="218" name="CURRENTLY_PREGNANT_answered" valueType="boolean" entityType="Participant">
+      <attributes>
+        <attribute id="219" name="script" valueType="text">$(&apos;CURRENTLY_PREGNANT&apos;).isNull().not()</attribute>
+      </attributes>
+    </variable>
+    <variable id="220" name="STAGE_STATUS.BP_CI_answered" valueType="boolean" entityType="Participant">
+      <attributes>
+        <attribute id="221" name="script" valueType="text">$(&apos;STAGE_STATUS.BP_CI&apos;).isNull().not()</attribute>
+      </attributes>
+    </variable>
+    <variable id="222" name="STAGE_STATUS.SH_CI_answered" valueType="boolean" entityType="Participant">
+      <attributes>
+        <attribute id="223" name="script" valueType="text">$(&apos;STAGE_STATUS.SH_CI&apos;).isNull().not()</attribute>
+      </attributes>
+    </variable>
+    <variable id="224" name="STAGE_STATUS.BI_CI_answered" valueType="boolean" entityType="Participant">
+      <attributes>
+        <attribute id="225" name="script" valueType="text">$(&apos;STAGE_STATUS.BI_CI&apos;).isNull().not()</attribute>
+      </attributes>
+    </variable>
+    <variable id="226" name="STAGE_STATUS.WT_CI_answered" valueType="boolean" entityType="Participant">
+      <attributes>
+        <attribute id="227" name="script" valueType="text">$(&apos;STAGE_STATUS.WT_CI&apos;).isNull().not()</attribute>
+      </attributes>
+    </variable>
+    <variable id="228" name="STAGE_STATUS.BSC_CI_answered" valueType="boolean" entityType="Participant">
+      <attributes>
+        <attribute id="229" name="script" valueType="text">$(&apos;STAGE_STATUS.BSC_CI&apos;).isNull().not()</attribute>
+      </attributes>
+    </variable>
+  </variables>
+</questionnaire>

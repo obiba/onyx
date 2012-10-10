@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+  <name>BloodPressure</name>
+
+  <!--<contraindications> removed for now
+    <contraIndication>
+      <code>Other_CI</code>
+      <requiresDescription>true</requiresDescription>
+      <type>OBSERVED</type>
+    </contraIndication>
+  </contraindications>-->
+
+  <instrumentParameters>
+        
+    <input>  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
+      <code>IV_ARM_USED</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="variableDataSource">
+        <path>CIPreliminaryQuestionnaire:BP_ARM_CHOSEN</path>
+      </dataSource>
+    </input>
+    
+    <input>  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
+      <code>IV_UPPER_ARM_LN</code>
+      <measurementUnit>cm</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          
+          <decimalMinValueMale>20</decimalMinValueMale>
+          <decimalMaxValueMale>60</decimalMaxValueMale>
+          <decimalMinValueFemale>20</decimalMinValueFemale>
+          <decimalMaxValueFemale>60</decimalMaxValueFemale>
+        </rangeCheck>      
+      </integrityChecks>
+    </input>
+    
+    <input>  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
+      <code>IV_UPPER_ARM_CIRC</code>
+      <measurementUnit>cm</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          
+          <decimalMinValueMale>17</decimalMinValueMale>
+          <decimalMaxValueMale>50</decimalMaxValueMale>
+          <decimalMinValueFemale>17</decimalMinValueFemale>
+          <decimalMaxValueFemale>50</decimalMaxValueFemale>
+        </rangeCheck>    
+      </integrityChecks>  
+    </input>
+    
+    <input>  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
+      <code>IV_ARMBAND_SIZE_USED</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <allowedValues>
+        <data type="TEXT">IV_S</data>
+        <data type="TEXT">IV_M</data>
+        <data type="TEXT">IV_LG</data>
+        <data type="TEXT">IV_XL</data>
+      </allowedValues>  
+    </input>
+    
+    <output>
+      <code>RES_FIRST_SYSTOLIC_BP</code>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>299</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>299</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          
+          <integerMinValueMale>82</integerMinValueMale>
+          <integerMaxValueMale>195</integerMaxValueMale>
+          <integerMinValueFemale>82</integerMinValueFemale>
+          <integerMaxValueFemale>195</integerMaxValueFemale>
+        </rangeCheck>
+      </integrityChecks>
+    </output>
+
+    <output>
+      <code>RES_FIRST_DIASTOLIC_BP</code>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>299</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>299</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          
+          <integerMinValueMale>57</integerMinValueMale>
+          <integerMaxValueMale>103</integerMaxValueMale>
+          <integerMinValueFemale>57</integerMinValueFemale>
+          <integerMaxValueFemale>103</integerMaxValueFemale>
+        </rangeCheck>
+        <equalsParameterCheck>
+          
+          <parameterCode>RES_FIRST_SYSTOLIC_BP</parameterCode>
+          <operator>LESSER</operator>
+          <customizedDescription>EqualsParameterCheck_SystolicGreaterThanDiastolic1</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+
+    <output>
+      <code>RES_FIRST_PULSE_RATE</code>
+      <measurementUnit>BPM</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>199</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>199</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          
+          <integerMinValueMale>42</integerMinValueMale>
+          <integerMaxValueMale>101</integerMaxValueMale>
+          <integerMinValueFemale>42</integerMinValueFemale>
+          <integerMaxValueFemale>101</integerMaxValueFemale>
+        </rangeCheck>
+      </integrityChecks>
+    </output>
+
+    <output>
+      <code>RES_SEC_SYSTOLIC_BP</code>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>299</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>299</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          
+          <integerMinValueMale>82</integerMinValueMale>
+          <integerMaxValueMale>195</integerMaxValueMale>
+          <integerMinValueFemale>82</integerMinValueFemale>
+          <integerMaxValueFemale>195</integerMaxValueFemale>
+        </rangeCheck>
+      </integrityChecks>
+    </output>
+
+    <output>
+      <code>RES_SEC_DIASTOLIC_BP</code>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>299</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>299</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          
+          <integerMinValueMale>57</integerMinValueMale>
+          <integerMaxValueMale>103</integerMaxValueMale>
+          <integerMinValueFemale>57</integerMinValueFemale>
+          <integerMaxValueFemale>103</integerMaxValueFemale>
+        </rangeCheck>
+        <equalsParameterCheck>
+          
+          <parameterCode>RES_SEC_SYSTOLIC_BP</parameterCode>
+          <operator>LESSER</operator>
+          <customizedDescription>EqualsParameterCheck_SystolicGreaterThanDiastolic2</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+
+    <output>
+      <code>RES_SEC_PULSE_RATE</code>
+      <measurementUnit>BPM</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>199</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>199</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          
+          <integerMinValueMale>42</integerMinValueMale>
+          <integerMaxValueMale>101</integerMaxValueMale>
+          <integerMinValueFemale>42</integerMinValueFemale>
+          <integerMaxValueFemale>101</integerMaxValueFemale>
+        </rangeCheck>
+      </integrityChecks>
+    </output>
+
+    <output>
+      <code>RES_THIRD_SYSTOLIC_BP</code>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>299</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>299</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          
+          <integerMinValueMale>82</integerMinValueMale>
+          <integerMaxValueMale>195</integerMaxValueMale>
+          <integerMinValueFemale>82</integerMinValueFemale>
+          <integerMaxValueFemale>195</integerMaxValueFemale>
+        </rangeCheck>
+      </integrityChecks>
+    </output>
+
+    <output>
+      <code>RES_THIRD_DIASTOLIC_BP</code>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>299</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>299</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          
+          <integerMinValueMale>57</integerMinValueMale>
+          <integerMaxValueMale>103</integerMaxValueMale>
+          <integerMinValueFemale>57</integerMinValueFemale>
+          <integerMaxValueFemale>103</integerMaxValueFemale>
+        </rangeCheck>
+        <equalsParameterCheck>
+          
+          <parameterCode>RES_THIRD_SYSTOLIC_BP</parameterCode>
+          <operator>LESSER</operator>
+          <customizedDescription>EqualsParameterCheck_SystolicGreaterThanDiastolic3</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+
+    <output>
+      <code>RES_THIRD_PULSE_RATE</code>
+      <measurementUnit>BPM</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>199</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>199</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          
+          <integerMinValueMale>42</integerMinValueMale>
+          <integerMaxValueMale>101</integerMaxValueMale>
+          <integerMinValueFemale>42</integerMinValueFemale>
+          <integerMaxValueFemale>101</integerMaxValueFemale>
+        </rangeCheck>
+      </integrityChecks>
+    </output>
+
+    <output>
+      <code>CALC_AVG_SYSTOLIC_BP</code>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>COMPUTED</captureMethod>
+      <dataSource class="computingDataSource">
+        <dataType>INTEGER</dataType>
+        <unit>mmHg</unit>
+        
+        <expression>
+          ($1 + $2 + $3)/3
+        </expression>
+          
+        <dataSources>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_FIRST_SYSTOLIC_BP</parameterCode>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_SEC_SYSTOLIC_BP</parameterCode>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_THIRD_SYSTOLIC_BP</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
+
+    <output>
+      <code>CALC_AVG_DIASTOLIC_BP</code>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>COMPUTED</captureMethod>
+      <dataSource class="computingDataSource">
+        <dataType>INTEGER</dataType>
+        <unit>mmHg</unit>
+        
+        <expression>
+          ($1 + $2 + $3)/3
+        </expression>
+                  
+        <dataSources>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_FIRST_DIASTOLIC_BP</parameterCode>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_SEC_DIASTOLIC_BP</parameterCode>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_THIRD_DIASTOLIC_BP</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
+
+    <output>
+      <code>CALC_AVG_PULSE_RATE</code>
+      <measurementUnit>BPM</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>COMPUTED</captureMethod>
+      <dataSource class="computingDataSource">
+        <dataType>INTEGER</dataType>
+        <unit>BPM</unit>
+        
+        <expression>
+          ($1 + $2 + $3)/3
+        </expression>
+          
+        <dataSources>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_FIRST_PULSE_RATE</parameterCode>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_SEC_PULSE_RATE</parameterCode>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_THIRD_PULSE_RATE</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
+  </instrumentParameters>
+</instrumentType>

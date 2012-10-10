@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+
+  <name>Weight</name>
+
+ <!-- <contraindications>  commented out
+    <contraIndication>
+      <code>UnableToStandUnassistedHandicap</code>
+      <type>OBSERVED</type>
+    </contraIndication>
+
+    <contraIndication>
+      <code>UnableToStandUnassistedWheelchair</code>
+      <type>OBSERVED</type>
+    </contraIndication>
+
+    <contraIndication>
+      <code>UnableToStandUnassistedCast</code>
+      <type>OBSERVED</type>
+    </contraIndication>
+
+    <contraIndication>
+      <code>Other_CI</code>
+      <requiresDescription>true</requiresDescription>
+      <type>OBSERVED</type>
+    </contraIndication>
+  </contraindications>   -->
+
+  <instrumentParameters>
+    <output>
+      <code>RES_WEIGHT</code>
+      <measurementUnit>kg</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          
+          <decimalMinValueMale>30.0</decimalMinValueMale>
+          <decimalMaxValueMale>270.0</decimalMaxValueMale>
+          <decimalMinValueFemale>30.0</decimalMinValueFemale>
+          <decimalMaxValueFemale>270.0</decimalMaxValueFemale>
+        </rangeCheck>
+      </integrityChecks>
+    </output>
+  </instrumentParameters>
+</instrumentType>

@@ -1,0 +1,26 @@
+<list>
+  <remark>
+    <code>TubeRegistration.Remark.Inappropriate_labeling</code>
+  </remark>
+  <remark>
+    <code>TubeRegistration.Remark.Hemolyzed_sampling</code>
+  </remark>
+  <remark>
+    <code>TubeRegistration.Remark.Clotted_sample</code>
+  </remark>
+  <remark>
+    <code>TubeRegistration.Remark.Lipemic_sample</code>
+  </remark>
+  <remark>
+    <code>TubeRegistration.Remark.Insufficient_quantity</code>
+  </remark>
+  <remark>
+    <code>TubeRegistration.Remark.Inappropriate_tube</code>
+  </remark>
+  <remark>
+    <code>TubeRegistration.Remark.Expired_tube</code>
+  </remark>
+  <remark>
+    <code>TubeRegistration.Remark.Blood_in_urine</code>
+  </remark>
+</list>

@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+
+  <name>Spirometry</name>
+  
+  <!-- A maximum of 3 measures is supported in one minispir software run. 
+  Requesting for more than 3 measures while require multiple runs. -->
+  <expectedMeasureCount class="fixedDataSource">
+    <data type="INTEGER">2</data>
+  </expectedMeasureCount>
+
+  <instrumentParameters>
+    <input>
+      <vendorName>ID</vendorName>
+      <code>INPUT_PARTICIPANT_BARCODE</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="participantPropertyDataSource">
+        <property>barcode</property>
+      </dataSource>
+
+    </input>
+
+    <input>
+      <vendorName>LastName</vendorName>
+      <code>INPUT_PARTICIPANT_LAST_NAME</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="participantPropertyDataSource">
+        <property>lastName</property>
+      </dataSource>
+    </input>
+
+    <input>
+      <vendorName>FirstName</vendorName>
+      <code>INPUT_PARTICIPANT_FIRST_NAME</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="participantPropertyDataSource">
+        <property>firstName</property>
+      </dataSource>
+    </input>
+
+    <input>
+      <vendorName>BirthDate</vendorName>
+      <code>INPUT_PARTICIPANT_DATE_BIRTH</code>
+      <dataType>DATE</dataType>
+      <displayFormat>%1$tY/%1$tm/%1$td</displayFormat>          
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="participantPropertyDataSource">
+        <property>birthDate</property>
+      </dataSource>
+    </input>
+
+    <input>
+      <vendorName>Gender</vendorName>
+      <code>INPUT_PARTICIPANT_GENDER</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="participantPropertyDataSource">
+        <property>gender</property>
+      </dataSource>
+    </input>
+
+    <input>
+      <vendorName>EthnicGroup</vendorName>
+      <code>INPUT_PARTICIPANT_ETHNIC_GROUP</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="fixedDataSource">
+        <data type="INTEGER">1</data>
+      </dataSource>
+    </input>
+
+    <input>
+      <vendorName>Height</vendorName>
+      <code>INPUT_PARTICIPANT_HEIGHT</code>
+      <measurementUnit>cm</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="instrumentParameterDataSource">
+        <instrumentType>StandingHeight</instrumentType>
+        <parameterCode>CALC_AVG_HEIGHT</parameterCode>
+      </dataSource>
+    </input>
+
+    <input>
+      <vendorName>Weight</vendorName>
+      <code>INPUT_PARTICIPANT_WEIGHT</code>
+      <measurementUnit>kg</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="firstNotNullDataSource">
+        <dataSources>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Impedance310</instrumentType>
+            <parameterCode>CALC_AVG_WEIGHT</parameterCode>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Weight</instrumentType>
+            <parameterCode>RES_WEIGHT</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </input>
+
+    <output>
+      <vendorName>FVC_pred</vendorName>
+      <code>RES_PRED_FVC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEV1_pred</vendorName>
+      <code>RES_PRED_FEV1</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEV1_FVC_pred</vendorName>
+      <code>RES_PRED_FEV1_FVC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>%</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEV6_pred</vendorName>
+      <code>RES_PRED_FEV6</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEV1_FEV6_pred</vendorName>
+      <code>RES_PRED_FEV1_FEV6</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>%</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>PEF_pred</vendorName>
+      <code>RES_PRED_PEF</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L/s</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEF2575_pred</vendorName>
+      <code>RES_PRED_FEF2575</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L/s</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEV3_pred</vendorName>
+      <code>RES_PRED_FEV3</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEV3_FVC_pred</vendorName>
+      <code>RES_PRED_FEV3_FVC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>%</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>ELA_pred</vendorName>
+      <code>RES_PRED_ELA</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>year</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FET_pred</vendorName>
+      <code>RES_PRED_FET</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>s</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEF25_pred</vendorName>
+      <code>RES_PRED_FEF25</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L/s</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEF50_pred</vendorName>
+      <code>RES_PRED_FEF50</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L/s</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEF75_pred</vendorName>
+      <code>RES_PRED_FEF75</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L/s</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>EVol_pred</vendorName>
+      <code>RES_PRED_EVOL</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>mL</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FIVC_pred</vendorName>
+      <code>RES_PRED_FIVC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FIV1_pred</vendorName>
+      <code>RES_PRED_FIV1</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FIV1_FIVC_pred</vendorName>
+      <code>RES_PRED_FIV1_FIVC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>%</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>PIF_pred</vendorName>
+      <code>RES_PRED_PIF</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L/s</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FVC</vendorName>
+      <code>RES_MEASURED_FVC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L</measurementUnit>
+      <manualCaptureAllowed>true</manualCaptureAllowed>      
+    </output>
+
+    <output>
+      <vendorName>FEV1</vendorName>
+      <code>RES_MEASURED_FEV1</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L</measurementUnit>
+      <manualCaptureAllowed>true</manualCaptureAllowed>
+    </output>
+
+    <output>
+      <vendorName>FEV1_FVC</vendorName>
+      <code>RES_MEASURED_FEV1_FVC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>%</measurementUnit>
+      <manualCaptureAllowed>true</manualCaptureAllowed>
+    </output>
+
+    <output>
+      <vendorName>FEV6</vendorName>
+      <code>RES_MEASURED_FEV6</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEV1_FEV6</vendorName>
+      <code>RES_MEASURED_FEV1_FEV6</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>%</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>PEF</vendorName>
+      <code>RES_MEASURED_PEF</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L/s</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEF2575</vendorName>
+      <code>RES_MEASURED_FEF2575</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L/s</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEV3</vendorName>
+      <code>RES_MEASURED_FEV3</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEV3_FVC</vendorName>
+      <code>RES_MEASURED_FEV3_FVC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>%</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>ELA</vendorName>
+      <code>RES_MEASURED_ELA</code>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>year</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FET</vendorName>
+      <code>RES_MEASURED_FET</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>s</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEF25</vendorName>
+      <code>RES_MEASURED_FEF25</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L/s</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEF50</vendorName>
+      <code>RES_MEASURED_FEF50</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L/s</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FEF75</vendorName>
+      <code>RES_MEASURED_FEF75</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L/s</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>EVol</vendorName>
+      <code>RES_MEASURED_EVOL</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>mL</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FIVC</vendorName>
+      <code>RES_MEASURED_FIVC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FIV1</vendorName>
+      <code>RES_MEASURED_FIV1</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>FIV1_FIVC</vendorName>
+      <code>RES_MEASURED_FIV1_FIVC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>%</measurementUnit>
+    </output>
+
+    <output>
+      <vendorName>PIF</vendorName>
+      <code>RES_MEASURED_PIF</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>L/s</measurementUnit>
+    </output>
+    
+    <output>
+      <vendorName>FVCImage</vendorName>
+      <code>RES_FVC_IMAGE</code>
+      <dataType>DATA</dataType>
+      <mimeType>image/jpeg</mimeType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    
+    <output>
+      <code>CALC_AVG_FVC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>COMPUTED</captureMethod>
+      <dataSource class="computingDataSource">
+        <dataType>DECIMAL</dataType>
+        
+        <expression>
+          ($1 + $2)/2
+        </expression>
+
+        <dataSources>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Spirometry</instrumentType>
+            <parameterCode>RES_MEASURED_FVC</parameterCode>
+            <measure>1</measure>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Spirometry</instrumentType>
+            <parameterCode>RES_MEASURED_FVC</parameterCode>
+            <measure>2</measure>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>    
+    
+    <output>
+      <code>CALC_AVG_FEV1</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>COMPUTED</captureMethod>
+      <dataSource class="computingDataSource">
+        <dataType>DECIMAL</dataType>
+        
+        <expression>
+          ($1 + $2)/2
+        </expression>
+
+        <dataSources>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Spirometry</instrumentType>
+            <parameterCode>RES_MEASURED_FEV1</parameterCode>
+            <measure>1</measure>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Spirometry</instrumentType>
+            <parameterCode>RES_MEASURED_FEV1</parameterCode>
+            <measure>2</measure>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>  
+    
+    <output>
+      <code>CALC_AVG_FEV1_FVC</code>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>COMPUTED</captureMethod>
+      <dataSource class="computingDataSource">
+        <dataType>DECIMAL</dataType>
+        
+        <expression>
+          ($1 + $2)/2
+        </expression>
+
+        <dataSources>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Spirometry</instrumentType>
+            <parameterCode>RES_MEASURED_FEV1_FVC</parameterCode>
+            <measure>1</measure>
+          </dataSource>
+          <dataSource class="instrumentParameterDataSource">
+            <instrumentType>Spirometry</instrumentType>
+            <parameterCode>RES_MEASURED_FEV1_FVC</parameterCode>
+            <measure>2</measure>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>  
+    
+  </instrumentParameters>
+</instrumentType>

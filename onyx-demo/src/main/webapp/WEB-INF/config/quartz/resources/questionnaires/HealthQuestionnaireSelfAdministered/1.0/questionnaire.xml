@@ -1,0 +1,1087 @@
+<questionnaire id="1" name="HealthQuestionnaireSelfAdministered" version="1.0" convertedToMagmaVariables="false">
+  <locales id="2">
+    <locale id="3">en</locale>
+    <locale id="4">fr</locale>
+  </locales>
+  <sections id="5">
+    <section id="6" name="A_ADMINISTRATION">
+      <pages id="7"/>
+      <sections id="8">
+        <section id="9" name="ADMINISTRATIVE_DATA">
+          <parentSection reference="6"/>
+          <pages id="10">
+            <page id="11" name="1" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="9"/>
+              <questions id="12">
+                <question id="13" name="A0" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="11"/>
+                  <questionCategories id="14"/>
+                  <questions id="15"/>
+                </question>
+              </questions>
+            </page>
+          </pages>
+          <sections id="16"/>
+        </section>
+      </sections>
+    </section>
+    <section id="17" name="B_DEMOGRAPHY">
+      <pages id="18"/>
+      <sections id="19">
+        <section id="20" name="GENDER">
+          <parentSection reference="17"/>
+          <pages id="21">
+            <page id="22" name="2" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="20"/>
+              <questions id="23">
+                <question id="24" name="SEX" number="1" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="22"/>
+                  <questionCategories id="25">
+                    <questionCategory id="26" exportName="1">
+                      <question reference="24"/>
+                      <category id="27" name="MALE" escape="false">
+                        <variableNames id="28"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="29" exportName="2">
+                      <question reference="24"/>
+                      <category id="30" name="FEMALE" escape="false">
+                        <variableNames id="31"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="32" exportName="3">
+                      <question reference="24"/>
+                      <category id="33" name="OTHER" escape="false">
+                        <variableNames id="34"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="35" exportName="8">
+                      <question reference="24"/>
+                      <category id="36" name="PNA" escape="true">
+                        <variableNames id="37"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="38" exportName="9">
+                      <question reference="24"/>
+                      <category id="39" name="DNK" escape="true">
+                        <variableNames id="40"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                  </questionCategories>
+                  <questions id="41"/>
+                </question>
+              </questions>
+            </page>
+          </pages>
+          <sections id="42"/>
+        </section>
+        <section id="43" name="FACE">
+          <parentSection reference="17"/>
+          <pages id="44">
+            <page id="45" name="3" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="43"/>
+              <questions id="46">
+                <question id="47" name="PARTICIPANT_FACE" number="3" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="45"/>
+                  <questionCategories id="48">
+                    <questionCategory id="49" exportName="1">
+                      <question reference="47"/>
+                      <category id="50" name="FACE1" escape="false">
+                        <variableNames id="51"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="52" exportName="2">
+                      <question reference="47"/>
+                      <category id="53" name="FACE2" escape="false">
+                        <variableNames id="54"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="55" exportName="3">
+                      <question reference="47"/>
+                      <category id="56" name="FACE3" escape="false">
+                        <variableNames id="57"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="58" exportName="4">
+                      <question reference="47"/>
+                      <category id="59" name="FACE4" escape="false">
+                        <variableNames id="60"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="61" exportName="5">
+                      <question reference="47"/>
+                      <category id="62" name="FACE5" escape="false">
+                        <variableNames id="63"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="64" exportName="88">
+                      <question reference="47"/>
+                      <category reference="36"/>
+                    </questionCategory>
+                    <questionCategory id="65" exportName="99">
+                      <question reference="47"/>
+                      <category reference="39"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <questions id="66"/>
+                </question>
+              </questions>
+            </page>
+          </pages>
+          <sections id="67"/>
+        </section>
+        <section id="68" name="AGE_DATE_BIRTH">
+          <parentSection reference="17"/>
+          <pages id="69">
+            <page id="70" name="3_0" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="68"/>
+              <questions id="71">
+                <question id="72" name="PARTICIPANT_AGE" number="3_0" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="70"/>
+                  <questionCategories id="73">
+                    <questionCategory id="74">
+                      <question reference="72"/>
+                      <category id="75" name="PARTICIPANT_AGE" escape="false">
+                        <openAnswerDefinition id="76" name="PARTICIPANT_AGE" dataType="INTEGER" required="true">
+                          <validators id="77">
+                            <dataValidator id="78" dataType="INTEGER">
+                              <rangeValidator id="79">
+                                <minimum class="long">40</minimum>
+                                <maximum class="long">70</maximum>
+                              </rangeValidator>
+                            </dataValidator>
+                          </validators>
+                          <openAnswerDefinitions id="80"/>
+                          <variableNames id="81"/>
+                        </openAnswerDefinition>
+                        <variableNames id="82"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="83" exportName="88">
+                      <question reference="72"/>
+                      <category reference="36"/>
+                    </questionCategory>
+                    <questionCategory id="84" exportName="99">
+                      <question reference="72"/>
+                      <category reference="39"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <questions id="85"/>
+                </question>
+              </questions>
+            </page>
+            <page id="86" name="3_1" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="68"/>
+              <questions id="87">
+                <question id="88" name="DOB" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="86"/>
+                  <questionCategories id="89">
+                    <questionCategory id="90">
+                      <question reference="88"/>
+                      <category id="91" name="DOB" escape="false">
+                        <openAnswerDefinition id="92" name="DOB" dataType="DATE" required="true">
+                          <openAnswerDefinitions id="93">
+                            <open id="94" name="DOB_YEAR" dataType="INTEGER" required="true">
+                              <validationDataSources id="95">
+                                <comparingDataSource id="96" comparisonOperator="le">
+                                  <dataSourceRight class="computingDataSource" id="97" expression="$currentYear - 40" dataType="INTEGER"/>
+                                </comparingDataSource>
+                                <comparingDataSource id="98" comparisonOperator="ge">
+                                  <dataSourceRight class="computingDataSource" id="99" expression="$currentYear - 70" dataType="INTEGER"/>
+                                </comparingDataSource>
+                              </validationDataSources>
+                              <parentOpenAnswerDefinition reference="92"/>
+                              <openAnswerDefinitions id="100"/>
+                              <variableNames id="101"/>
+                            </open>
+                            <open id="102" name="DOB_MONTH" dataType="INTEGER" required="true">
+                              <validationDataSources id="103">
+                                <comparingDataSource id="104" comparisonOperator="le">
+                                  <dataSourceRight class="fixedDataSource" id="105">
+                                    <data id="106" type="INTEGER">
+                                      <value class="int">12</value>
+                                    </data>
+                                  </dataSourceRight>
+                                </comparingDataSource>
+                                <comparingDataSource id="107" comparisonOperator="ge">
+                                  <dataSourceRight class="fixedDataSource" id="108">
+                                    <data id="109" type="INTEGER">
+                                      <value class="int">1</value>
+                                    </data>
+                                  </dataSourceRight>
+                                </comparingDataSource>
+                              </validationDataSources>
+                              <parentOpenAnswerDefinition reference="92"/>
+                              <openAnswerDefinitions id="110"/>
+                              <variableNames id="111"/>
+                            </open>
+                            <open id="112" name="DOB_DAY" dataType="INTEGER" required="true">
+                              <validationDataSources id="113">
+                                <comparingDataSource id="114" comparisonOperator="le">
+                                  <dataSourceRight class="fixedDataSource" id="115">
+                                    <data id="116" type="INTEGER">
+                                      <value class="int">31</value>
+                                    </data>
+                                  </dataSourceRight>
+                                </comparingDataSource>
+                                <comparingDataSource id="117" comparisonOperator="ge">
+                                  <dataSourceRight class="fixedDataSource" id="118">
+                                    <data id="119" type="INTEGER">
+                                      <value class="int">1</value>
+                                    </data>
+                                  </dataSourceRight>
+                                </comparingDataSource>
+                              </validationDataSources>
+                              <parentOpenAnswerDefinition reference="92"/>
+                              <openAnswerDefinitions id="120"/>
+                              <variableNames id="121"/>
+                            </open>
+                          </openAnswerDefinitions>
+                        </openAnswerDefinition>
+                        <variableNames id="122"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="123" exportName="8888">
+                      <question reference="88"/>
+                      <category reference="36"/>
+                    </questionCategory>
+                    <questionCategory id="124" exportName="9999">
+                      <question reference="88"/>
+                      <category reference="39"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <questions id="125"/>
+                </question>
+              </questions>
+            </page>
+          </pages>
+          <sections id="126"/>
+        </section>
+        <section id="127" name="BIRTH_LOCATION">
+          <parentSection reference="17"/>
+          <pages id="128">
+            <page id="129" name="6" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="127"/>
+              <questions id="130">
+                <question id="131" name="BL0" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="129"/>
+                  <questionCategories id="132"/>
+                  <questions id="133"/>
+                </question>
+              </questions>
+            </page>
+            <page id="134" name="7" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="127"/>
+              <questions id="135">
+                <question id="136" name="COUNTRY_BIRTH" number="6" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="134"/>
+                  <uIArguments id="137">
+                    <string-array id="138">
+                      <string>rowCount</string>
+                      <string>4</string>
+                    </string-array>
+                  </uIArguments>
+                  <questionCategories id="139">
+                    <questionCategory id="140">
+                      <question reference="136"/>
+                      <category id="141" name="CA" escape="false">
+                        <variableNames id="142"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="143">
+                      <question reference="136"/>
+                      <category id="144" name="IT" escape="false">
+                        <variableNames id="145"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="146">
+                      <question reference="136"/>
+                      <category id="147" name="FR" escape="false">
+                        <variableNames id="148"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="149">
+                      <question reference="136"/>
+                      <category id="150" name="HT" escape="false">
+                        <variableNames id="151"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="152">
+                      <question reference="136"/>
+                      <category id="153" name="LB" escape="false">
+                        <variableNames id="154"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="155">
+                      <question reference="136"/>
+                      <category id="156" name="US" escape="false">
+                        <variableNames id="157"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="158">
+                      <question reference="136"/>
+                      <category id="159" name="CN" escape="false">
+                        <variableNames id="160"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="161">
+                      <question reference="136"/>
+                      <category id="162" name="VN" escape="false">
+                        <variableNames id="163"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="164">
+                      <question reference="136"/>
+                      <category id="165" name="PT" escape="false">
+                        <variableNames id="166"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="167">
+                      <question reference="136"/>
+                      <category id="168" name="GR" escape="false">
+                        <variableNames id="169"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="170">
+                      <question reference="136"/>
+                      <category id="171" name="MA" escape="false">
+                        <variableNames id="172"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="173">
+                      <question reference="136"/>
+                      <category id="174" name="GB" escape="false">
+                        <variableNames id="175"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="176" exportName="77">
+                      <question reference="136"/>
+                      <category id="177" name="ELSEWHERE" escape="true">
+                        <variableNames id="178"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="179" exportName="88">
+                      <question reference="136"/>
+                      <category reference="36"/>
+                    </questionCategory>
+                    <questionCategory id="180" exportName="99">
+                      <question reference="136"/>
+                      <category reference="39"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <questions id="181"/>
+                </question>
+              </questions>
+            </page>
+            <page id="182" name="8" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="127"/>
+              <questions id="183">
+                <question id="184" name="AGE_IMMIGRATION" number="7" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="182"/>
+                  <questionCategories id="185">
+                    <questionCategory id="186">
+                      <question reference="184"/>
+                      <category id="187" name="AGE" escape="false">
+                        <openAnswerDefinition id="188" name="AGE" dataType="INTEGER" required="true">
+                          <validationDataSources id="189">
+                            <comparingDataSource id="190" comparisonOperator="le">
+                              <dataSourceRight class="org.obiba.onyx.core.data.VariableDataSource" id="191">
+                                <path>HealthQuestionnaireSelfAdministered:PARTICIPANT_AGE.PARTICIPANT_AGE.PARTICIPANT_AGE</path>
+                              </dataSourceRight>
+                            </comparingDataSource>
+                          </validationDataSources>
+                          <openAnswerDefinitions id="192"/>
+                          <variableNames id="193"/>
+                        </openAnswerDefinition>
+                        <variableNames id="194"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="195">
+                      <question reference="184"/>
+                      <category id="196" name="YEAR" escape="false">
+                        <openAnswerDefinition id="197" name="YEAR" dataType="INTEGER" required="true">
+                          <validationDataSources id="198">
+                            <comparingDataSource id="199" comparisonOperator="ge">
+                              <dataSourceRight class="org.obiba.onyx.core.data.VariableDataSource" id="200">
+                                <path>HealthQuestionnaireSelfAdministered:DOB.DOB.DOB_YEAR</path>
+                              </dataSourceRight>
+                            </comparingDataSource>
+                            <comparingDataSource id="201" comparisonOperator="le">
+                              <dataSourceRight class="currentDateSource" id="202">
+                                <field>YEAR</field>
+                              </dataSourceRight>
+                            </comparingDataSource>
+                          </validationDataSources>
+                          <openAnswerDefinitions id="203"/>
+                          <variableNames id="204"/>
+                        </openAnswerDefinition>
+                        <variableNames id="205"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="206" exportName="8888">
+                      <question reference="184"/>
+                      <category reference="36"/>
+                    </questionCategory>
+                    <questionCategory id="207" exportName="9999">
+                      <question reference="184"/>
+                      <category reference="39"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <condition class="computingDataSource" id="208" expression="$1 &amp;&amp; !$2 &amp;&amp; !$3 &amp;&amp; !$4" dataType="BOOLEAN">
+                    <dataSources id="209">
+                      <org.obiba.onyx.core.data.VariableDataSource id="210">
+                        <path>HealthQuestionnaireSelfAdministered:COUNTRY_BIRTH_answered</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <org.obiba.onyx.core.data.VariableDataSource id="211">
+                        <path>HealthQuestionnaireSelfAdministered:COUNTRY_BIRTH.CA</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <org.obiba.onyx.core.data.VariableDataSource id="212">
+                        <path>HealthQuestionnaireSelfAdministered:COUNTRY_BIRTH.PNA</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <org.obiba.onyx.core.data.VariableDataSource id="213">
+                        <path>HealthQuestionnaireSelfAdministered:COUNTRY_BIRTH.DNK</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                    </dataSources>
+                  </condition>
+                  <questions id="214"/>
+                </question>
+              </questions>
+            </page>
+          </pages>
+          <sections id="215"/>
+        </section>
+        <section id="216" name="LANGUAGE">
+          <parentSection reference="17"/>
+          <pages id="217">
+            <page id="218" name="22" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="216"/>
+              <questions id="219">
+                <question id="220" name="FIRST_LANGUAGE_LEARNED" number="21" multiple="true" minCount="1" maxCount="4" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="218"/>
+                  <questionCategories id="221">
+                    <questionCategory id="222" exportName="1">
+                      <question reference="220"/>
+                      <category id="223" name="ENGLISH" escape="false">
+                        <variableNames id="224"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="225" exportName="2">
+                      <question reference="220"/>
+                      <category id="226" name="FRENCH" escape="false">
+                        <variableNames id="227"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="228" exportName="3">
+                      <question reference="220"/>
+                      <category id="229" name="ARABIC" escape="false">
+                        <variableNames id="230"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="231" exportName="4">
+                      <question reference="220"/>
+                      <category id="232" name="CHINESE" escape="false">
+                        <variableNames id="233"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="234" exportName="5">
+                      <question reference="220"/>
+                      <category id="235" name="ABORIGINAL" escape="false">
+                        <variableNames id="236"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="237" exportName="6">
+                      <question reference="220"/>
+                      <category id="238" name="GERMAN" escape="false">
+                        <variableNames id="239"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="240" exportName="7">
+                      <question reference="220"/>
+                      <category id="241" name="GREEK" escape="false">
+                        <variableNames id="242"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="243" exportName="9">
+                      <question reference="220"/>
+                      <category id="244" name="ITALIAN" escape="false">
+                        <variableNames id="245"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="246" exportName="10">
+                      <question reference="220"/>
+                      <category id="247" name="KOREAN" escape="false">
+                        <variableNames id="248"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="249" exportName="12">
+                      <question reference="220"/>
+                      <category id="250" name="POLISH" escape="false">
+                        <variableNames id="251"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="252" exportName="13">
+                      <question reference="220"/>
+                      <category id="253" name="PORTUGUESE" escape="false">
+                        <variableNames id="254"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="255" exportName="15">
+                      <question reference="220"/>
+                      <category id="256" name="SPANISH" escape="false">
+                        <variableNames id="257"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="258" exportName="17">
+                      <question reference="220"/>
+                      <category id="259" name="UKRAINIAN" escape="false">
+                        <variableNames id="260"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="261" exportName="18">
+                      <question reference="220"/>
+                      <category id="262" name="VIETNAMESE" escape="false">
+                        <variableNames id="263"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="264" exportName="21">
+                      <question reference="220"/>
+                      <category id="265" name="RUSSIAN" escape="false">
+                        <variableNames id="266"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="267" exportName="23">
+                      <question reference="220"/>
+                      <category id="268" name="OTHER_LANGUAGE" escape="true">
+                        <variableNames id="269"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="270" exportName="88">
+                      <question reference="220"/>
+                      <category reference="36"/>
+                    </questionCategory>
+                    <questionCategory id="271" exportName="99">
+                      <question reference="220"/>
+                      <category reference="39"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <questions id="272"/>
+                </question>
+              </questions>
+            </page>
+          </pages>
+          <sections id="273"/>
+        </section>
+        <section id="274" name="WORKING_STATUS">
+          <parentSection reference="17"/>
+          <pages id="275">
+            <page id="276" name="25" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="274"/>
+              <questions id="277">
+                <question id="278" name="WS0" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="276"/>
+                  <questionCategories id="279"/>
+                  <questions id="280"/>
+                </question>
+              </questions>
+            </page>
+            <page id="281" name="26" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="274"/>
+              <questions id="282">
+                <question id="283" name="CURRENT_SITUATION" number="23" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="281"/>
+                  <questionCategories id="284">
+                    <questionCategory id="285" exportName="0">
+                      <question reference="283"/>
+                      <category id="286" name="N" escape="false">
+                        <variableNames id="287"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="288" exportName="1">
+                      <question reference="283"/>
+                      <category id="289" name="Y" escape="false">
+                        <variableNames id="290"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="291" exportName="8">
+                      <question reference="283"/>
+                      <category reference="36"/>
+                    </questionCategory>
+                    <questionCategory id="292" exportName="9">
+                      <question reference="283"/>
+                      <category reference="39"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <questions id="293">
+                    <question id="294" name="EMPLOYED" number="1.1" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="295"/>
+                      <parentQuestion reference="283"/>
+                      <questions id="296"/>
+                    </question>
+                    <question id="297" name="RETIRED" number="1.3" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="298"/>
+                      <parentQuestion reference="283"/>
+                      <questions id="299"/>
+                    </question>
+                    <question id="300" name="HOME_FAMILY" number="1.4" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="301"/>
+                      <parentQuestion reference="283"/>
+                      <questions id="302"/>
+                    </question>
+                    <question id="303" name="UNABLE_TO_WORK" number="1.5" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="304"/>
+                      <parentQuestion reference="283"/>
+                      <questions id="305"/>
+                    </question>
+                    <question id="306" name="UNPAID_WORK" number="1.7" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="307"/>
+                      <parentQuestion reference="283"/>
+                      <questions id="308"/>
+                    </question>
+                  </questions>
+                </question>
+              </questions>
+            </page>
+            <page id="309" name="27" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="274"/>
+              <questions id="310">
+                <question id="311" name="CURRENT_WORK_ISIC1" number="26" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="309"/>
+                  <questionCategories id="312">
+                    <questionCategory id="313" exportName="A">
+                      <question reference="311"/>
+                      <category id="314" name="AGRICULTURE" escape="false">
+                        <variableNames id="315"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="316" exportName="B">
+                      <question reference="311"/>
+                      <category id="317" name="FISHING" escape="false">
+                        <variableNames id="318"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="319" exportName="C">
+                      <question reference="311"/>
+                      <category id="320" name="MINING" escape="false">
+                        <variableNames id="321"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="322" exportName="D">
+                      <question reference="311"/>
+                      <category id="323" name="MANUFACTURING" escape="false">
+                        <variableNames id="324"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="325" exportName="E">
+                      <question reference="311"/>
+                      <category id="326" name="ELECTRICITY" escape="false">
+                        <variableNames id="327"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="328" exportName="F">
+                      <question reference="311"/>
+                      <category id="329" name="CONSTRUCTION" escape="false">
+                        <variableNames id="330"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="331" exportName="G">
+                      <question reference="311"/>
+                      <category id="332" name="TRADE" escape="false">
+                        <variableNames id="333"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="334" exportName="H">
+                      <question reference="311"/>
+                      <category id="335" name="RESTAURATION" escape="false">
+                        <variableNames id="336"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="337" exportName="I">
+                      <question reference="311"/>
+                      <category id="338" name="TRANSPORT" escape="false">
+                        <variableNames id="339"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="340" exportName="J">
+                      <question reference="311"/>
+                      <category id="341" name="FINANCIAL" escape="false">
+                        <variableNames id="342"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="343" exportName="K">
+                      <question reference="311"/>
+                      <category id="344" name="REAL_ESTATE" escape="false">
+                        <variableNames id="345"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="346" exportName="L">
+                      <question reference="311"/>
+                      <category id="347" name="PUBLIC_ADMIN" escape="false">
+                        <variableNames id="348"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="349" exportName="M">
+                      <question reference="311"/>
+                      <category id="350" name="EDUCATION" escape="false">
+                        <variableNames id="351"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="352" exportName="N">
+                      <question reference="311"/>
+                      <category id="353" name="HEALTH_SOCIAL" escape="false">
+                        <variableNames id="354"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="355" exportName="O">
+                      <question reference="311"/>
+                      <category id="356" name="OTHER_COMMUNITY" escape="false">
+                        <variableNames id="357"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="358" exportName="77">
+                      <question reference="311"/>
+                      <category id="359" name="OTHER_WORK" escape="true">
+                        <variableNames id="360"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="361" exportName="88">
+                      <question reference="311"/>
+                      <category reference="36"/>
+                    </questionCategory>
+                    <questionCategory id="362" exportName="99">
+                      <question reference="311"/>
+                      <category reference="39"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <condition class="org.obiba.onyx.core.data.VariableDataSource" id="363">
+                    <path>HealthQuestionnaireSelfAdministered:CURRENT_SITUATION.EMPLOYED.Y</path>
+                  </condition>
+                  <questions id="364"/>
+                </question>
+              </questions>
+            </page>
+            <page id="365" name="29_1" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="274"/>
+              <questions id="366">
+                <question id="367" name="COMPUTER_TIME" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="365"/>
+                  <questionCategories id="368">
+                    <questionCategory id="369">
+                      <question reference="367"/>
+                      <category id="370" name="HOUR_DAY" escape="false">
+                        <openAnswerDefinition id="371" name="HOUR_DAY" dataType="INTEGER" required="true">
+                          <validators id="372">
+                            <dataValidator id="373" dataType="INTEGER">
+                              <rangeValidator id="374">
+                                <minimum class="long">1</minimum>
+                                <maximum class="long">24</maximum>
+                              </rangeValidator>
+                            </dataValidator>
+                          </validators>
+                          <openAnswerDefinitions id="375"/>
+                          <variableNames id="376"/>
+                        </openAnswerDefinition>
+                        <variableNames id="377"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="378">
+                      <question reference="367"/>
+                      <category id="379" name="HOUR_WEEK" escape="false">
+                        <openAnswerDefinition id="380" name="HOUR_WEEK" dataType="INTEGER" required="true">
+                          <validators id="381">
+                            <dataValidator id="382" dataType="INTEGER">
+                              <rangeValidator id="383">
+                                <minimum class="long">1</minimum>
+                                <maximum class="long">168</maximum>
+                              </rangeValidator>
+                            </dataValidator>
+                          </validators>
+                          <openAnswerDefinitions id="384"/>
+                          <variableNames id="385"/>
+                        </openAnswerDefinition>
+                        <variableNames id="386"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="387">
+                      <question reference="367"/>
+                      <category id="388" name="HOUR_MONTH" escape="false">
+                        <openAnswerDefinition id="389" name="HOUR_MONTH" dataType="INTEGER" required="true">
+                          <validators id="390">
+                            <dataValidator id="391" dataType="INTEGER">
+                              <rangeValidator id="392">
+                                <minimum class="long">1</minimum>
+                                <maximum class="long">744</maximum>
+                              </rangeValidator>
+                            </dataValidator>
+                          </validators>
+                          <openAnswerDefinitions id="393"/>
+                          <variableNames id="394"/>
+                        </openAnswerDefinition>
+                        <variableNames id="395"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="396">
+                      <question reference="367"/>
+                      <category id="397" name="DONT_USE" escape="false">
+                        <variableNames id="398"/>
+                        <noAnswer>false</noAnswer>
+                      </category>
+                    </questionCategory>
+                    <questionCategory id="399" exportName="8">
+                      <question reference="367"/>
+                      <category reference="36"/>
+                    </questionCategory>
+                    <questionCategory id="400" exportName="9">
+                      <question reference="367"/>
+                      <category reference="39"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <questions id="401"/>
+                </question>
+              </questions>
+            </page>
+          </pages>
+          <sections id="402"/>
+        </section>
+      </sections>
+    </section>
+    <section id="403" name="C_LIFE_HABITS">
+      <pages id="404"/>
+      <sections id="405">
+        <section id="406" name="TOBACCO_USE">
+          <parentSection reference="403"/>
+          <pages id="407">
+            <page id="408" name="32" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="406"/>
+              <questions id="409">
+                <question id="410" name="EVER_USED" number="31" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="408"/>
+                  <questionCategories id="411">
+                    <questionCategory id="412" exportName="0">
+                      <question reference="410"/>
+                      <category reference="286"/>
+                    </questionCategory>
+                    <questionCategory id="413" exportName="1">
+                      <question reference="410"/>
+                      <category reference="289"/>
+                    </questionCategory>
+                    <questionCategory id="414" exportName="8">
+                      <question reference="410"/>
+                      <category reference="36"/>
+                    </questionCategory>
+                    <questionCategory id="415" exportName="9">
+                      <question reference="410"/>
+                      <category reference="39"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <questions id="416">
+                    <question id="417" name="CIGARS_EVER" number="1.1" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="418"/>
+                      <parentQuestion reference="410"/>
+                      <questions id="419"/>
+                    </question>
+                    <question id="420" name="SMALL_CIGARS_EVER" number="1.2" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="421"/>
+                      <parentQuestion reference="410"/>
+                      <questions id="422"/>
+                    </question>
+                    <question id="423" name="PIPES_EVER" number="1.3" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="424"/>
+                      <parentQuestion reference="410"/>
+                      <questions id="425"/>
+                    </question>
+                    <question id="426" name="OTHER_NICOTIN_PRODUCT_EVER" number="1.8" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="427"/>
+                      <parentQuestion reference="410"/>
+                      <questions id="428"/>
+                    </question>
+                  </questions>
+                </question>
+              </questions>
+            </page>
+            <page id="429" name="33" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="406"/>
+              <questions id="430">
+                <question id="431" name="CURRENTLY_USE" number="32" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="429"/>
+                  <questionCategories id="432">
+                    <questionCategory id="433" exportName="0">
+                      <question reference="431"/>
+                      <category reference="286"/>
+                    </questionCategory>
+                    <questionCategory id="434" exportName="1">
+                      <question reference="431"/>
+                      <category reference="289"/>
+                    </questionCategory>
+                    <questionCategory id="435" exportName="8">
+                      <question reference="431"/>
+                      <category reference="36"/>
+                    </questionCategory>
+                    <questionCategory id="436" exportName="9">
+                      <question reference="431"/>
+                      <category reference="39"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <condition class="computingDataSource" id="437" expression="$1 || $2 || $3 || $4" dataType="BOOLEAN">
+                    <dataSources id="438">
+                      <org.obiba.onyx.core.data.VariableDataSource id="439">
+                        <path>HealthQuestionnaireSelfAdministered:EVER_USED.CIGARS_EVER.Y</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <org.obiba.onyx.core.data.VariableDataSource id="440">
+                        <path>HealthQuestionnaireSelfAdministered:EVER_USED.SMALL_CIGARS_EVER.Y</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <org.obiba.onyx.core.data.VariableDataSource id="441">
+                        <path>HealthQuestionnaireSelfAdministered:EVER_USED.PIPES_EVER.Y</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                      <org.obiba.onyx.core.data.VariableDataSource id="442">
+                        <path>HealthQuestionnaireSelfAdministered:EVER_USED.OTHER_NICOTIN_PRODUCT_EVER.Y</path>
+                      </org.obiba.onyx.core.data.VariableDataSource>
+                    </dataSources>
+                  </condition>
+                  <questions id="443">
+                    <question id="444" name="CIGARS_CURRENT" number="1.1" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="445"/>
+                      <condition class="org.obiba.onyx.core.data.VariableDataSource" id="446">
+                        <path>HealthQuestionnaireSelfAdministered:EVER_USED.CIGARS_EVER.Y</path>
+                      </condition>
+                      <parentQuestion reference="431"/>
+                      <questions id="447"/>
+                    </question>
+                    <question id="448" name="SMALL_CIGARS_CURRENT" number="1.2" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="449"/>
+                      <condition class="org.obiba.onyx.core.data.VariableDataSource" id="450">
+                        <path>HealthQuestionnaireSelfAdministered:EVER_USED.SMALL_CIGARS_EVER.Y</path>
+                      </condition>
+                      <parentQuestion reference="431"/>
+                      <questions id="451"/>
+                    </question>
+                    <question id="452" name="PIPES_CURRENT" number="1.3" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="453"/>
+                      <condition class="org.obiba.onyx.core.data.VariableDataSource" id="454">
+                        <path>HealthQuestionnaireSelfAdministered:EVER_USED.PIPES_EVER.Y</path>
+                      </condition>
+                      <parentQuestion reference="431"/>
+                      <questions id="455"/>
+                    </question>
+                    <question id="456" name="OTHER_NICOTIN_PRODUCT_CURRENT" number="1.8" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="457"/>
+                      <condition class="org.obiba.onyx.core.data.VariableDataSource" id="458">
+                        <path>HealthQuestionnaireSelfAdministered:EVER_USED.OTHER_NICOTIN_PRODUCT_EVER.Y</path>
+                      </condition>
+                      <parentQuestion reference="431"/>
+                      <questions id="459"/>
+                    </question>
+                  </questions>
+                </question>
+              </questions>
+            </page>
+          </pages>
+          <sections id="460"/>
+        </section>
+      </sections>
+    </section>
+    <section id="461" name="CONCLUSION">
+      <pages id="462">
+        <page id="463" name="48" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+          <section reference="461"/>
+          <questions id="464">
+            <question id="465" name="CONCLUSION" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+              <page reference="463"/>
+              <questionCategories id="466"/>
+              <questions id="467"/>
+            </question>
+          </questions>
+        </page>
+      </pages>
+      <sections id="468"/>
+    </section>
+  </sections>
+  <pages id="469">
+    <page reference="11"/>
+    <page reference="22"/>
+    <page reference="45"/>
+    <page reference="70"/>
+    <page reference="86"/>
+    <page reference="129"/>
+    <page reference="134"/>
+    <page reference="182"/>
+    <page reference="218"/>
+    <page reference="276"/>
+    <page reference="281"/>
+    <page reference="309"/>
+    <page reference="365"/>
+    <page reference="408"/>
+    <page reference="429"/>
+    <page reference="463"/>
+  </pages>
+  <variables id="470">
+    <variable id="471" name="COUNTRY_BIRTH_answered" valueType="boolean" entityType="Participant">
+      <attributes>
+        <attribute id="472" name="script" valueType="text">$(&apos;COUNTRY_BIRTH&apos;).isNull().not()</attribute>
+      </attributes>
+    </variable>
+  </variables>
+</questionnaire>

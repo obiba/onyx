@@ -1,0 +1,149 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>Onyx Demo Deployment</name>
+  <description>Example Assessment Center Web Application Deployment</description>
+
+  <groupId>org.obiba.onyx</groupId>
+  <artifactId>onyx-demo</artifactId>
+  <packaging>war</packaging>
+
+  <parent>
+    <groupId>org.obiba.onyx</groupId>
+    <artifactId>onyx-deploy-parent</artifactId>
+    <version>1.9-SNAPSHOT</version>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.obiba.jade</groupId>
+      <artifactId>jade-core</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.obiba.jade</groupId>
+      <artifactId>jade-remote-server</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.obiba.quartz</groupId>
+      <artifactId>quartz-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.obiba.marble</groupId>
+      <artifactId>marble-core</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.obiba.ruby</groupId>
+      <artifactId>ruby-core</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>interface-bioimpedance-tanita-tbf310</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>interface-spirometry</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <finalName>onyx-demo</finalName>
+    <plugins>
+
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-instruments</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.obiba.jade.instrument</groupId>
+                  <artifactId>interface-bioimpedance-tanita-tbf310</artifactId>
+                  <type>zip</type>
+                  <outputDirectory>
+                    ${project.build.directory}/${project.build.finalName}/instruments/Impedance310
+                  </outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.obiba.jade.instrument</groupId>
+                  <artifactId>interface-spirometry</artifactId>
+                  <type>zip</type>
+                  <outputDirectory>
+                    ${project.build.directory}/${project.build.finalName}/instruments/Spirometry
+                  </outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.2</version>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <configuration>
+              <tasks>
+
+                <signjar alias="jade" keystore="${basedir}/exampleKeystore.jks" lazy="true" storepass="onyxadmin">
+                  <fileset dir="${project.build.directory}/${project.build.finalName}/instruments" includes="**/*.jar" />
+                </signjar>
+
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
+  </build>
+
+  <repositories>
+    <repository>
+      <id>obiba.org</id>
+      <url>http://maven.obiba.org/maven2</url>
+    </repository>
+    <repository>
+      <id>snapshots.obiba.org</id>
+      <url>http://maven.obiba.org/maven2-snapshots</url>
+    </repository>
+  </repositories>
+
+</project>
