@@ -16,6 +16,7 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
@@ -25,11 +26,14 @@ public class DefaultJobExecutionServiceImpl implements JobExecutionService {
 
   private JobLauncher jobLauncher;
 
+  @Override
   public JobExecution launchJob(Job job, Map<String, JobParameter> parameters) {
 
     try {
       JobExecution jobExecution = jobLauncher.run(job, new JobParameters(parameters));
       return jobExecution;
+    } catch(JobParametersInvalidException e) {
+      throw new RuntimeException("This job has invalid parameters", e);
     } catch(JobExecutionAlreadyRunningException e) {
       throw new RuntimeException("This job is currently running", e);
     } catch(JobInstanceAlreadyCompleteException e) {
@@ -37,6 +41,7 @@ public class DefaultJobExecutionServiceImpl implements JobExecutionService {
     } catch(JobRestartException e) {
       throw new RuntimeException("Unspecified restart exception", e);
     }
+
   }
 
   public void setJobLauncher(JobLauncher jobLauncher) {
