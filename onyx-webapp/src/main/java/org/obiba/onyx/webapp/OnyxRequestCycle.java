@@ -19,11 +19,11 @@ import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebRequestCycle;
 import org.mozilla.javascript.EcmaError;
 import org.obiba.magma.MagmaRuntimeException;
+import org.obiba.onyx.core.exception.ExceptionUtils;
 import org.obiba.onyx.core.service.impl.NoSuchInterviewException;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.webapp.home.page.InternalErrorPage;
 import org.obiba.onyx.webapp.login.page.LoginPage;
-import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.webapp.stage.page.InternalErrorStagePage;
 import org.obiba.onyx.webapp.stage.page.StagePage;
 import org.slf4j.Logger;
@@ -76,14 +76,14 @@ class OnyxRequestCycle extends WebRequestCycle {
     Session.get().cleanupFeedbackMessages();
     for(String msg : messages) {
       if(msg != null) {
-        Session.get().error(msg);
+        Session.get().error(ExceptionUtils.cleanMessage(msg));
       }
     }
     Session.get().dirty();
 
     Page rpage;
     if(page instanceof StagePage) {
-      rpage = new InternalErrorStagePage(new InterviewPage(), (IModel<Stage>) page.getDefaultModel());
+      rpage = new InternalErrorStagePage((StagePage) page, (IModel<Stage>) page.getDefaultModel());
     } else {
       rpage = new InternalErrorPage();
     }

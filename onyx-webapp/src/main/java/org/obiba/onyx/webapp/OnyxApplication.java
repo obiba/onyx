@@ -30,6 +30,7 @@ import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.spring.ISpringContextLocator;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.PackageName;
+import org.apache.wicket.util.time.Duration;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.webapp.authentication.UserRolesAuthorizer;
@@ -213,6 +214,9 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
     guard.addPattern("+*.*");
     getResourceSettings().setPackageResourceGuard(guard);
     
+    // Set default timeout
+    getRequestCycleSettings().setTimeout(Duration.ONE_HOUR);
+
     log.info("Onyx Web Application [{}] v{} has started", getServletContext().getContextPath(), this.getVersion());
   }
 

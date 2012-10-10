@@ -54,8 +54,12 @@ public class CsvDatasourceProvider implements InitializingBean {
   public void afterPropertiesSet() throws Exception {
     if(datasourceName != null && datasourceName.isEmpty() == false) {
       CsvDatasource ds = new CsvDatasource(datasourceName);
-      String table = tableName == null ? file.getName().substring(0, file.getName().lastIndexOf('.')) : tableName;
-      ds.addValueTable(table, file, entityType == null ? "Participant" : entityType);
+      if(file.isDirectory()) {
+        ds.addValueTable(file);
+      } else {
+        String table = tableName == null ? file.getName().substring(0, file.getName().lastIndexOf('.')) : tableName;
+        ds.addValueTable(table, file, entityType == null ? "Participant" : entityType);
+      }
       log.info("Adding datasource: {}", datasourceName);
       if(participantService != null) {
         magmaEngine.addDatasource(new EnrollmentIdDatasource(participantService, ds));

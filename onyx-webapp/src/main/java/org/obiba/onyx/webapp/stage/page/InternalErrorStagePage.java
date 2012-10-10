@@ -9,11 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.stage.page;
 
-import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.webapp.home.page.InternalErrorPage;
+import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.webapp.stage.panel.StageMenuBar;
 
 /**
@@ -22,7 +22,7 @@ import org.obiba.onyx.webapp.stage.panel.StageMenuBar;
 public class InternalErrorStagePage extends InternalErrorPage {
   private StageMenuBar menuBar;
 
-  public InternalErrorStagePage(Page returnPage, IModel<Stage> stageModel) {
+  public InternalErrorStagePage(StagePage stagePage, IModel<Stage> stageModel) {
     super();
 
     //
@@ -38,7 +38,9 @@ public class InternalErrorStagePage extends InternalErrorPage {
     menuBar = new StageMenuBar("menuBar", stageModel);
     add(menuBar);
 
-    replace(newLink("link", returnPage));
+    replace(newLink("link", new InterviewPage()));
+
+    add(newLink("stageLink", stagePage));
   }
 
 }

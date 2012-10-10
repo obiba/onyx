@@ -12,6 +12,10 @@ div.wicket-modal div.onyx .feedback {
   height: 7em;
 }
 
+div.wicket-modal ul.feedbackPanel {
+  margin-right: 1em
+}
+
 .feedbackPanelERROR {
   color:black;
 }

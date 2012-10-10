@@ -66,8 +66,6 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner, Ac
       remove("menuBar");
       add(new StageMenuBar("menuBar", stageModel));
 
-      IStageExecution exec = activeInterviewService.getStageExecution((Stage) getDefaultModelObject());
-
       add(actionWindow = new ActionWindow("modal") {
 
         @Override
@@ -102,15 +100,22 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner, Ac
       };
       add(historyAjaxBehavior);
 
-      if(!exec.isInteractive()) {
-        add(new EmptyPanel("stage-component"));
-      } else {
-        Component stageComponent = exec.getWidget("stage-component");
-        if(stageComponent == null) {
-          throw new IllegalStateException("stage is interactive but dit not provide a Component to display");
-        }
-        add(stageComponent);
+      initializeStageComponent();
+    }
+  }
+
+  private void initializeStageComponent() {
+
+    IStageExecution exec = activeInterviewService.getStageExecution((Stage) getDefaultModelObject());
+
+    if(!exec.isInteractive()) {
+      add(new EmptyPanel("stage-component"));
+    } else {
+      Component stageComponent = exec.getWidget("stage-component");
+      if(stageComponent == null) {
+        throw new IllegalStateException("stage is interactive but dit not provide a Component to display");
       }
+      add(stageComponent);
     }
   }
 

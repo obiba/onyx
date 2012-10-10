@@ -44,6 +44,8 @@ import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 @Transactional
 public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwareService implements ActiveInstrumentRunService {
@@ -70,23 +72,25 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   //
 
   public InstrumentRun start(Participant participant, Instrument instrument, InstrumentType instrumentType) {
-    if(participant == null) throw new IllegalArgumentException("Participant cannot be null.");
-    if(instrument == null) throw new IllegalArgumentException("Instrument cannot be null.");
-    if(instrumentType == null) throw new IllegalArgumentException("Instrument type cannot be null.");
+    synchronized(getSessionMutex()) {
+      if(participant == null) throw new IllegalArgumentException("Participant cannot be null.");
+      if(instrument == null) throw new IllegalArgumentException("Instrument cannot be null.");
+      if(instrumentType == null) throw new IllegalArgumentException("Instrument type cannot be null.");
 
-    InstrumentRun currentRun = new InstrumentRun();
-    // Instrument must not be null when InstrumentRun is persisted.
-    currentRun.setInstrument(instrument);
-    currentRun.setParticipant(participant);
-    currentRun.setInstrumentType(instrumentType.getName());
-    currentRun.setStatus(InstrumentRunStatus.IN_PROGRESS);
-    currentRun.setTimeStart(new Date());
-    currentRun.setUserName(userSessionService.getUserName());
-    currentRun.setWorkstation(userSessionService.getWorkstation());
-    getPersistenceManager().save(currentRun);
-    currentRunId = currentRun.getId();
+      InstrumentRun currentRun = new InstrumentRun();
+      // Instrument must not be null when InstrumentRun is persisted.
+      currentRun.setInstrument(instrument);
+      currentRun.setParticipant(participant);
+      currentRun.setInstrumentType(instrumentType.getName());
+      currentRun.setStatus(InstrumentRunStatus.IN_PROGRESS);
+      currentRun.setTimeStart(new Date());
+      currentRun.setUser(userSessionService.getUser());
+      currentRun.setWorkstation(userSessionService.getWorkstation());
+      getPersistenceManager().save(currentRun);
+      currentRunId = currentRun.getId();
 
-    return currentRun;
+      return currentRun;
+    }
   }
 
   // Visible for testing.
@@ -95,29 +99,37 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public void end() {
-    if(currentRunId == null) return;
+    synchronized(getSessionMutex()) {
+      if(currentRunId == null) return;
 
-    InstrumentRun currentRun = getInstrumentRun();
-    currentRun.setTimeEnd(new Date());
+      InstrumentRun currentRun = getInstrumentRun();
+      currentRun.setTimeEnd(new Date());
 
-    log.debug("InstrumentRun id={} is ending with status {}", getInstrumentRun().getId(), currentRun.getStatus());
-    getPersistenceManager().save(currentRun);
+      log.debug("InstrumentRun id={} is ending with status {}", getInstrumentRun().getId(), currentRun.getStatus());
+      getPersistenceManager().save(currentRun);
+    }
   }
 
   public Participant getParticipant() {
-    if(currentRunId == null) return null;
+    synchronized(getSessionMutex()) {
+      if(currentRunId == null) return null;
 
-    return getInstrumentRun().getParticipant();
+      return getInstrumentRun().getParticipant();
+    }
   }
 
   public InstrumentType getInstrumentType() {
-    String instrumentTypeName = getInstrumentRun().getInstrumentType();
+    synchronized(getSessionMutex()) {
+      String instrumentTypeName = getInstrumentRun().getInstrumentType();
 
-    return instrumentService.getInstrumentType(instrumentTypeName);
+      return instrumentService.getInstrumentType(instrumentTypeName);
+    }
   }
 
   public void setInstrument(Instrument instrument) {
-    getInstrumentRun().setInstrument(instrument);
+    synchronized(getSessionMutex()) {
+      getInstrumentRun().setInstrument(instrument);
+    }
   }
 
   public Instrument getInstrument() {
@@ -130,118 +142,134 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public List<InstrumentOutputParameter> getParametersWithWarning() {
-    List<InstrumentOutputParameter> paramsWithWarnings = new ArrayList<InstrumentOutputParameter>();
+    synchronized(getSessionMutex()) {
+      List<InstrumentOutputParameter> paramsWithWarnings = new ArrayList<InstrumentOutputParameter>();
 
-    InstrumentType instrumentType = getInstrumentType();
+      InstrumentType instrumentType = getInstrumentType();
 
-    for(InstrumentOutputParameter outputParameter : instrumentType.getInstrumentParameters(InstrumentOutputParameter.class)) {
+      for(InstrumentOutputParameter outputParameter : instrumentType.getInstrumentParameters(InstrumentOutputParameter.class)) {
 
-      // Don't include parameters with a non-MANUAL capture method.
-      if(!outputParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.MANUAL)) {
-        continue;
-      }
-
-      if(!instrumentType.isRepeatable(outputParameter)) {
-        InstrumentRunValue runValue = getInstrumentRunValue(outputParameter, false);
-
-        // Don't include parameters that haven't been assigned a value.
-        if(runValue == null || runValue.getData(outputParameter.getDataType()) == null || runValue.getData(outputParameter.getDataType()).getValue() == null) {
+        // Don't include parameters with a non-MANUAL capture method.
+        if(!outputParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.MANUAL)) {
           continue;
         }
 
-        for(IntegrityCheck check : outputParameter.getIntegrityChecks()) {
-          // Skip non-warning checks.
-          if(!check.getType().equals(IntegrityCheckType.WARNING)) {
+        if(!instrumentType.isRepeatable(outputParameter)) {
+          InstrumentRunValue runValue = getInstrumentRunValue(outputParameter, false);
+
+          // Don't include parameters that haven't been assigned a value.
+          if(runValue == null || runValue.getData(outputParameter.getDataType()) == null || runValue.getData(outputParameter.getDataType()).getValue() == null) {
             continue;
           }
 
-          if(!check.checkParameterValue(outputParameter, runValue.getData(outputParameter.getDataType()), null, this)) {
-            paramsWithWarnings.add(outputParameter);
+          for(IntegrityCheck check : outputParameter.getIntegrityChecks()) {
+            // Skip non-warning checks.
+            if(!check.getType().equals(IntegrityCheckType.WARNING)) {
+              continue;
+            }
+
+            if(!check.checkParameterValue(outputParameter, runValue.getData(outputParameter.getDataType()), null, this)) {
+              paramsWithWarnings.add(outputParameter);
+            }
           }
         }
+        // TODO check repeated measures individually
       }
-      // TODO check repeated measures individually
-    }
 
-    return paramsWithWarnings;
+      return paramsWithWarnings;
+    }
   }
 
   public void setInstrumentRun(InstrumentRun instrumentRun) {
-    if(instrumentRun != null) {
-      currentRunId = instrumentRun.getId();
+    synchronized(getSessionMutex()) {
+      if(instrumentRun != null) {
+        currentRunId = instrumentRun.getId();
+      }
     }
   }
 
   public InstrumentRun getInstrumentRun() {
-    // ONYX-961: Calling this method will throw a NoSuchInterviewException
-    // if the current session does not have a lock on an interview.
-    activeInterviewService.getParticipant();
+    synchronized(getSessionMutex()) {
+      // ONYX-961: Calling this method will throw a NoSuchInterviewException
+      // if the current session does not have a lock on an interview.
+      activeInterviewService.getParticipant();
 
-    log.debug("currentRunId={}", currentRunId);
-    if(currentRunId == null) return null;
+      log.debug("currentRunId={}", currentRunId);
+      if(currentRunId == null) return null;
 
-    return getPersistenceManager().get(InstrumentRun.class, currentRunId);
+      return getPersistenceManager().get(InstrumentRun.class, currentRunId);
+    }
   }
 
   public void setInstrumentRunStatus(InstrumentRunStatus status) {
-    InstrumentRun currentRun = getInstrumentRun();
+    synchronized(getSessionMutex()) {
+      InstrumentRun currentRun = getInstrumentRun();
 
-    currentRun.setStatus(status);
-    getPersistenceManager().save(currentRun);
+      currentRun.setStatus(status);
+      getPersistenceManager().save(currentRun);
+    }
   }
 
   public void update(InstrumentRunValue currentRunValue) {
-    if(currentRunId == null) return;
-    if(currentRunValue.getInstrumentRun() == null) throw new IllegalArgumentException("Current instrument run cannot be null");
-    if(!currentRunId.equals(currentRunValue.getInstrumentRun().getId())) throw new IllegalArgumentException("Unexpected given current instrument run");
+    synchronized(getSessionMutex()) {
+      if(currentRunId == null) return;
+      if(currentRunValue.getInstrumentRun() == null) throw new IllegalArgumentException("Current instrument run cannot be null");
+      if(!currentRunId.equals(currentRunValue.getInstrumentRun().getId())) throw new IllegalArgumentException("Unexpected given current instrument run");
 
-    getPersistenceManager().save(currentRunValue);
+      getPersistenceManager().save(currentRunValue);
+    }
   }
 
   public void computeOutputParameters() {
-    if(currentRunId == null) return;
+    synchronized(getSessionMutex()) {
+      if(currentRunId == null) return;
 
-    InstrumentRun currentRun = getInstrumentRun();
+      InstrumentRun currentRun = getInstrumentRun();
 
-    List<InstrumentOutputParameter> dependentComputedParameters = new ArrayList<InstrumentOutputParameter>();
+      List<InstrumentOutputParameter> dependentComputedParameters = new ArrayList<InstrumentOutputParameter>();
 
-    // TODO quick and dirty implementation, to be checked
-    for(InstrumentOutputParameter computedParam : getInstrumentType().getOutputParameters(InstrumentParameterCaptureMethod.COMPUTED)) {
-      if(isReadyToCompute(computedParam)) {
-        // First, compute the parameters not depend on other computed parameters
-        calculateAndPersistValue(currentRun, computedParam);
-      } else {
-        dependentComputedParameters.add(computedParam);
-      }
-    }
-    // Then, compute the parameters that depend on other computed parameters
-    short maxRecur = 3; // Maximum dependence level
-    while(!dependentComputedParameters.isEmpty() && maxRecur > 0) {
-
-      List<InstrumentOutputParameter> parameters = new ArrayList<InstrumentOutputParameter>();
-      for(InstrumentOutputParameter computedParam : dependentComputedParameters) {
+      // TODO quick and dirty implementation, to be checked
+      for(InstrumentOutputParameter computedParam : getInstrumentType().getOutputParameters(InstrumentParameterCaptureMethod.COMPUTED)) {
         if(isReadyToCompute(computedParam)) {
+          // First, compute the parameters not depend on other computed parameters
           calculateAndPersistValue(currentRun, computedParam);
         } else {
-          parameters.add(computedParam);
+          dependentComputedParameters.add(computedParam);
         }
       }
-      dependentComputedParameters = parameters;
-      maxRecur--;
-    }
-    if(!dependentComputedParameters.isEmpty()) {
-      log.warn("Computed Parameters depend on others not ready to calculate. Instrument: {}", currentRun.getInstrumentType());
+      // Then, compute the parameters that depend on other computed parameters
+      short maxRecur = 3; // Maximum dependence level
+      while(!dependentComputedParameters.isEmpty() && maxRecur > 0) {
+
+        List<InstrumentOutputParameter> parameters = new ArrayList<InstrumentOutputParameter>();
+        for(InstrumentOutputParameter computedParam : dependentComputedParameters) {
+          if(isReadyToCompute(computedParam)) {
+            calculateAndPersistValue(currentRun, computedParam);
+          } else {
+            parameters.add(computedParam);
+          }
+        }
+        dependentComputedParameters = parameters;
+        maxRecur--;
+      }
+      if(!dependentComputedParameters.isEmpty()) {
+        log.warn("Computed Parameters depend on others not ready to calculate. Instrument: {}", currentRun.getInstrumentType());
+      }
     }
   }
 
   public InstrumentRunValue getInstrumentRunValue(String parameterCode) {
-    if(currentRunId == null) return null;
-    return getInstrumentRunValue(getAndCheckInstrumentParameter(parameterCode), false);
+    synchronized(getSessionMutex()) {
+      if(currentRunId == null) return null;
+      return getInstrumentRunValue(getAndCheckInstrumentParameter(parameterCode), false);
+    }
   }
 
   public InstrumentRunValue getOrCreateInstrumentRunValue(String parameterCode) {
-    if(currentRunId == null) return null;
-    return getInstrumentRunValue(getAndCheckInstrumentParameter(parameterCode), true);
+    synchronized(getSessionMutex()) {
+      if(currentRunId == null) return null;
+      return getInstrumentRunValue(getAndCheckInstrumentParameter(parameterCode), true);
+    }
   }
 
   private InstrumentParameter getAndCheckInstrumentParameter(String name) {
@@ -256,7 +284,9 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public InstrumentRunValue getOrCreateInstrumentRunValue(InstrumentParameter parameter) {
-    return getInstrumentRunValue(parameter, true);
+    synchronized(getSessionMutex()) {
+      return getInstrumentRunValue(parameter, true);
+    }
   }
 
   private InstrumentRunValue getInstrumentRunValue(InstrumentParameter parameter, boolean create) {
@@ -279,48 +309,54 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public InstrumentRunValue getInstrumentRunValue(String parameterCode, Measure measure) {
-    InstrumentRunValue valueTemplate = new InstrumentRunValue();
-    valueTemplate.setInstrumentParameter(parameterCode);
-    valueTemplate.setMeasure(measure);
-
-    InstrumentRunValue runValue = getPersistenceManager().matchOne(valueTemplate);
-
-    return runValue;
-  }
-
-  public List<InstrumentRunValue> getInstrumentRunValues(String parameterCode) {
-    InstrumentParameter parameter = getAndCheckInstrumentParameter(parameterCode);
-    InstrumentRun instrumentRun = getInstrumentRun();
-    if(instrumentRun == null) throw new IllegalArgumentException("Cannot retrieve a run value from a null instrument run.");
-
-    List<InstrumentRunValue> runValues = new ArrayList<InstrumentRunValue>();
-
-    if(!getInstrumentType().isRepeatable(parameter)) {
+    synchronized(getSessionMutex()) {
       InstrumentRunValue valueTemplate = new InstrumentRunValue();
-      valueTemplate.setInstrumentParameter(parameter.getCode());
-      valueTemplate.setInstrumentRun(instrumentRun);
+      valueTemplate.setInstrumentParameter(parameterCode);
+      valueTemplate.setMeasure(measure);
 
       InstrumentRunValue runValue = getPersistenceManager().matchOne(valueTemplate);
 
-      if(runValue != null) {
-        runValues.add(runValue);
-      }
-    } else {
-      for(Measure measure : instrumentRun.getMeasures()) {
+      return runValue;
+    }
+  }
 
-        InstrumentRunValue runValue = getInstrumentRunValue(parameter.getCode(), measure);
+  public List<InstrumentRunValue> getInstrumentRunValues(String parameterCode) {
+    synchronized(getSessionMutex()) {
+      InstrumentParameter parameter = getAndCheckInstrumentParameter(parameterCode);
+      InstrumentRun instrumentRun = getInstrumentRun();
+      if(instrumentRun == null) throw new IllegalArgumentException("Cannot retrieve a run value from a null instrument run.");
+
+      List<InstrumentRunValue> runValues = new ArrayList<InstrumentRunValue>();
+
+      if(!getInstrumentType().isRepeatable(parameter)) {
+        InstrumentRunValue valueTemplate = new InstrumentRunValue();
+        valueTemplate.setInstrumentParameter(parameter.getCode());
+        valueTemplate.setInstrumentRun(instrumentRun);
+
+        InstrumentRunValue runValue = getPersistenceManager().matchOne(valueTemplate);
 
         if(runValue != null) {
           runValues.add(runValue);
         }
-      }
-    }
+      } else {
+        for(Measure measure : instrumentRun.getMeasures()) {
 
-    return runValues;
+          InstrumentRunValue runValue = getInstrumentRunValue(parameter.getCode(), measure);
+
+          if(runValue != null) {
+            runValues.add(runValue);
+          }
+        }
+      }
+
+      return runValues;
+    }
   }
 
   public Measure addMeasure(Map<String, Data> repeatableData) {
-    return addMeasure(repeatableData, null);
+    synchronized(getSessionMutex()) {
+      return addMeasure(repeatableData, null);
+    }
   }
 
   private void addManuallyCapturedMeasure(Map<String, Data> repeatableData) {
@@ -364,30 +400,32 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public String updateReadOnlyInputParameterRunValue() {
-    InstrumentType instrumentType = getInstrumentType();
+    synchronized(getSessionMutex()) {
+      InstrumentType instrumentType = getInstrumentType();
 
-    List<InstrumentInputParameter> inputParametersWithDataSource = instrumentType.getInstrumentParameters(InstrumentInputParameter.class, true);
+      List<InstrumentInputParameter> inputParametersWithDataSource = instrumentType.getInstrumentParameters(InstrumentInputParameter.class, true);
 
-    for(InstrumentInputParameter parameter : inputParametersWithDataSource) {
-      Data data = parameter.getDataSource().getData(getParticipant());
+      for(InstrumentInputParameter parameter : inputParametersWithDataSource) {
+        Data data = parameter.getDataSource().getData(getParticipant());
 
-      if(data != null) {
-        final InstrumentRunValue runValue = getInstrumentRunValue(parameter, true);
+        if(data != null) {
+          final InstrumentRunValue runValue = getInstrumentRunValue(parameter, true);
 
-        if(!data.getType().equals(parameter.getDataType())) {
-          UnitParameterValueConverter converter = new UnitParameterValueConverter();
-          converter.convert(parameter, runValue, data);
+          if(!data.getType().equals(parameter.getDataType())) {
+            UnitParameterValueConverter converter = new UnitParameterValueConverter();
+            converter.convert(parameter, runValue, data);
+          } else {
+            runValue.setData(data);
+          }
+          update(runValue);
         } else {
-          runValue.setData(data);
+          log.error("The value for instrument parameter {} comes from an InputSource, but this source has not produced a value. Please correct stage dependencies or your instrument-descriptor.xml file for this instrument.", parameter.getCode());
+          return ("An unexpected problem occurred while setting up this instrument's run. Please contact support.");
         }
-        update(runValue);
-      } else {
-        log.error("The value for instrument parameter {} comes from an InputSource, but this source has not produced a value. Please correct stage dependencies or your instrument-descriptor.xml file for this instrument.", parameter.getCode());
-        return ("An unexpected problem occurred while setting up this instrument's run. Please contact support.");
       }
-    }
 
-    return null;
+      return null;
+    }
   }
 
   //
@@ -395,45 +433,59 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   //
 
   public List<Contraindication> getContraindications(Contraindication.Type type) {
-    List<Contraindication> contraindications = new ArrayList<Contraindication>();
+    synchronized(getSessionMutex()) {
+      List<Contraindication> contraindications = new ArrayList<Contraindication>();
 
-    for(Contraindication contraindication : getInstrumentType().getContraindications()) {
-      if(contraindication.getType().equals(type)) {
-        contraindications.add(contraindication);
+      for(Contraindication contraindication : getInstrumentType().getContraindications()) {
+        if(contraindication.getType().equals(type)) {
+          contraindications.add(contraindication);
+        }
       }
-    }
 
-    return contraindications;
+      return contraindications;
+    }
   }
 
   public boolean hasContraindications(Contraindication.Type type) {
-    return !getContraindications(type).isEmpty();
+    synchronized(getSessionMutex()) {
+      return !getContraindications(type).isEmpty();
+    }
   }
 
   public Contraindication getContraindication() {
-    InstrumentType instrumentType = getInstrumentType();
-    InstrumentRun instrumentRun = getInstrumentRun();
+    synchronized(getSessionMutex()) {
+      InstrumentType instrumentType = getInstrumentType();
+      InstrumentRun instrumentRun = getInstrumentRun();
 
-    for(Contraindication ci : instrumentType.getContraindications()) {
-      if(ci.getCode().equals(instrumentRun.getContraindication())) return ci;
+      for(Contraindication ci : instrumentType.getContraindications()) {
+        if(ci.getCode().equals(instrumentRun.getContraindication())) return ci;
+      }
+      return null;
     }
-    return null;
   }
 
   public boolean isContraindicated() {
-    return getInstrumentRun().getContraindication() != null;
+    synchronized(getSessionMutex()) {
+      return getInstrumentRun().getContraindication() != null;
+    }
   }
 
   public void setContraindication(Contraindication contraindication) {
-    getInstrumentRun().setContraindication(contraindication);
+    synchronized(getSessionMutex()) {
+      getInstrumentRun().setContraindication(contraindication);
+    }
   }
 
   public void setOtherContraindication(String other) {
-    getInstrumentRun().setOtherContraindication(other);
+    synchronized(getSessionMutex()) {
+      getInstrumentRun().setOtherContraindication(other);
+    }
   }
 
   public String getOtherContraindication() {
-    return getInstrumentRun().getOtherContraindication();
+    synchronized(getSessionMutex()) {
+      return getInstrumentRun().getOtherContraindication();
+    }
   }
 
   //
@@ -502,27 +554,33 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public int getCurrentMeasureCount() {
-    InstrumentRun run = getInstrumentRun();
-    InstrumentType type = getInstrumentType();
-    if(type.isRepeatable()) {
-      return run.getValidMeasureCount();
-    } else {
-      for(InstrumentRunValue runValue : run.getInstrumentRunValues()) {
-        InstrumentParameter parameter = type.getInstrumentParameter(runValue.getInstrumentParameter());
-        if(parameter instanceof InstrumentOutputParameter) {
-          return 1;
+    synchronized(getSessionMutex()) {
+      InstrumentRun run = getInstrumentRun();
+      InstrumentType type = getInstrumentType();
+      if(type.isRepeatable()) {
+        return run.getValidMeasureCount();
+      } else {
+        for(InstrumentRunValue runValue : run.getInstrumentRunValues()) {
+          InstrumentParameter parameter = type.getInstrumentParameter(runValue.getInstrumentParameter());
+          if(parameter instanceof InstrumentOutputParameter) {
+            return 1;
+          }
         }
+        return 0;
       }
-      return 0;
     }
   }
 
-  public void addOutputParameterValues(Map<String, Data> values) {
-    addOutputParameterValues(values, null);
+  public synchronized void addOutputParameterValues(Map<String, Data> values) {
+    synchronized(getSessionMutex()) {
+      addOutputParameterValues(values, null);
+    }
   }
 
-  public void addManuallyCapturedOutputParameterValues(Map<String, Data> values) {
-    addOutputParameterValues(values, InstrumentParameterCaptureMethod.MANUAL);
+  public synchronized void addManuallyCapturedOutputParameterValues(Map<String, Data> values) {
+    synchronized(getSessionMutex()) {
+      addOutputParameterValues(values, InstrumentParameterCaptureMethod.MANUAL);
+    }
   }
 
   private void addOutputParameterValues(Map<String, Data> values, InstrumentParameterCaptureMethod captureMethod) {
@@ -596,76 +654,105 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public void deleteMeasure(Measure measure) {
-    getPersistenceManager().delete(measure);
+    synchronized(getSessionMutex()) {
+      getPersistenceManager().delete(measure);
+    }
   }
 
   public void setSkipRemainingMeasuresCommentFromInstrumentRun(String comment) {
-    if(comment == null) throw new IllegalArgumentException("Cannot add a null comment on the instrumentRun");
+    synchronized(getSessionMutex()) {
+      if(comment == null) throw new IllegalArgumentException("Cannot add a null comment on the instrumentRun");
 
-    InstrumentRun currentRun = getInstrumentRun();
-    currentRun.setSkipComment(comment);
-    getPersistenceManager().save(currentRun);
+      InstrumentRun currentRun = getInstrumentRun();
+      currentRun.setSkipComment(comment);
+      getPersistenceManager().save(currentRun);
+    }
   }
 
   public void removeSkipRemainingMeasuresCommentFromInstrumentRun() {
-    InstrumentRun currentRun = getInstrumentRun();
-    currentRun.setSkipComment(null);
-    getPersistenceManager().save(currentRun);
+    synchronized(getSessionMutex()) {
+      InstrumentRun currentRun = getInstrumentRun();
+      currentRun.setSkipComment(null);
+      getPersistenceManager().save(currentRun);
+    }
   }
 
   public Map<IntegrityCheck, InstrumentOutputParameter> checkIntegrity(List<InstrumentOutputParameter> outputParams) {
-    return checkIntegrity(outputParams, null);
+    synchronized(getSessionMutex()) {
+      return checkIntegrity(outputParams, null);
+    }
   }
 
   public Map<IntegrityCheck, InstrumentOutputParameter> checkIntegrity(List<InstrumentOutputParameter> outputParams, Measure measure) {
-    HashMap<IntegrityCheck, InstrumentOutputParameter> failedChecks = new HashMap<IntegrityCheck, InstrumentOutputParameter>();
+    synchronized(getSessionMutex()) {
+      HashMap<IntegrityCheck, InstrumentOutputParameter> failedChecks = new HashMap<IntegrityCheck, InstrumentOutputParameter>();
 
-    for(InstrumentOutputParameter param : outputParams) {
-      List<IntegrityCheck> integrityChecks = param.getIntegrityChecks();
+      for(InstrumentOutputParameter param : outputParams) {
+        List<IntegrityCheck> integrityChecks = param.getIntegrityChecks();
 
-      for(IntegrityCheck integrityCheck : integrityChecks) {
+        for(IntegrityCheck integrityCheck : integrityChecks) {
 
-        // Skip non-ERROR type checks.
-        if(!integrityCheck.getType().equals(IntegrityCheckType.ERROR)) {
-          continue;
-        }
+          // Skip non-ERROR type checks.
+          if(!integrityCheck.getType().equals(IntegrityCheckType.ERROR)) {
+            continue;
+          }
 
-        boolean checkFailed = false;
-        List<InstrumentRunValue> runValues = new ArrayList<InstrumentRunValue>();
-        if(measure == null) {
-          runValues.addAll(getInstrumentRunValues(param.getCode()));
-        } else {
-          runValues.add(getInstrumentRunValue(param.getCode(), measure));
-        }
+          boolean checkFailed = false;
+          List<InstrumentRunValue> runValues = new ArrayList<InstrumentRunValue>();
+          if(measure == null) {
+            runValues.addAll(getInstrumentRunValues(param.getCode()));
+          } else {
+            runValues.add(getInstrumentRunValue(param.getCode(), measure));
+          }
 
-        for(InstrumentRunValue runValue : runValues) {
+          for(InstrumentRunValue runValue : runValues) {
 
-          Data paramData = (runValue != null) ? runValue.getData(param.getDataType()) : null;
+            Data paramData = (runValue != null) ? runValue.getData(param.getDataType()) : null;
 
-          if(!integrityCheck.checkParameterValue(param, paramData, null, this)) {
-            failedChecks.put(integrityCheck, param);
-            checkFailed = true;
+            if(!integrityCheck.checkParameterValue(param, paramData, null, this)) {
+              failedChecks.put(integrityCheck, param);
+              checkFailed = true;
+            }
+          }
+
+          if(checkFailed) {
+            break; // stop checking parameter after first failure (but continue checking other parameters!)
           }
         }
+      }
 
-        if(checkFailed) {
-          break; // stop checking parameter after first failure (but continue checking other parameters!)
-        }
+      return failedChecks;
+    }
+  }
+
+  public synchronized void removeInvalidMeasuresFromInstrumentRun() {
+    synchronized(getSessionMutex()) {
+      log.info("removing invalid measures");
+      List<Measure> invalidMeasures = getInstrumentRun().getMeasures(MeasureStatus.INVALID);
+      for(Measure measure : invalidMeasures) {
+        deleteMeasure(measure);
       }
     }
-
-    return failedChecks;
   }
 
-  public void removeInvalidMeasuresFromInstrumentRun() {
-    log.info("removing invalid measures");
-    List<Measure> invalidMeasures = getInstrumentRun().getMeasures(MeasureStatus.INVALID);
-    for(Measure measure : invalidMeasures) {
-      deleteMeasure(measure);
+  public synchronized void deleteInstrumentRunValue(InstrumentRunValue instrumentRunValue) {
+    synchronized(getSessionMutex()) {
+      getPersistenceManager().delete(instrumentRunValue);
     }
   }
 
-  public void deleteInstrumentRunValue(InstrumentRunValue instrumentRunValue) {
-    getPersistenceManager().delete(instrumentRunValue);
+  /**
+   * Get the best session mutex, to protect from concurrent accesses (instrument controller and web application).
+   * @return
+   */
+  private Object getSessionMutex() {
+    // ONYX-1611
+    Object mutex = this;
+    RequestAttributes attrs = RequestContextHolder.getRequestAttributes();
+    if(attrs != null) {
+      mutex = attrs.getSessionMutex();
+      log.trace("BEAN {} MUTEX {} SESSION {}", new Object[] { this, mutex, attrs.getSessionId() });
+    }
+    return mutex;
   }
 }

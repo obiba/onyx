@@ -36,6 +36,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.domain.run.MeasureStatus;
@@ -323,15 +324,25 @@ public abstract class MeasuresListPanel extends Panel {
   public abstract void onRefresh(AjaxRequestTarget target);
 
   public List<Measure> getMeasures() {
-    return activeInstrumentRunService.getInstrumentRun().getMeasures();
+    InstrumentRun run = activeInstrumentRunService.getInstrumentRun();
+    if(run != null) {
+      return run.getMeasures();
+    } else {
+      return new ArrayList<Measure>();
+    }
   }
 
   public int getRemainingMeasureCount() {
-    return getExpectedMeasureCount() - activeInstrumentRunService.getInstrumentRun().getValidMeasureCount();
+    return getExpectedMeasureCount() - getMeasureCount();
   }
 
   public int getMeasureCount() {
-    return activeInstrumentRunService.getInstrumentRun().getValidMeasureCount();
+    InstrumentRun run = activeInstrumentRunService.getInstrumentRun();
+    if(run != null) {
+      return run.getValidMeasureCount();
+    } else {
+      return 0;
+    }
   }
 
   public int getExpectedMeasureCount() {

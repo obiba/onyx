@@ -9,20 +9,26 @@
  ******************************************************************************/
 package org.obiba.onyx.wicket.wizard;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
+import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.obiba.onyx.core.exception.ExceptionUtils;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.action.ActionWindowProvider;
 import org.obiba.onyx.wicket.behavior.LanguageStyleBehavior;
@@ -32,6 +38,8 @@ import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.reusable.FeedbackWindowProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Iterables;
 
 public abstract class WizardForm extends Form {
 
@@ -97,12 +105,27 @@ public abstract class WizardForm extends Form {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-        onNextSubmit(target, form);
+        Session.get().getFeedbackMessages().clear();
+        try {
+          onNextSubmit(target, form);
+        } catch(Exception e) {
+          e.printStackTrace();
+          Session.get().error(extractMessage(e));
+          Session.get().dirty();
+
+          onNextError(target, form);
+        }
       }
 
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
         onNextError(target, form);
+      }
+
+      private String extractMessage(Exception e) {
+        log.error("Wizard on Next exception", e);
+        String message = ExceptionUtils.getCauseMessage(e);
+        return (message != null && message.equals("null") == false) ? message : WizardForm.this.getString("UnexpectedError");
       }
 
     };
@@ -271,6 +294,26 @@ public abstract class WizardForm extends Form {
     currentStep.onStepOutNext(WizardForm.this, target);
 
     WizardStepPanel next = currentStep.getNextStep();
+
+    if(hasFeedbackWindow() && Session.get().getFeedbackMessages().isEmpty() == false) {
+
+      List<FeedbackMessage> messages = new ArrayList<FeedbackMessage>();
+      List<String> uniqueMessages = new ArrayList<String>();
+
+      Iterables.addAll(messages, Session.get().getFeedbackMessages());
+
+      Session.get().getFeedbackMessages().clear();
+      Session.get().info(WizardForm.this.getString("UnexpectedError"));
+      for(FeedbackMessage msg : messages) {
+        if(uniqueMessages.contains(msg.getMessage()) == false) {
+          uniqueMessages.add(msg.getMessage().toString());
+          Session.get().getFeedbackMessages().add(msg);
+        }
+      }
+
+      showFeedbackWindow(target);
+    }
+
     if(next != null) {
       currentStep.replaceWith(next);
       next.onStepInNext(this, target);
@@ -336,6 +379,10 @@ public abstract class WizardForm extends Form {
       return ((FeedbackWindowProvider) page).getFeedbackWindow();
     }
     throw new IllegalStateException("WizardForm should be attached to a Page that implements FeedbackWindowProvider");
+  }
+
+  public boolean hasFeedbackWindow() {
+    return getPage() instanceof FeedbackWindowProvider;
   }
 
   @SuppressWarnings("unchecked")

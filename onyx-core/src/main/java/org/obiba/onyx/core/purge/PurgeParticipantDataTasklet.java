@@ -47,7 +47,7 @@ public class PurgeParticipantDataTasklet implements Tasklet {
     List<Participant> participantsToBePurged = onyxDataPurge.getParticipantsToPurge();
     for(Participant participant : participantsToBePurged) {
       participantService.deleteParticipant(participant);
-      log.info("Deleting Participant id = [{}] and related data :  ", participant.getId());
+      log.info("Deleted Participant id = [{}] and related data :  ", participant.getId());
     }
 
     context.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put("totalDeleted", participantsToBePurged.size());

@@ -10,6 +10,8 @@ package org.obiba.onyx.quartz.core.service.impl;
 
 import java.util.List;
 
+import org.apache.wicket.Session;
+import org.obiba.onyx.core.exception.ExceptionUtils;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -99,10 +101,15 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
 
       for(int i = currentPageIndex + 1; i < pages.size(); i++) {
         Page page = pages.get(i);
-
-        if(page.getQuestions().isEmpty() || NavigationStrategySupport.hasQuestionToBeAnswered(service, page)) {
-          nextPage = page;
-          break;
+        try {
+          if(page.getQuestions().isEmpty() || NavigationStrategySupport.hasQuestionToBeAnswered(service, page)) {
+            nextPage = page;
+            break;
+          }
+        } catch(Exception e) {
+          log.error("Error when evaluating if a question is to be answered in page: {}", page.getName());
+          log.error("", e);
+          Session.get().error(ExceptionUtils.getCauseMessage(e));
         }
       }
     }
