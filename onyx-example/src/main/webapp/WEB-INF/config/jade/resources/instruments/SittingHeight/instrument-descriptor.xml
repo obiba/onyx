@@ -40,12 +40,17 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
-        <rangeCheck>
-          <decimalMinValueMale>70.0</decimalMinValueMale>
-          <decimalMaxValueMale>207.0</decimalMaxValueMale>
-          <decimalMinValueFemale>70.0</decimalMinValueFemale>
-          <decimalMaxValueFemale>207.0</decimalMaxValueFemale>
-        </rangeCheck>
+        <scriptCheck>
+          <script>
+		    var val = $('RES_FIRST_SITTING_HEIGHT');
+		    log("RES_FIRST_SITTING_HEIGHT=" + val);
+		    if (val.lt(70).or(val.gt(207)).value()) {
+		      false;
+		    } else {
+		      true;
+		    }
+		  </script>          
+        </scriptCheck>
       </integrityChecks>
     </output>
 

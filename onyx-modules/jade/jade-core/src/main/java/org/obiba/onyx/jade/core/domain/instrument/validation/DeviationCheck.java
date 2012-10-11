@@ -20,9 +20,10 @@ import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
 /**
- * Checks repeated parameter such that the new value does not deviate more than a fixed threshold from the average of the current values.
+ * Checks repeated parameter such that the new value does not deviate more than a fixed threshold from the average of
+ * the current values.
  */
-public class DeviationCheck extends AbstractIntegrityCheck implements IntegrityCheck {
+public class DeviationCheck extends AbstractIntegrityCheck {
 
   private static final long serialVersionUID = 1L;
 

@@ -19,7 +19,7 @@ import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck {
+public class RangeCheck extends AbstractIntegrityCheck {
 
   private static final long serialVersionUID = 1L;
 

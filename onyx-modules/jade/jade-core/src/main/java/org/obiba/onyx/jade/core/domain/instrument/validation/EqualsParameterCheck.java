@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * 
  * The check fails (returns <code>false</code>) if the values are <i>not</i> equal.
  */
-public class EqualsParameterCheck extends AbstractIntegrityCheck implements IntegrityCheck {
+public class EqualsParameterCheck extends AbstractIntegrityCheck {
 
   private static final long serialVersionUID = 1L;
 
