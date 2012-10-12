@@ -22,7 +22,6 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.magma.DataValueConverter;
-import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.util.data.Data;
 
 /**
@@ -34,8 +33,6 @@ public class JavascriptCheck extends AbstractIntegrityCheck {
 
   private String script;
 
-  private transient MagmaInstanceProvider magmaInstanceProvider;
-
   @Override
   public boolean checkParameterValue(InstrumentParameter checkedParameter, Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
     Value value = getValue(activeRunService.getParticipant(), checkedParameter, paramData);
@@ -43,8 +40,8 @@ public class JavascriptCheck extends AbstractIntegrityCheck {
   }
 
   private Value getValue(Participant participant, InstrumentParameter checkedParameter, Data paramData) {
-    VariableEntity entity = magmaInstanceProvider.newParticipantEntity(participant);
-    ValueTable valueTable = magmaInstanceProvider.getParticipantsTable();
+    VariableEntity entity = getMagmaInstanceProvider().newParticipantEntity(participant);
+    ValueTable valueTable = getMagmaInstanceProvider().getParticipantsTable();
     if(valueTable.hasValueSet(entity)) {
       ValueSet valueSet = valueTable.getValueSet(entity);
       return getSource(checkedParameter, paramData).getValue(valueSet);
@@ -52,13 +49,18 @@ public class JavascriptCheck extends AbstractIntegrityCheck {
     return BooleanType.get().nullValue();
   }
 
-  public void setMagmaInstanceProvider(MagmaInstanceProvider magmaInstanceProvider) {
-    this.magmaInstanceProvider = magmaInstanceProvider;
-  }
-
   private ValueSource getSource(InstrumentParameter checkedParameter, Data paramData) {
     Value val = DataValueConverter.dataToValue(paramData);
-    String newScript = script.replace("$('" + checkedParameter.getCode() + "')", "newValue('" + val.toString() + "','" + val.getValueType().getName() + "')");
+
+    StringBuilder replace = new StringBuilder("newValue(");
+    if(val.isNull()) {
+      replace.append("null");
+    } else {
+      replace.append("'").append(val.toString()).append("'");
+    }
+    replace.append(",'").append(val.getValueType().getName()).append("')");
+
+    String newScript = script.replace("$('" + checkedParameter.getCode() + "')", replace.toString());
 
     JavascriptValueSource source = new JavascriptValueSource(BooleanType.get(), newScript);
     Initialisables.initialise(source);

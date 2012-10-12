@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.core.domain.instrument.validation;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.util.data.Data;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -21,6 +22,8 @@ public abstract class AbstractIntegrityCheck implements IntegrityCheck {
   private IntegrityCheckType type;
 
   private String customizedDescription;
+
+  private transient MagmaInstanceProvider magmaInstanceProvider;
 
   public void setType(IntegrityCheckType type) {
     this.type = type;
@@ -42,15 +45,26 @@ public abstract class AbstractIntegrityCheck implements IntegrityCheck {
     return customizedDescription;
   }
 
+  protected MagmaInstanceProvider getMagmaInstanceProvider() {
+    return magmaInstanceProvider;
+  }
+
   //
   // IntegrityCheck Methods
   //
 
+  @Override
   public abstract boolean checkParameterValue(InstrumentParameter checkedParameter, Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService);
 
+  @Override
   public MessageSourceResolvable getDescription(InstrumentParameter checkedParameter, ActiveInstrumentRunService activeRunService) {
     String[] codes = new String[] { getDescriptionKey(activeRunService) };
     return new DefaultMessageSourceResolvable(codes, getDescriptionArgs(checkedParameter, activeRunService));
+  }
+
+  @Override
+  public void setMagmaInstanceProvider(MagmaInstanceProvider magmaInstanceProvider) {
+    this.magmaInstanceProvider = magmaInstanceProvider;
   }
 
   protected String getDescriptionKey(ActiveInstrumentRunService activeRunService) {

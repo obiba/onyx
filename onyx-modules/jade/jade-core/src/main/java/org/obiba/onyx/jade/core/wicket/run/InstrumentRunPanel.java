@@ -147,15 +147,15 @@ public class InstrumentRunPanel extends Panel {
     }
 
     InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
-    boolean isInteractive = instrumentType.hasInterpretativeParameter();
 
-    if(isInteractive) {
+    if(instrumentType.hasInterpretativeParameter()) {
       add(getKeyValueDataPanel("interpretatives", new StringResourceModel("Interpretatives", this, null), instrumentType.getInterpretativeParameters()));
     } else {
       add(new EmptyPanel("interpretatives"));
     }
 
-    if(instrumentType.isInteractive()) {
+    boolean isInteractive = instrumentType.isInteractive();
+    if(isInteractive) {
       if(instrumentType.hasInputParameter()) {
         add(getKeyValueDataPanel("inputs", new StringResourceModel("InstrumentInputs", this, null), instrumentType.getInputParameters()));
       } else {
