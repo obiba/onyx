@@ -35,8 +35,6 @@ public class JavascriptStageDependencyCondition implements StageDependencyCondit
 
   private String script;
 
-  private transient ValueSource source;
-
   @Override
   public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService) {
     // if stage is defined, check it is completed first
@@ -80,7 +78,6 @@ public class JavascriptStageDependencyCondition implements StageDependencyCondit
 
   public void setScript(String script) {
     this.script = script;
-    this.source = null;
   }
 
   public void setMagmaInstanceProvider(MagmaInstanceProvider magmaInstanceProvider) {
@@ -88,10 +85,8 @@ public class JavascriptStageDependencyCondition implements StageDependencyCondit
   }
 
   private ValueSource getSource() {
-    if(source == null) {
-      source = new JavascriptValueSource(BooleanType.get(), script);
-      Initialisables.initialise(source);
-    }
+    ValueSource source = new JavascriptValueSource(BooleanType.get(), script);
+    Initialisables.initialise(source);
     return source;
   }
 
