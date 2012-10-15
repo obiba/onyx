@@ -4,7 +4,7 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-  <bean name="/InstrumentExecutionService" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter"
+  <bean name="/InstrumentExecutionService" class="org.obiba.onyx.core.remoting.SafeHttpInvokerServiceExporter"
     scope="session">
     <property name="service" ref="instrumentExecutionService" />
     <property name="serviceInterface" value="org.obiba.onyx.jade.instrument.service.InstrumentExecutionService" />
