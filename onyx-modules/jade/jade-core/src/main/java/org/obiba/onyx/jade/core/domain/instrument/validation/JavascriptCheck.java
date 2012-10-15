@@ -50,7 +50,7 @@ public class JavascriptCheck extends AbstractIntegrityCheck {
   }
 
   private ValueSource getSource(InstrumentParameter checkedParameter, Data paramData) {
-    Value val = DataValueConverter.dataToValue(paramData);
+    Value val = DataValueConverter.dataToValue(checkedParameter.getDataType(), paramData);
 
     StringBuilder replace = new StringBuilder("newValue(");
     if(val.isNull()) {
