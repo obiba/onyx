@@ -699,7 +699,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
           boolean checkFailed = false;
           List<InstrumentRunValue> runValues = new ArrayList<InstrumentRunValue>();
-          if(measure == null) {
+          if(measure == null || getInstrumentType().isRepeatable(param) == false) {
             runValues.addAll(getInstrumentRunValues(param.getCode()));
           } else {
             runValues.add(getInstrumentRunValue(param.getCode(), measure));
