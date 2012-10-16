@@ -6,11 +6,6 @@
         <webroots>
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
         </webroots>
-        <sourceRoots>
-          <root url="file://$MODULE_DIR$/src/main/java" />
-          <root url="file://$MODULE_DIR$/src/main/resources" />
-          <root url="file://$MODULE_DIR$/src/test/java" />
-        </sourceRoots>
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
@@ -26,8 +21,8 @@
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">
-    <output url="file://$MODULE_DIR$/target/classes" />
-    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <output url="file://$MODULE_DIR$/../onyx-deploy-parent/target/classes" />
+    <output-test url="file://$MODULE_DIR$/../onyx-deploy-parent/target/test-classes" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
@@ -45,6 +40,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="onyx-webapp" />
     <orderEntry type="module" module-name="jade-core" scope="RUNTIME" />
     <orderEntry type="module" module-name="onyx-util" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.1" level="project" />
@@ -158,7 +154,6 @@
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.8.3" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: commons-dbcp:commons-dbcp:1.3" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: commons-pool:commons-pool:1.5.4" level="project" />
-    <orderEntry type="module" module-name="onyx-webapp" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: mysql:mysql-connector-java:5.1.6" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: hsqldb:hsqldb:1.8.0.7" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.mortbay.jetty:jetty:6.1.4" level="project" />
