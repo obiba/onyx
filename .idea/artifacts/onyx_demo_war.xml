@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="onyx-demo:war">
+    <output-path>$PROJECT_DIR$/onyx-demo/target</output-path>
+    <root id="archive" name="onyx-demo.war">
+      <element id="artifact" artifact-name="onyx-demo:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -26,7 +26,7 @@ public interface ParticipantService {
   /**
    * search by code, appointment code or name
    * 
-   * @param input field
+   * @param inputField
    * @param paging
    * @param clauses
    * @return
@@ -36,7 +36,7 @@ public interface ParticipantService {
   /**
    * search by code, appointment code or name
    * 
-   * @param input field
+   * @param inputField
    * @return
    */
   public int countParticipantsByInputField(String inputField);
@@ -125,7 +125,7 @@ public interface ParticipantService {
   /**
    * Get the participant corresponding to the specified template
    * 
-   * @param template
+   * @param participant
    * @return
    */
   public Participant getParticipant(Participant participant);

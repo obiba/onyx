@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -32,10 +32,12 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerAwareService implements AppointmentManagementService, ResourceLoaderAware {
+public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerAwareService implements
+    AppointmentManagementService, ResourceLoaderAware {
 
   private JobExplorer jobExplorer;
 
@@ -54,7 +56,8 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
   private ResourceLoader resourceLoader;
 
   public void initialize() {
-    if(inputDirectory == null || inputDirectory.isEmpty()) throw new IllegalArgumentException("DefaultAppointmentManagementServiceImpl: InputDirectory should not be null");
+    if(inputDirectory == null || inputDirectory.isEmpty())
+      throw new IllegalArgumentException("DefaultAppointmentManagementServiceImpl: InputDirectory should not be null");
 
     try {
       setInputDir(resourceLoader.getResource(inputDirectory).getFile());
@@ -62,7 +65,8 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
         getInputDir().mkdirs();
       }
       if(!getInputDir().isDirectory()) {
-        throw new IllegalArgumentException("DefaultAppointmentManagementServiceImpl: InputDirectory " + getInputDir().getAbsolutePath() + " is not a directory");
+        throw new IllegalArgumentException("DefaultAppointmentManagementServiceImpl: InputDirectory " + getInputDir()
+            .getAbsolutePath() + " is not a directory");
       }
 
       if(outputDirectory != null && !outputDirectory.isEmpty()) {
@@ -71,7 +75,9 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
           getOutputDir().mkdirs();
         }
         if(!getOutputDir().isDirectory()) {
-          throw new IllegalArgumentException("DefaultAppointmentManagementServiceImpl: OutputDirectory " + getOutputDir().getAbsolutePath() + " is not a directory");
+          throw new IllegalArgumentException(
+              "DefaultAppointmentManagementServiceImpl: OutputDirectory " + getOutputDir()
+                  .getAbsolutePath() + " is not a directory");
         }
       }
     } catch(IOException ex) {
@@ -79,6 +85,10 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
     }
   }
 
+  // Do not use transaction here as Spring Batch will never use only one transaction for a whole job (unless the job
+  // has a single step): Spring Batch handles transactions at the step level. A tasklet is transactional?Spring Batch
+  // creates and commits a transaction for each chunk in a chunk-oriented step.
+  @Transactional(propagation = Propagation.NOT_SUPPORTED)
   synchronized public ExitStatus updateAppointments() {
 
     Map<String, JobParameter> jobParameterMap = new HashMap<String, JobParameter>();

@@ -1,0 +1,134 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="onyx-integration-test:war exploded">
+    <output-path>$PROJECT_DIR$/onyx-integration-test/target/onyx-integration-test</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="onyx-integration-test/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="onyx-integration-test" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="archive" name="jade-core-1.9-SNAPSHOT.jar">
+            <element id="module-output" name="jade-core" />
+          </element>
+          <element id="archive" name="onyx-util-1.9-SNAPSHOT.jar">
+            <element id="module-output" name="onyx-util" />
+          </element>
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.1" />
+          <element id="library" level="project" name="Maven: org.slf4j:jcl-over-slf4j:1.7.1" />
+          <element id="archive" name="onyx-core-1.9-SNAPSHOT.jar">
+            <element id="module-output" name="onyx-core" />
+          </element>
+          <element id="library" level="project" name="Maven: commons-collections:commons-collections:3.1" />
+          <element id="library" level="project" name="Maven: org.obiba:obiba-core:1.3.0" />
+          <element id="library" level="project" name="Maven: org.obiba:obiba-wicket:1.3.0" />
+          <element id="library" level="project" name="Maven: org.apache.wicket:wicket:1.4.21" />
+          <element id="library" level="project" name="Maven: org.apache.wicket:wicket-spring:1.4.21" />
+          <element id="library" level="project" name="Maven: org.apache.wicket:wicket-ioc:1.4.21" />
+          <element id="library" level="project" name="Maven: org.apache.wicket:wicket-extensions:1.4.21" />
+          <element id="library" level="project" name="Maven: org.apache.wicket:wicket-auth-roles:1.4.21" />
+          <element id="library" level="project" name="Maven: org.obiba.opal:opal-rest-client:1.10-SNAPSHOT" />
+          <element id="library" level="project" name="Maven: org.obiba.opal:opal-web-model:1.10-SNAPSHOT" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-api:1.2.18" />
+          <element id="library" level="project" name="Maven: com.google.guava:guava:10.0.1" />
+          <element id="library" level="project" name="Maven: com.google.code.findbugs:jsr305:1.3.9" />
+          <element id="library" level="project" name="Maven: com.google.protobuf:protobuf-java:2.3.0" />
+          <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpclient:4.1.3" />
+          <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpcore:4.1.4" />
+          <element id="library" level="project" name="Maven: commons-logging:commons-logging:1.1.1" />
+          <element id="library" level="project" name="Maven: commons-codec:commons-codec:1.1" />
+          <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpclient-cache:4.1.3" />
+          <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpmime:4.1.3" />
+          <element id="library" level="project" name="Maven: org.json:json:20090211" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-context:3.0.7.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-aop:3.0.7.RELEASE" />
+          <element id="library" level="project" name="Maven: aopalliance:aopalliance:1.0" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-asm:3.0.7.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-beans:3.0.7.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-core:3.0.7.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-expression:3.0.7.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-context-support:3.0.7.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-tx:3.0.7.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-orm:3.0.7.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-jdbc:3.0.7.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-web:3.0.7.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework.batch:spring-batch-core:2.1.9.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework.batch:spring-batch-infrastructure:2.1.9.RELEASE" />
+          <element id="library" level="project" name="Maven: com.thoughtworks.xstream:xstream:1.4.2" />
+          <element id="library" level="project" name="Maven: xmlpull:xmlpull:1.1.3.1" />
+          <element id="library" level="project" name="Maven: xpp3:xpp3_min:1.1.4c" />
+          <element id="library" level="project" name="Maven: org.codehaus.jettison:jettison:1.3" />
+          <element id="library" level="project" name="Maven: org.opensymphony.quartz:quartz:1.6.1" />
+          <element id="library" level="project" name="Maven: org.hibernate:hibernate:3.2.6.ga" />
+          <element id="library" level="project" name="Maven: net.sf.ehcache:ehcache:1.2.3" />
+          <element id="library" level="project" name="Maven: asm:asm-attrs:1.5.3" />
+          <element id="library" level="project" name="Maven: dom4j:dom4j:1.6.1" />
+          <element id="library" level="project" name="Maven: antlr:antlr:2.7.6" />
+          <element id="library" level="project" name="Maven: cglib:cglib:2.1_3" />
+          <element id="library" level="project" name="Maven: asm:asm:1.5.3" />
+          <element id="library" level="project" name="Maven: org.hibernate:hibernate-annotations:3.3.1.GA" />
+          <element id="library" level="project" name="Maven: org.hibernate:hibernate-commons-annotations:3.3.0.ga" />
+          <element id="library" level="project" name="Maven: org.hibernate:ejb3-persistence:1.0.1.GA" />
+          <element id="library" level="project" name="Maven: net.sf.opencsv:opencsv:2.3" />
+          <element id="library" level="project" name="Maven: javax.transaction:jta:1.0.1B" />
+          <element id="library" level="project" name="Maven: org.jasypt:jasypt:1.5" />
+          <element id="library" level="project" name="Maven: commons-lang:commons-lang:2.1" />
+          <element id="library" level="project" name="Maven: org.apache.wicket:wicket-datetime:1.4.21" />
+          <element id="library" level="project" name="Maven: joda-time:joda-time:1.6.2" />
+          <element id="library" level="project" name="Maven: commons-httpclient:commons-httpclient:3.1" />
+          <element id="library" level="project" name="Maven: org.jscience:jscience:4.3.1" />
+          <element id="library" level="project" name="Maven: org.matheclipse:meparser:0.0.6" />
+          <element id="library" level="project" name="Maven: org.apache.poi:poi:3.7" />
+          <element id="library" level="project" name="Maven: com.lowagie:itext:2.1.3" />
+          <element id="library" level="project" name="Maven: bouncycastle:bcmail-jdk14:138" />
+          <element id="library" level="project" name="Maven: bouncycastle:bcprov-jdk14:138" />
+          <element id="library" level="project" name="Maven: org.liquibase:liquibase-core:1.9.4" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-beans:1.2.18" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-js:1.2.18" />
+          <element id="library" level="project" name="Maven: rhino:js:1.7R2" />
+          <element id="library" level="project" name="Maven: org.jscience:jscience-physics:5.0-r53p01" />
+          <element id="library" level="project" name="Maven: org.unitsofmeasurement:unit-api:0.6.0" />
+          <element id="library" level="project" name="Maven: javolution:javolution:5.5.1" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-filter:1.2.18" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-xstream:1.2.18" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-spring:1.2.18" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-datasource-fs:1.2.18" />
+          <element id="library" level="project" name="Maven: de.schlichtherle.io:truezip:6.6" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-datasource-csv:1.2.18" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-crypt:1.2.18" />
+          <element id="library" level="project" name="Maven: org.obiba.wicket:wicket-nanogong:0.0.3" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-log4j12:1.7.1" />
+          <element id="library" level="project" name="Maven: log4j:log4j:1.2.17" />
+          <element id="library" level="project" name="Maven: net.sourceforge.findbugs:annotations:1.3.2" />
+          <element id="archive" name="jade-remote-server-1.9-SNAPSHOT.jar">
+            <element id="module-output" name="jade-remote-server" />
+          </element>
+          <element id="archive" name="jade-remote-api-1.9-SNAPSHOT.jar">
+            <element id="module-output" name="jade-remote-api" />
+          </element>
+          <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:3.0.7.RELEASE" />
+          <element id="archive" name="quartz-core-1.9-SNAPSHOT.jar">
+            <element id="module-output" name="quartz-core" />
+          </element>
+          <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.5.3" />
+          <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-core-asl:1.5.3" />
+          <element id="library" level="project" name="Maven: stax:stax-api:1.0.1" />
+          <element id="archive" name="marble-core-1.9-SNAPSHOT.jar">
+            <element id="module-output" name="marble-core" />
+          </element>
+          <element id="archive" name="ruby-core-1.9-SNAPSHOT.jar">
+            <element id="module-output" name="ruby-core" />
+          </element>
+          <element id="library" level="project" name="Maven: org.obiba:obiba-security:1.3.0" />
+          <element id="library" level="project" name="Maven: org.apache.shiro:shiro-core:1.2.1" />
+          <element id="library" level="project" name="Maven: commons-beanutils:commons-beanutils:1.8.3" />
+          <element id="library" level="project" name="Maven: commons-dbcp:commons-dbcp:1.3" />
+          <element id="library" level="project" name="Maven: commons-pool:commons-pool:1.5.4" />
+          <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.6" />
+          <element id="library" level="project" name="Maven: hsqldb:hsqldb:1.8.0.7" />
+        </element>
+      </element>
+      <element id="artifact" artifact-name="onyx-webapp:war exploded" />
+    </root>
+  </artifact>
+</component>

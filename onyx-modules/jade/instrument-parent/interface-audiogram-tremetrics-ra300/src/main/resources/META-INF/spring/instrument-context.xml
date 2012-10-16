@@ -9,7 +9,7 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="
-http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
   <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.tremetrics.ra300.Ra300InstrumentRunner">
     <property name="instrumentExecutionService" ref="instrumentExecutionService" />

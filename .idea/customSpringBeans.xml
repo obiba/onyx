@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CustomBeanRegistry">
+    <option name="map">
+      <map>
+        <entry key="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;batch:job xmlns:batch=&quot;http://www.springframework.org/schema/batch&quot; id=&quot;appointmentListUpdateJob&quot; incrementer=&quot;appointmentListUpdateJobParameterIncrementer&quot;&gt;&#10;  &lt;batch:step id=&quot;deleteUnreceivedparticipantsStep&quot;&gt;&#10;    &lt;batch:tasklet ref=&quot;deleteUnreceivedParticipantsTasklet&quot; /&gt;&#10;    &lt;batch:end on=&quot;NO UPDATE&quot; exit-code=&quot;COMPLETED&quot; /&gt;&#10;    &lt;batch:next on=&quot;UPDATE&quot; to=&quot;updateParticipantsStep&quot; /&gt;&#10;  &lt;/batch:step&gt;&#10;  &lt;batch:step id=&quot;updateParticipantsStep&quot; next=&quot;archiveAppointmentListStep&quot;&gt;&#10;    &lt;batch:tasklet&gt;&#10;      &lt;batch:chunk reader=&quot;participantReader&quot; processor=&quot;participantProcessor&quot; writer=&quot;participantWriter&quot; commit-interval=&quot;10&quot; /&gt;&#10;      &lt;batch:listeners&gt;&#10;        &lt;batch:listener ref=&quot;appointmentListUpdateListener&quot; /&gt;&#10;      &lt;/batch:listeners&gt;&#10;    &lt;/batch:tasklet&gt;&#10;  &lt;/batch:step&gt;&#10;  &lt;batch:step id=&quot;archiveAppointmentListStep&quot;&gt;&#10;    &lt;batch:tasklet ref=&quot;archiveAppointmentFileTasklet&quot; /&gt;&#10;  &lt;/batch:step&gt;&#10;&lt;/batch:job&gt;&#10;&#10;">
+          <value>
+            <list>
+              <CustomBeanInfo>
+                <option name="beanName" value="deleteUnreceivedparticipantsStep" />
+                <option name="beanClassName" value="org.springframework.batch.core.configuration.xml.StepParserStepFactoryBean" />
+                <option name="path">
+                  <list>
+                    <option value="0" />
+                    <option value="0" />
+                  </list>
+                </option>
+              </CustomBeanInfo>
+              <CustomBeanInfo>
+                <option name="beanName" value="updateParticipantsStep" />
+                <option name="beanClassName" value="org.springframework.batch.core.configuration.xml.StepParserStepFactoryBean" />
+                <option name="path">
+                  <list>
+                    <option value="1" />
+                    <option value="0" />
+                  </list>
+                </option>
+              </CustomBeanInfo>
+              <CustomBeanInfo>
+                <option name="beanName" value="archiveAppointmentListStep" />
+                <option name="beanClassName" value="org.springframework.batch.core.configuration.xml.StepParserStepFactoryBean" />
+                <option name="path">
+                  <list>
+                    <option value="2" />
+                    <option value="0" />
+                  </list>
+                </option>
+              </CustomBeanInfo>
+              <CustomBeanInfo>
+                <option name="beanName" value="appointmentListUpdateJob" />
+                <option name="beanClassName" value="org.springframework.batch.core.configuration.xml.JobParserJobFactoryBean" />
+                <option name="idAttribute" value="id" />
+                <option name="constructorArgumentCount" value="1" />
+              </CustomBeanInfo>
+            </list>
+          </value>
+        </entry>
+        <entry key="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;batch:job-repository xmlns:batch=&quot;http://www.springframework.org/schema/batch&quot; id=&quot;jobRepository&quot; data-source=&quot;dataSource&quot; isolation-level-for-create=&quot;DEFAULT&quot; transaction-manager=&quot;transactionManager&quot; /&gt;&#10;&#10;">
+          <value>
+            <list>
+              <CustomBeanInfo>
+                <option name="beanName" value="jobRepository" />
+                <option name="beanClassName" value="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean" />
+                <option name="idAttribute" value="id" />
+              </CustomBeanInfo>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
+

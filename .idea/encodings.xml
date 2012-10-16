@@ -3,8 +3,10 @@
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
     <file url="file://$PROJECT_DIR$" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/onyx-core" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-demo" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/onyx-deploy-parent" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/onyx-example" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/onyx-integration-test" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/onyx-modules" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/onyx-modules/jade" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/onyx-modules/jade/instrument-bootstrap" charset="ISO-8859-1" />

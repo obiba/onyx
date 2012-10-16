@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.obiba.opal:opal-web-model:1.10-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/obiba/opal/opal-web-model/1.10-SNAPSHOT/opal-web-model-1.10-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/obiba/opal/opal-web-model/1.10-SNAPSHOT/opal-web-model-1.10-SNAPSHOT-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/obiba/opal/opal-web-model/1.10-SNAPSHOT/opal-web-model-1.10-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

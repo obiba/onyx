@@ -4,7 +4,9 @@
     <entry_points version="2.0" />
   </component>
   <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/onyx-demo" />
     <file type="web" url="file://$PROJECT_DIR$/onyx-example" />
+    <file type="web" url="file://$PROJECT_DIR$/onyx-integration-test" />
     <file type="web" url="file://$PROJECT_DIR$/onyx-webapp" />
   </component>
   <component name="MavenProjectsManager">

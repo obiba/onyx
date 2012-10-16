@@ -94,7 +94,8 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
   }
 
   /**
-   * DB access layer specific implementation for getting {@link Participant} that have not been received.
+   * DB access layer specific implementation for getting {@link Participant} that have not been received (null
+   * barcode).
    * @return
    */
   protected abstract List<Participant> getNotReceivedParticipants();

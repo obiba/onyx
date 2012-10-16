@@ -140,6 +140,7 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
     return participantQuery;
   }
 
+  @SuppressWarnings("unchecked")
   protected List<Participant> getNotReceivedParticipants() {
     return getSession().createCriteria(Participant.class).add(Restrictions.isNull("barcode")).list();
   }
