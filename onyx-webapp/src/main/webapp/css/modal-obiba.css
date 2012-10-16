@@ -94,7 +94,7 @@ div.wicket-modal div.onyx .obiba-content {
 }
 
 div.wicket-modal div.onyx .separator {
-  border-top:0.0833em solid #C65F02;
+  border-top:0.0833em solid #1a3150;
   margin-right:0.8333em;
   margin-left:0.8333em;
 }
@@ -102,7 +102,7 @@ div.wicket-modal div.onyx .separator {
 div.wicket-modal div.onyx span.w_captionText  {
   margin-left:0.8333em;
   margin-top:0.5833em;
-  color: #C65F02;
+  color: #1a3150;
   height:1.6667em;
 }
 
