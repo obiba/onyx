@@ -671,7 +671,7 @@
           -->
           <!-- Use parent version as modules' version -->
           <autoVersionSubmodules>true</autoVersionSubmodules>
-          <!-- Need to install artifacts due to onyx-example's use of dependency-plugin -->
+          <!-- Need to install artifacts due to onyx-integration-test's use of dependency-plugin -->
           <preparationGoals>clean install</preparationGoals>
         </configuration>
       </plugin>
@@ -904,7 +904,7 @@
     <maven-release-plugin.version>2.3.2</maven-release-plugin.version>
     <maven-findbugs-plugin.version>2.5.2</maven-findbugs-plugin.version>
     <maven-javadoc-plugin.version>2.9</maven-javadoc-plugin.version>
-    <maven-buildnumber-plugin.version>1.0-beta-4</maven-buildnumber-plugin.version>
+    <maven-buildnumber-plugin.version>1.2</maven-buildnumber-plugin.version>
     <maven-pmd-plugin.version>2.7.1</maven-pmd-plugin.version>
 
   </properties>
@@ -913,8 +913,9 @@
     <profile>
       <id>default</id>
       <!--
-        A profile for the builds NOT performed by the continuous integration server. This profile is active by default, which means that it will be deactivated
-        if any other profile is specifically activated (ie: using mvn -P build-id).
+        A profile for the builds NOT performed by the continuous integration server.
+        This profile is active by default, which means that it will be deactivated if any other
+        profile is specifically activated (ie: using mvn -P build-id).
       -->
       <activation>
         <activeByDefault>true</activeByDefault>
@@ -967,7 +968,10 @@
                   <goal>create</goal>
                 </goals>
                 <configuration>
-                  <useLastCommittedRevision>true</useLastCommittedRevision>
+                  <format>{0,date,yyyyMMddHHmmss}</format>
+                  <items>
+                    <item>timestamp</item>
+                  </items>
                 </configuration>
               </execution>
             </executions>
