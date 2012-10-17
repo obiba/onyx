@@ -53,9 +53,7 @@ public class AttributesPanel extends Panel {
 
   private List<Locale> locales;
 
-  public AttributesPanel(String id, final IModel<? extends Attributable> attributable,
-      final List<Locale> locales, final FeedbackPanel feedbackPanel,
-      final FeedbackWindow feedbackWindow) {
+  public AttributesPanel(String id, final IModel<? extends Attributable> attributable, final List<Locale> locales, final FeedbackPanel feedbackPanel, final FeedbackWindow feedbackWindow) {
     super(id);
     this.feedbackPanel = feedbackPanel;
     this.feedbackWindow = feedbackWindow;
@@ -65,8 +63,8 @@ public class AttributesPanel extends Panel {
     modalWindow = new ModalWindow("modalWindow");
     modalWindow.setTitle(new ResourceModel("Attribute"));
     modalWindow.setCssClassName("onyx");
-    modalWindow.setInitialWidth(500);
-    modalWindow.setInitialHeight(250);
+    modalWindow.setInitialWidth(550);
+    modalWindow.setInitialHeight(300);
     modalWindow.setResizable(true);
     modalWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
       @Override
@@ -78,15 +76,12 @@ public class AttributesPanel extends Panel {
     AjaxLink<Serializable> ajaxAddLink = new AjaxLink<Serializable>("addAttribute", new Model<Serializable>()) {
       @Override
       public void onClick(AjaxRequestTarget target) {
-        AttributesEditPanel content = new AttributesEditPanel("content", attributable,
-            new Model<FactorizedAttribute>(new FactorizedAttribute(locales)), locales, feedbackPanel,
-            feedbackWindow);
+        AttributesEditPanel content = new AttributesEditPanel("content", attributable, new Model<FactorizedAttribute>(new FactorizedAttribute(locales)), locales, feedbackPanel, feedbackWindow);
         modalWindow.setContent(content);
         modalWindow.show(target);
       }
     };
-    attributes = new OnyxEntityList<FactorizedAttribute>("attributes", new AttributesDataProvider(),
-        new AttributeColumnProvider(), new ResourceModel("Attributes"));
+    attributes = new OnyxEntityList<FactorizedAttribute>("attributes", new AttributesDataProvider(), new AttributeColumnProvider(), new ResourceModel("Attributes"));
 
     ajaxAddLink.add(new Image("addImage", Images.ADD));
     add(ajaxAddLink);
@@ -121,8 +116,7 @@ public class AttributesPanel extends Panel {
     public AttributeColumnProvider() {
       columns.add(new AbstractColumn<FactorizedAttribute>(new Model<String>("Name")) {
         @Override
-        public void populateItem(Item<ICellPopulator<FactorizedAttribute>> cellItem, String componentId,
-            IModel<FactorizedAttribute> rowModel) {
+        public void populateItem(Item<ICellPopulator<FactorizedAttribute>> cellItem, String componentId, IModel<FactorizedAttribute> rowModel) {
           FactorizedAttribute factorizedAttribute = rowModel.getObject();
           String formattedKey = Attributes.formatName(factorizedAttribute);
           cellItem.add(new Label(componentId, formattedKey));
@@ -131,8 +125,7 @@ public class AttributesPanel extends Panel {
 
       columns.add(new AbstractColumn<FactorizedAttribute>(new Model<String>("Value")) {
         @Override
-        public void populateItem(Item<ICellPopulator<FactorizedAttribute>> cellItem, String componentId,
-            IModel<FactorizedAttribute> rowModel) {
+        public void populateItem(Item<ICellPopulator<FactorizedAttribute>> cellItem, String componentId, IModel<FactorizedAttribute> rowModel) {
           FactorizedAttribute factorizedAttribute = rowModel.getObject();
           String formattedValue = Attributes.formatValue(factorizedAttribute);
           cellItem.add(new Label(componentId, formattedValue));
@@ -141,8 +134,7 @@ public class AttributesPanel extends Panel {
 
       columns.add(new HeaderlessColumn<FactorizedAttribute>() {
         @Override
-        public void populateItem(Item<ICellPopulator<FactorizedAttribute>> cellItem, String componentId,
-            IModel<FactorizedAttribute> rowModel) {
+        public void populateItem(Item<ICellPopulator<FactorizedAttribute>> cellItem, String componentId, IModel<FactorizedAttribute> rowModel) {
           cellItem.add(new LinkFragment(componentId, rowModel));
         }
       });
@@ -173,21 +165,17 @@ public class AttributesPanel extends Panel {
 
     public LinkFragment(String id, final IModel<FactorizedAttribute> factorizedAttributeModel) {
       super(id, "linkFragment", AttributesPanel.this, factorizedAttributeModel);
-      AjaxLink<FactorizedAttribute> ajaxEditLink = new AjaxLink<FactorizedAttribute>("editAttribute",
-          factorizedAttributeModel) {
+      AjaxLink<FactorizedAttribute> ajaxEditLink = new AjaxLink<FactorizedAttribute>("editAttribute", factorizedAttributeModel) {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          AttributesEditPanel content = new AttributesEditPanel("content", attributable, factorizedAttributeModel,
-              locales, feedbackPanel,
-              feedbackWindow);
+          AttributesEditPanel content = new AttributesEditPanel("content", attributable, factorizedAttributeModel, locales, feedbackPanel, feedbackWindow);
           modalWindow.setContent(content);
           modalWindow.show(target);
         }
       };
       ajaxEditLink.add(new Image("editImage", Images.EDIT));
       add(ajaxEditLink);
-      AjaxLink<FactorizedAttribute> ajaxDeleteLink = new AjaxLink<FactorizedAttribute>("deleteAttribute",
-          factorizedAttributeModel) {
+      AjaxLink<FactorizedAttribute> ajaxDeleteLink = new AjaxLink<FactorizedAttribute>("deleteAttribute", factorizedAttributeModel) {
         @Override
         public void onClick(AjaxRequestTarget target) {
           FactorizedAttribute faObject = factorizedAttributeModel.getObject();
