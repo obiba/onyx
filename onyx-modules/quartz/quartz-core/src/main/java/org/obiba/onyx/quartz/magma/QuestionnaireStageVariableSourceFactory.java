@@ -325,10 +325,8 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
         org.obiba.magma.Category.Builder cb = org.obiba.magma.Category.Builder.newCategory(c.getCategory().getName());
         cb.accept(new LocalizableBuilderVisitor(c)).withCode(c.getExportName()).missing(c.isEscape());
 
-        Question question = c.getQuestion();
         Category category = c.getCategory();
-        List<Attribute> attributes = Attributes.overrideAttributes(question.hasParentQuestion() ? question.getParentQuestion().getAttributes() : null, question.getAttributes(), category.getAttributes());
-        cb.addAttributes(attributes);
+        cb.addAttributes(category.getAttributes());
 
         questionVariable.addCategory(cb.build());
       }
