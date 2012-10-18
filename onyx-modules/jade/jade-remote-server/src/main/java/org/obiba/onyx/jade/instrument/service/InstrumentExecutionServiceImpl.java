@@ -29,7 +29,6 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.Measure;
 import org.obiba.onyx.jade.core.domain.run.MeasureStatus;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
-import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,16 +39,19 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
 
   private static final Logger log = LoggerFactory.getLogger(InstrumentExecutionServiceImpl.class);
 
-  private InstrumentRunService instrumentRunService;
-
   private ActiveInstrumentRunService activeInstrumentRunService;
 
   public void setActiveInstrumentRunService(ActiveInstrumentRunService activeInstrumentRunService) {
     this.activeInstrumentRunService = activeInstrumentRunService;
   }
 
+  public ActiveInstrumentRunService getActiveInstrumentRunService() {
+    log.trace("BEAN {} {}", activeInstrumentRunService, activeInstrumentRunService.getClass().getSimpleName());
+    return activeInstrumentRunService;
+  }
+
   private InstrumentRun getInstrumentRun() {
-    return activeInstrumentRunService.getInstrumentRun();
+    return getActiveInstrumentRunService().getInstrumentRun();
   }
 
   public String getInstrumentOperator() {
@@ -93,7 +95,7 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
     for(String parameterCode : parameters) {
       InstrumentParameter inputParameter = getInstrumentType().getInstrumentParameter(parameterCode);
       if(inputParameter != null) {
-        InstrumentRunValue inputParameterValue = activeInstrumentRunService.getInstrumentRunValue(parameterCode);
+        InstrumentRunValue inputParameterValue = getActiveInstrumentRunService().getInstrumentRunValue(parameterCode);
         if(inputParameterValue != null) {
           inputParametersValue.put(parameterCode, inputParameterValue.getData(inputParameter.getDataType()));
         } else {
@@ -131,7 +133,7 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
 
   public Data getInputParameterValue(String parameterCode) {
     InstrumentParameter parameter = getInstrumentType().getInstrumentParameter(parameterCode);
-    return activeInstrumentRunService.getInstrumentRunValue(parameterCode).getData(parameter.getDataType());
+    return getActiveInstrumentRunService().getInstrumentRunValue(parameterCode).getData(parameter.getDataType());
   }
 
   @Override
@@ -160,17 +162,17 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
 
     // persist repeatable data if any in a measure
     if(repeatableData.size() > 0) {
-      Measure measure = activeInstrumentRunService.addMeasure(repeatableData);
+      Measure measure = getActiveInstrumentRunService().addMeasure(repeatableData);
       List<InstrumentOutputParameter> outputParams = type.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC);
-      MeasureStatus status = activeInstrumentRunService.checkIntegrity(outputParams, measure).isEmpty() ? MeasureStatus.VALID : MeasureStatus.INVALID;
-      instrumentRunService.updateMeasureStatus(measure, status);
+      MeasureStatus status = getActiveInstrumentRunService().checkIntegrity(outputParams, measure).isEmpty() ? MeasureStatus.VALID : MeasureStatus.INVALID;
+      getActiveInstrumentRunService().updateMeasureStatus(measure, status);
     }
   }
 
   private void updateParameterValue(InstrumentParameter parameter, Data value) {
-    InstrumentRunValue outputParameterValue = activeInstrumentRunService.getOrCreateInstrumentRunValue(parameter);
+    InstrumentRunValue outputParameterValue = getActiveInstrumentRunService().getOrCreateInstrumentRunValue(parameter);
     outputParameterValue.setData(value);
-    activeInstrumentRunService.update(outputParameterValue);
+    getActiveInstrumentRunService().update(outputParameterValue);
   }
 
   private InstrumentOutputParameter getInstrumentOutputParameter(String name) {
@@ -186,7 +188,7 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
   }
 
   private InstrumentType getInstrumentType() {
-    InstrumentType type = activeInstrumentRunService.getInstrumentType();
+    InstrumentType type = getActiveInstrumentRunService().getInstrumentType();
 
     if(type == null) {
       throw new IllegalStateException("No instrument type associated to the active instrument run service.");
@@ -196,11 +198,11 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
   }
 
   public void instrumentRunnerError(Exception error) {
-    activeInstrumentRunService.setInstrumentRunStatus(InstrumentRunStatus.IN_ERROR);
+    getActiveInstrumentRunService().setInstrumentRunStatus(InstrumentRunStatus.IN_ERROR);
   }
 
   public int getCurrentMeasureCount() {
-    return activeInstrumentRunService.getCurrentMeasureCount();
+    return getActiveInstrumentRunService().getCurrentMeasureCount();
   }
 
   public boolean isRepeatableMeasure() {
@@ -208,15 +210,7 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
   }
 
   public int getExpectedMeasureCount() {
-    return getInstrumentType().getExpectedMeasureCount(activeInstrumentRunService.getParticipant());
-  }
-
-  public InstrumentRunService getInstrumentRunService() {
-    return instrumentRunService;
-  }
-
-  public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
-    this.instrumentRunService = instrumentRunService;
+    return getInstrumentType().getExpectedMeasureCount(getActiveInstrumentRunService().getParticipant());
   }
 
 }

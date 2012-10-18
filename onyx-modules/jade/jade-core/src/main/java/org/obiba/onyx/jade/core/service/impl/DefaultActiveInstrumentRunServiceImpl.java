@@ -755,4 +755,10 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     }
     return mutex;
   }
+
+  @Override
+  public void updateMeasureStatus(Measure measure, MeasureStatus status) {
+    measure.setStatus(status);
+    getPersistenceManager().save(measure);
+  }
 }
