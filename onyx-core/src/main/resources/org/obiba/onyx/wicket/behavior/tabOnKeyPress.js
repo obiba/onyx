@@ -17,6 +17,9 @@ function tabSubmitForm(event, elementId){
   if (code == 9){
     document.getElementById(elementId).click();
     return false;
+  } else if (code == 13) {
+	document.getElementById(elementId).click();
+    return false;
   } else {
     return true;
   }
