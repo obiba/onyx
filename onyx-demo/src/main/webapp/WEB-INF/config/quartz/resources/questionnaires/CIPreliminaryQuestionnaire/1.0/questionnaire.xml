@@ -402,7 +402,7 @@
               <page reference="164"/>
               <questionCategories id="192"/>
               <condition class="scriptDataSource" id="193" valueTable="CIPreliminaryQuestionnaire" valueType="boolean" sequence="false">
-                <script>$(&apos;CIPreliminaryQuestionnaire:BW_OBS_CI_BIOIMPEDANCE&apos;).not(&apos;NC&apos;).and($(&apos;CIPreliminaryQuestionnaire:SC_OBS_CI&apos;).not(&apos;NC&apos;))</script>
+                <script>$(&apos;CIPreliminaryQuestionnaire:SC_OBS_CI&apos;).not(&apos;NC&apos;)</script>
               </condition>
               <questions id="194"/>
               <attributes id="195"/>
