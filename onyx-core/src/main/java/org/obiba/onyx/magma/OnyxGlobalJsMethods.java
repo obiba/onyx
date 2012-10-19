@@ -27,8 +27,7 @@ import org.obiba.magma.type.DateTimeType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.core.service.ExportLogService;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.obiba.onyx.spring.OnyxPropertyPlaceholderConfigurer;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
@@ -44,15 +43,11 @@ public class OnyxGlobalJsMethods implements GlobalMethodProvider {
 
   private static final Set<String> GLOBAL_METHODS = ImmutableSet.of("onyx");
 
-  private Resource onyxPropertyResource;
-
   private static ExportLogService exportLogService;
 
   private static Properties onyxProperties;
 
-  public void setOnyxPropertyResource(Resource onyxPropertyResource) {
-    this.onyxPropertyResource = onyxPropertyResource;
-  }
+  private OnyxPropertyPlaceholderConfigurer onyxPropertiesConfigurer;
 
   public void setExportLogService(ExportLogService exportLogService) {
     initialiseLogService(exportLogService);
@@ -64,9 +59,9 @@ public class OnyxGlobalJsMethods implements GlobalMethodProvider {
 
   public void init() {
     try {
-      setOnyxProperties(PropertiesLoaderUtils.loadProperties(onyxPropertyResource));
+      setOnyxProperties(onyxPropertiesConfigurer.getProperties());
     } catch(IOException e) {
-      throw new IllegalArgumentException("Could not read in the Resource [" + onyxPropertyResource + "]. ", e);
+      throw new IllegalArgumentException("Could not read in the onyx properties .", e);
     }
   }
 
@@ -133,4 +128,7 @@ public class OnyxGlobalJsMethods implements GlobalMethodProvider {
     return Lists.newArrayList(methods);
   }
 
+  public void setOnyxPropertiesConfigurer(OnyxPropertyPlaceholderConfigurer onyxPropertiesConfigurer) {
+    this.onyxPropertiesConfigurer = onyxPropertiesConfigurer;
+  }
 }

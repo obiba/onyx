@@ -16,7 +16,7 @@
   </bean>
 
   <!-- Loads the configuration properties. These are used throughout the spring context files to configure the deployment -->
-  <bean class="org.jasypt.spring.properties.EncryptablePropertyPlaceholderConfigurer">
+  <bean id="onyxProperties" class="org.obiba.onyx.spring.OnyxPropertyPlaceholderConfigurer">
     <constructor-arg ref="configurationEncryptor" />
 
     <property name="ignoreResourceNotFound" value="true"/>
@@ -42,5 +42,5 @@
       </list>
     </property>
   </bean>
-
+  
 </beans>

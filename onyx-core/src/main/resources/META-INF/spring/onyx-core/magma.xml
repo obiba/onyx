@@ -13,7 +13,7 @@
               <property name="globalMethodProviders">
                 <set>
                   <bean class="org.obiba.onyx.magma.OnyxGlobalJsMethods" init-method="init">
-                    <property name="onyxPropertyResource" value="${org.obiba.onyx.config.path}/onyx-config.properties" />
+                    <property name="onyxPropertiesConfigurer" ref="onyxProperties"/>
                     <property name="exportLogService" ref="exportLogService" />
                   </bean>
                 </set>
