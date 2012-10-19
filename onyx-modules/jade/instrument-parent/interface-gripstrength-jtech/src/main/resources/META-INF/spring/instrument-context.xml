@@ -8,20 +8,17 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:tx="http://www.springframework.org/schema/tx"
-  xsi:schemaLocation="
-http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
   <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.jtech.Tracker5InstrumentRunner">
-    <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
+    <property name="instrumentExecutionService" ref="instrumentExecutionService" />
     <property name="externalAppHelper">
       <bean class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">
         <property name="workDir" value="${org.obiba.onyx.jade.instrument.jtech.tracker5.path}" />
         <property name="executable" value="${org.obiba.onyx.jade.instrument.jtech.tracker5.exe}" />
       </bean>
     </property>
-    <property name="trackerDatabaseName" value="${org.obiba.onyx.jade.instrument.jtech.tracker5.dbName}"/>
+    <property name="trackerDatabaseName" value="${org.obiba.onyx.jade.instrument.jtech.tracker5.dbName}" />
   </bean>
 
 </beans>

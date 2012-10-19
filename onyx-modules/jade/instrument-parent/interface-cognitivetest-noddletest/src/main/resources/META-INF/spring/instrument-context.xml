@@ -1,21 +1,19 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:tx="http://www.springframework.org/schema/tx"
-  xsi:schemaLocation="
-http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
-  <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.cardiffuniversity.NoddleTestInstrumentRunner" init-method="initializeNoddleTestInstrumentRunner">
-    <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
-    <property name="externalAppHelper" ref="externalAppHelper"/>
-    <property name="locale" ref="locale"/>
-    <property name="softwareInstallPath" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.path}"/>
-    <property name="resultPath" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.path.results}"/>
-    <property name="packagePrefix" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.package.prefix}"/>
+  <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.cardiffuniversity.NoddleTestInstrumentRunner"
+      init-method="initializeNoddleTestInstrumentRunner">
+    <property name="instrumentExecutionService" ref="instrumentExecutionService" />
+    <property name="externalAppHelper" ref="externalAppHelper" />
+    <property name="locale" ref="locale" />
+    <property name="softwareInstallPath" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.path}" />
+    <property name="resultPath" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.path.results}" />
+    <property name="packagePrefix" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.package.prefix}" />
   </bean>
-  
+
   <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">
     <property name="workDir" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.path}" />
-    <property name="executable" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.exe}" />  
+    <property name="executable" value="${org.obiba.onyx.jade.instrument.cardiffuniversity.exe}" />
   </bean>
-  
+
 </beans>
