@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * 
  * The check fails (returns <code>false</code>) if the values are <i>not</i> equal.
  */
-public class EqualsValueCheck extends AbstractIntegrityCheck implements IntegrityCheck {
+public class EqualsValueCheck extends AbstractIntegrityCheck {
 
   private static final Logger log = LoggerFactory.getLogger(EqualsValueCheck.class);
 

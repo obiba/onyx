@@ -209,9 +209,9 @@ public abstract class MeasuresListPanel extends Panel {
           @SuppressWarnings("unused")
           @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS", justification = "Referenced by PropertyModel")
           public List<String> getInvalidMeasureMessages() {
-            List<InstrumentOutputParameter> outputParams = getMeasureOutputParams(measure);
+            List<InstrumentOutputParameter> outputParams = activeInstrumentRunService.getInstrumentType().getOutputParameters(true);
 
-            Map<IntegrityCheck, InstrumentOutputParameter> failedChecks = activeInstrumentRunService.checkIntegrity(outputParams);
+            Map<IntegrityCheck, InstrumentOutputParameter> failedChecks = activeInstrumentRunService.checkIntegrity(outputParams, measure);
 
             List<String> errorMessages = new ArrayList<String>();
             for(Map.Entry<IntegrityCheck, InstrumentOutputParameter> entry : failedChecks.entrySet()) {

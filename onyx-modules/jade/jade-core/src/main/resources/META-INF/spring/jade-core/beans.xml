@@ -81,6 +81,9 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="userSessionService" ref="userSessionService" />
     <property name="instrumentService" ref="instrumentService" />
     <property name="activeInterviewService" ref="activeInterviewService" />
+    
+    <!-- instructs the container to proxy the surrounding bean -->
+    <aop:scoped-proxy/>
   </bean>
 
   <bean id="experimentalConditionService" class="org.obiba.onyx.jade.core.service.impl.hibernate.ExperimentalConditionServiceHibernateImpl"

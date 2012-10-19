@@ -27,6 +27,12 @@ import org.obiba.onyx.util.data.DataType;
  */
 public class DataValueConverter {
 
+  public static Value dataToValue(DataType type, Data data) {
+    if(data != null) return dataToValue(data);
+    else
+      return dataToNullValue(type);
+  }
+
   /**
    * Convert from an (Onyx) {@link Data} class to a (Magma) {@link Value} class.
    * @param data Onyx Data
@@ -48,6 +54,23 @@ public class DataValueConverter {
       break;
     }
     return valueType.valueOf(data.getValue());
+  }
+
+  public static Value dataToNullValue(DataType type) {
+    ValueType valueType;
+    switch(type) {
+    case DATE:
+      valueType = DateTimeType.get();
+      break;
+    case DATA:
+      valueType = BinaryType.get();
+      break;
+    default:
+      // Otherwise, the names are equivalent
+      valueType = ValueType.Factory.forName(type.name());
+      break;
+    }
+    return valueType.nullValue();
   }
 
   /**

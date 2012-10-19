@@ -3,10 +3,8 @@
 
   <!-- Beans required for the server-side remote api. -->
 
-  <bean id="instrumentExecutionService" class="org.obiba.onyx.jade.instrument.service.InstrumentExecutionServiceImpl"
-    scope="session">
+  <bean id="instrumentExecutionService" class="org.obiba.onyx.jade.instrument.service.InstrumentExecutionServiceImpl">
     <property name="activeInstrumentRunService" ref="activeInstrumentRunService" />
-    <property name="instrumentRunService" ref="instrumentRunService" />    
   </bean>
 
   <bean id="clientLoggingService" class="org.obiba.onyx.jade.instrument.service.ClientLoggingServiceImpl" />

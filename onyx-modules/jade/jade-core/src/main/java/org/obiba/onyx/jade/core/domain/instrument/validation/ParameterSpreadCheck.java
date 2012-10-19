@@ -16,7 +16,7 @@ import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
-public class ParameterSpreadCheck extends AbstractIntegrityCheck implements IntegrityCheck {
+public class ParameterSpreadCheck extends AbstractIntegrityCheck {
 
   private static final long serialVersionUID = 1L;
 

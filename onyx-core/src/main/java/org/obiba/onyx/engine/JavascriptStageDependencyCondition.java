@@ -35,8 +35,6 @@ public class JavascriptStageDependencyCondition implements StageDependencyCondit
 
   private String script;
 
-  private transient ValueSource source;
-
   @Override
   @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "NP_BOOLEAN_RETURN_NULL",
       justification = "Null is checked")
@@ -82,7 +80,6 @@ public class JavascriptStageDependencyCondition implements StageDependencyCondit
 
   public void setScript(String script) {
     this.script = script;
-    this.source = null;
   }
 
   public void setMagmaInstanceProvider(MagmaInstanceProvider magmaInstanceProvider) {
@@ -90,10 +87,8 @@ public class JavascriptStageDependencyCondition implements StageDependencyCondit
   }
 
   private ValueSource getSource() {
-    if(source == null) {
-      source = new JavascriptValueSource(BooleanType.get(), script);
-      Initialisables.initialise(source);
-    }
+    ValueSource source = new JavascriptValueSource(BooleanType.get(), script);
+    Initialisables.initialise(source);
     return source;
   }
 

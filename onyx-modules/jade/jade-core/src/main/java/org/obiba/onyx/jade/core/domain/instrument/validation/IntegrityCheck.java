@@ -14,6 +14,7 @@ import java.io.Serializable;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.util.data.Data;
 import org.springframework.context.MessageSourceResolvable;
 
@@ -58,4 +59,5 @@ public interface IntegrityCheck extends Serializable {
    */
   public MessageSourceResolvable getDescription(InstrumentParameter checkedParameter, ActiveInstrumentRunService activeRunService);
 
+  public void setMagmaInstanceProvider(MagmaInstanceProvider magmaInstanceProvider);
 }

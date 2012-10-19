@@ -23,6 +23,7 @@ import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheckType;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.data.DataField;
 import org.springframework.context.MessageSource;
@@ -48,6 +49,9 @@ public class IntegrityCheckValidator extends AbstractValidator<Data> {
   @SpringBean
   private MessageSource messageSource;
 
+  @SpringBean
+  private MagmaInstanceProvider magmaInstanceProvider;
+
   public IntegrityCheckValidator(InstrumentParameter parameter, IntegrityCheck integrityCheck) {
     this.checkedParameterCode = parameter.getCode();
     this.integrityCheck = integrityCheck;
@@ -61,6 +65,7 @@ public class IntegrityCheckValidator extends AbstractValidator<Data> {
 
   @Override
   protected void onValidate(IValidatable<Data> validatable) {
+    integrityCheck.setMagmaInstanceProvider(magmaInstanceProvider);
     boolean isValid = integrityCheck.checkParameterValue(getCheckedParameter(), validatable.getValue(), instrumentRunService, activeInstrumentRunService);
 
     if(!isValid) {

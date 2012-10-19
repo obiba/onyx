@@ -24,6 +24,7 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.Measure;
+import org.obiba.onyx.jade.core.domain.run.MeasureStatus;
 import org.obiba.onyx.util.data.Data;
 
 public interface ActiveInstrumentRunService extends IContraindicatable {
@@ -117,8 +118,8 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
   public List<InstrumentRunValue> getInstrumentRunValues(String code);
 
   /**
-   * Get or create the {@code InstrumentRunValue} for the named {@code InstrumentParameter} of the current {@code
-   * InstrumentRun}.
+   * Get or create the {@code InstrumentRunValue} for the named {@code InstrumentParameter} of the current
+   * {@code InstrumentRun}.
    * @param code
    * @return null if current instrument run is null
    * @throws IllegalArgumentException if parameter name is not applicable to the {@code Instrument}
@@ -144,6 +145,14 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
    * @param repeatableData A map of parameter names to {@link Data} values.
    */
   public Measure addMeasure(Map<String, Data> repeatableData);
+
+  /**
+   * Updates the status of the selected measure.
+   * 
+   * @param measure The measure to update.
+   * @param measure The status.
+   */
+  public void updateMeasureStatus(Measure measure, MeasureStatus status);
 
   /**
    * Get the count of measures (repeatable or not).
