@@ -20,8 +20,8 @@
             <element id="module-output" name="onyx-core" />
           </element>
           <element id="library" level="project" name="Maven: commons-collections:commons-collections:3.1" />
-          <element id="library" level="project" name="Maven: org.obiba:obiba-core:1.3.1-SNAPSHOT" />
-          <element id="library" level="project" name="Maven: org.obiba:obiba-wicket:1.3.1-SNAPSHOT" />
+          <element id="library" level="project" name="Maven: org.obiba:obiba-core:1.3.1" />
+          <element id="library" level="project" name="Maven: org.obiba:obiba-wicket:1.3.1" />
           <element id="library" level="project" name="Maven: org.apache.wicket:wicket:1.4.21" />
           <element id="library" level="project" name="Maven: org.apache.wicket:wicket-spring:1.4.21" />
           <element id="library" level="project" name="Maven: org.apache.wicket:wicket-ioc:1.4.21" />
@@ -119,7 +119,7 @@
           <element id="archive" name="ruby-core-1.9-SNAPSHOT.jar">
             <element id="module-output" name="ruby-core" />
           </element>
-          <element id="library" level="project" name="Maven: org.obiba:obiba-security:1.3.1-SNAPSHOT" />
+          <element id="library" level="project" name="Maven: org.obiba:obiba-security:1.3.1" />
           <element id="library" level="project" name="Maven: org.apache.shiro:shiro-core:1.2.1" />
           <element id="library" level="project" name="Maven: commons-beanutils:commons-beanutils:1.8.3" />
           <element id="library" level="project" name="Maven: commons-dbcp:commons-dbcp:1.3" />

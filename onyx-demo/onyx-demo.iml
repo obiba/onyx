@@ -35,8 +35,8 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.slf4j:jcl-over-slf4j:1.7.1" level="project" />
     <orderEntry type="module" module-name="onyx-core" />
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.1" level="project" />
-    <orderEntry type="library" name="Maven: org.obiba:obiba-core:1.3.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.obiba:obiba-wicket:1.3.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.obiba:obiba-core:1.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.obiba:obiba-wicket:1.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.wicket:wicket:1.4.21" level="project" />
     <orderEntry type="library" name="Maven: org.apache.wicket:wicket-spring:1.4.21" level="project" />
     <orderEntry type="library" name="Maven: org.apache.wicket:wicket-ioc:1.4.21" level="project" />
@@ -127,7 +127,7 @@
     <orderEntry type="module" module-name="ruby-core" scope="RUNTIME" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.rxtx:rxtx:2.1.7-r2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.rxtx:rxtx-lib:win32:2.1.7-r2" level="project" />
-    <orderEntry type="library" name="Maven: org.obiba:obiba-security:1.3.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.obiba:obiba-security:1.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.shiro:shiro-core:1.2.1" level="project" />
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.8.3" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: commons-dbcp:commons-dbcp:1.3" level="project" />
