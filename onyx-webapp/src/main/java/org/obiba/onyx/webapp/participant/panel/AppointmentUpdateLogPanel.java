@@ -53,7 +53,7 @@ public class AppointmentUpdateLogPanel extends Panel {
     if(logItemLoop != null) {
       remove(logItemLoop);
     }
-    logItemLoop = new Loop("table", appointmentUpdateLogs.size()) {
+    logItemLoop = new Loop("table", appointmentUpdateLogs != null ? appointmentUpdateLogs.size() : 0) {
 
       private static final long serialVersionUID = 5173436167390888581L;
 
@@ -94,11 +94,12 @@ public class AppointmentUpdateLogPanel extends Panel {
   }
 
   private void sortAppointmentUpdateLogList(List<AppointmentUpdateLog> appointmentUpdateLogs) {
-
-    Collections.sort(appointmentUpdateLogs, new Comparator<AppointmentUpdateLog>() {
-      public int compare(AppointmentUpdateLog log1, AppointmentUpdateLog log2) {
-        return (Long.valueOf(log1.getDate().getTime()).compareTo(Long.valueOf(log2.getDate().getTime())));
-      }
-    });
+    if(appointmentUpdateLogs != null) {
+      Collections.sort(appointmentUpdateLogs, new Comparator<AppointmentUpdateLog>() {
+        public int compare(AppointmentUpdateLog log1, AppointmentUpdateLog log2) {
+          return (Long.valueOf(log1.getDate().getTime()).compareTo(Long.valueOf(log2.getDate().getTime())));
+        }
+      });
+    }
   }
 }
