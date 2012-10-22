@@ -92,24 +92,11 @@
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>COMPUTED</captureMethod>
-      <dataSource class="computingDataSource">
-        <dataType>DECIMAL</dataType>
-        <unit>cm</unit>
-        
-        <expression>
-          ($1 + $2)/2
-        </expression>
-
-        <dataSources>
-          <dataSource class="instrumentParameterDataSource">
-            <instrumentType>StandingHeight</instrumentType>
-            <parameterCode>RES_FIRST_HEIGHT</parameterCode>
-          </dataSource>
-          <dataSource class="instrumentParameterDataSource">
-            <instrumentType>StandingHeight</instrumentType>
-            <parameterCode>RES_SEC_HEIGHT</parameterCode>
-          </dataSource>
-        </dataSources>
+      <dataSource class="scriptDataSource">
+        <valueType>decimal</valueType>
+        <script>
+        $('StandingHeight:RES_FIRST_HEIGHT').plus($('StandingHeight:RES_SEC_HEIGHT')).div(2);
+        </script>
       </dataSource>
     </output>
   </instrumentParameters>

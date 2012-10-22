@@ -303,5 +303,37 @@
       </variables>
     </valueset>
   </destination>
-    
+
+  <destination>
+    <name>DCCBin</name>
+
+    <!-- Export in CSV with provided options -->
+    <options>
+      <format>CSV</format>
+      <characterSet>ISO-8859-1</characterSet>
+      <separator>,</separator>
+      <quote>"</quote>
+    </options>
+
+    <valueset entityType="Participant" valueTable="QuartzDemoQuestionnaire">
+      <entities>
+        <excludeAll />
+        <script type="INCLUDE">
+          <javascript><![CDATA[// Include any ValueSet that has 'CLOSED' or 'COMPLETED' as a value for the 'Participant.Interview.Status' variable
+          $('Participants:Admin.Interview.status').any('CLOSED','COMPLETED')]]></javascript>
+        </script>
+        <script type="EXCLUDE">
+          <javascript><![CDATA[$('Participants:Admin.Interview.exportLog.destination').any('DCCBin.QuartzDemoQuestionnaire')]]></javascript>
+        </script>
+      </entities>
+      <variables>
+	<variableAttribute type="EXCLUDE">
+          <attribute>exclusiveChoiceCategoryVariable</attribute>
+          <value>true</value>
+        </variableAttribute> 
+      </variables>		  
+    </valueset>	
+
+  </destination>
+
 </destinations>

@@ -304,28 +304,11 @@
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>COMPUTED</captureMethod>
-      <dataSource class="computingDataSource">
-        <dataType>INTEGER</dataType>
-        <unit>mmHg</unit>
-        
-        <expression>
-          ($1 + $2 + $3)/3
-        </expression>
-          
-        <dataSources>
-          <dataSource class="instrumentParameterDataSource">
-            <instrumentType>BloodPressure</instrumentType>
-            <parameterCode>RES_FIRST_SYSTOLIC_BP</parameterCode>
-          </dataSource>
-          <dataSource class="instrumentParameterDataSource">
-            <instrumentType>BloodPressure</instrumentType>
-            <parameterCode>RES_SEC_SYSTOLIC_BP</parameterCode>
-          </dataSource>
-          <dataSource class="instrumentParameterDataSource">
-            <instrumentType>BloodPressure</instrumentType>
-            <parameterCode>RES_THIRD_SYSTOLIC_BP</parameterCode>
-          </dataSource>
-        </dataSources>
+      <dataSource class="scriptDataSource">
+        <valueType>integer</valueType>
+        <script>
+        $('BloodPressure:RES_FIRST_SYSTOLIC_BP').plus($('BloodPressure:RES_SEC_SYSTOLIC_BP')).plus($('BloodPressure:RES_THIRD_SYSTOLIC_BP')).div(3).type('integer');
+        </script>
       </dataSource>
     </output>
 
@@ -334,28 +317,12 @@
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>COMPUTED</captureMethod>
-      <dataSource class="computingDataSource">
-        <dataType>INTEGER</dataType>
+      <dataSource class="scriptDataSource">
+        <valueType>integer</valueType>
         <unit>mmHg</unit>
-        
-        <expression>
-          ($1 + $2 + $3)/3
-        </expression>
-                  
-        <dataSources>
-          <dataSource class="instrumentParameterDataSource">
-            <instrumentType>BloodPressure</instrumentType>
-            <parameterCode>RES_FIRST_DIASTOLIC_BP</parameterCode>
-          </dataSource>
-          <dataSource class="instrumentParameterDataSource">
-            <instrumentType>BloodPressure</instrumentType>
-            <parameterCode>RES_SEC_DIASTOLIC_BP</parameterCode>
-          </dataSource>
-          <dataSource class="instrumentParameterDataSource">
-            <instrumentType>BloodPressure</instrumentType>
-            <parameterCode>RES_THIRD_DIASTOLIC_BP</parameterCode>
-          </dataSource>
-        </dataSources>
+        <script>
+        $('BloodPressure:RES_FIRST_DIASTOLIC_BP').plus($('BloodPressure:RES_SEC_DIASTOLIC_BP')).plus($('BloodPressure:RES_THIRD_DIASTOLIC_BP')).div(3).type('integer');
+        </script>
       </dataSource>
     </output>
 
@@ -364,28 +331,11 @@
       <measurementUnit>BPM</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>COMPUTED</captureMethod>
-      <dataSource class="computingDataSource">
-        <dataType>INTEGER</dataType>
-        <unit>BPM</unit>
-        
-        <expression>
-          ($1 + $2 + $3)/3
-        </expression>
-          
-        <dataSources>
-          <dataSource class="instrumentParameterDataSource">
-            <instrumentType>BloodPressure</instrumentType>
-            <parameterCode>RES_FIRST_PULSE_RATE</parameterCode>
-          </dataSource>
-          <dataSource class="instrumentParameterDataSource">
-            <instrumentType>BloodPressure</instrumentType>
-            <parameterCode>RES_SEC_PULSE_RATE</parameterCode>
-          </dataSource>
-          <dataSource class="instrumentParameterDataSource">
-            <instrumentType>BloodPressure</instrumentType>
-            <parameterCode>RES_THIRD_PULSE_RATE</parameterCode>
-          </dataSource>
-        </dataSources>
+      <dataSource class="scriptDataSource">
+        <valueType>integer</valueType>
+        <script>
+        $('BloodPressure:RES_FIRST_PULSE_RATE').plus($('BloodPressure:RES_SEC_PULSE_RATE')).plus($('BloodPressure:RES_THIRD_PULSE_RATE')).div(3).type('integer');
+        </script>
       </dataSource>
     </output>
   </instrumentParameters>
