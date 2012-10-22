@@ -3,54 +3,32 @@
   <stage>
     <name>BloodUrineSamplesCollection</name>
     <module>ruby</module>
-    <stageDependencyCondition class="multipleCondition">
-      <operator>AND</operator>
-      <conditions>
-        <variableCondition>
-          <stageName>Consent</stageName>
-          <variablePath>accepted</variablePath>
-        </variableCondition>
-        <variableCondition>
-          <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>QuestionnaireRun.timeEnd</variablePath>
-        </variableCondition>
-        <variableCondition>
-          <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>STAGE_STATUS.BSC_CI.active</variablePath>
-          <operator>ne</operator>
-          <data>
-            <type>BOOLEAN</type>
-            <value class="boolean">true</value>
-          </data>
-        </variableCondition>
-      </conditions>
+    <stageDependencyCondition class="scriptCondition">
+      <stages>
+        <string>Consent</string>
+        <string>CIPreliminaryQuestionnaire</string>
+      </stages>
+      <script>
+        $('Consent:accepted')
+        .and($('CIPreliminaryQuestionnaire:QuestionnaireRun.timeEnd').isNull().not())
+        .and($('CIPreliminaryQuestionnaire:STAGE_STATUS.BSC_CI.active').not())
+      </script>
     </stageDependencyCondition>
   </stage>
 
   <stage>
     <name>UrineSamplesCollection</name>
     <module>ruby</module>
-    <stageDependencyCondition class="multipleCondition">
-      <operator>AND</operator>
-      <conditions>
-        <variableCondition>
-          <stageName>Consent</stageName>
-          <variablePath>accepted</variablePath>
-        </variableCondition>
-        <variableCondition>
-          <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>QuestionnaireRun.timeEnd</variablePath>
-        </variableCondition>
-        <variableCondition>
-          <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>STAGE_STATUS.BSC_CI.active</variablePath>
-          <operator>ne</operator>
-          <data>
-            <type>BOOLEAN</type>
-            <value class="boolean">false</value>
-          </data>
-        </variableCondition>
-      </conditions>
+    <stageDependencyCondition class="scriptCondition">
+      <stages>
+        <string>Consent</string>
+        <string>CIPreliminaryQuestionnaire</string>
+      </stages>
+      <script>
+        $('Consent:accepted')
+        .and($('CIPreliminaryQuestionnaire:QuestionnaireRun.timeEnd').isNull().not())
+        .and($('CIPreliminaryQuestionnaire:STAGE_STATUS.BSC_CI.active'))
+      </script>
     </stageDependencyCondition>
   </stage>
   
