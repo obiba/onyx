@@ -10,6 +10,7 @@
 package org.obiba.onyx.jade.core.wicket.run;
 
 import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.Component;
@@ -134,16 +135,16 @@ public class InstrumentRunPanel extends Panel {
 
     KeyValueDataPanel kvPanel = new KeyValueDataPanel("run", new StringResourceModel("RunInfo", this, null));
     add(kvPanel);
-    kvPanel.addRow(new StringResourceModel("Operator", this, null), new PropertyModel(run, "user.fullName"));
+    kvPanel.addRow(new StringResourceModel("Operator", this, null), new PropertyModel<String>(run, "userName"));
 
     if(getMeasure() != null) {
-      kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateModelUtils.getDateTimeModel(new PropertyModel(this, "dateTimeFormat"), new PropertyModel(getMeasure(), "time")));
+      kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateModelUtils.getDateTimeModel(new PropertyModel<DateFormat>(this, "dateTimeFormat"), new PropertyModel<Date>(getMeasure(), "time")));
     } else {
-      kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateModelUtils.getDateTimeModel(new PropertyModel(this, "dateTimeFormat"), new PropertyModel(run, "timeStart")));
+      kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateModelUtils.getDateTimeModel(new PropertyModel<DateFormat>(this, "dateTimeFormat"), new PropertyModel<Date>(run, "timeStart")));
     }
 
     if(run.getTimeEnd() != null) {
-      kvPanel.addRow(new StringResourceModel("EndDate", this, null), DateModelUtils.getShortDateTimeModel(new PropertyModel(run, "timeEnd")));
+      kvPanel.addRow(new StringResourceModel("EndDate", this, null), DateModelUtils.getShortDateTimeModel(new PropertyModel<Date>(run, "timeEnd")));
     }
 
     InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
@@ -190,7 +191,6 @@ public class InstrumentRunPanel extends Panel {
     return userSessionService.getDateTimeFormat();
   }
 
-  @SuppressWarnings("unchecked")
   private Component getKeyValueDataPanel(String id, IModel titleModel, List parameters) {
 
     KeyValueDataPanel kvPanel = new KeyValueDataPanel(id, titleModel);
