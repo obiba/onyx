@@ -4,6 +4,8 @@
     <entry_points version="2.0" />
   </component>
   <component name="FrameworkDetectionExcludesConfiguration">
+    <file url="file://$PROJECT_DIR$/onyx-demo/overlays" />
+    <file url="file://$PROJECT_DIR$/onyx-integration-test/overlays" />
     <file type="web" url="file://$PROJECT_DIR$/onyx-demo" />
     <file type="web" url="file://$PROJECT_DIR$/onyx-example" />
     <file type="web" url="file://$PROJECT_DIR$/onyx-integration-test" />
@@ -28,6 +30,11 @@
         <entry key="$PROJECT_DIR$">
           <value>
             <SvnBranchConfiguration>
+              <option name="branchUrls">
+                <list>
+                  <option value="https://svn.obiba.org/onyx/branches" />
+                </list>
+              </option>
               <option name="trunkUrl" value="https://svn.obiba.org/onyx/trunk" />
             </SvnBranchConfiguration>
           </value>

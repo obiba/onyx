@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="onyx-webapp:war exploded">
-    <output-path>$PROJECT_DIR$/onyx-webapp/target/onyx-webapp-1.9-SNAPSHOT</output-path>
+    <output-path>$PROJECT_DIR$/onyx-webapp/target/onyx-webapp-1.10-SNAPSHOT</output-path>
     <root id="root">
       <element id="javaee-facet-resources" facet="onyx-webapp/web/Web" />
       <element id="directory" name="WEB-INF">
@@ -8,10 +8,10 @@
           <element id="module-output" name="onyx-webapp" />
         </element>
         <element id="directory" name="lib">
-          <element id="archive" name="onyx-core-1.9-SNAPSHOT.jar">
+          <element id="archive" name="onyx-core-1.10-SNAPSHOT.jar">
             <element id="module-output" name="onyx-core" />
           </element>
-          <element id="archive" name="onyx-util-1.9-SNAPSHOT.jar">
+          <element id="archive" name="onyx-util-1.10-SNAPSHOT.jar">
             <element id="module-output" name="onyx-util" />
           </element>
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.1" />
@@ -24,9 +24,9 @@
           <element id="library" level="project" name="Maven: org.apache.wicket:wicket-ioc:1.4.21" />
           <element id="library" level="project" name="Maven: org.apache.wicket:wicket-extensions:1.4.21" />
           <element id="library" level="project" name="Maven: org.apache.wicket:wicket-auth-roles:1.4.21" />
-          <element id="library" level="project" name="Maven: org.obiba.opal:opal-rest-client:1.10-SNAPSHOT" />
-          <element id="library" level="project" name="Maven: org.obiba.opal:opal-web-model:1.10-SNAPSHOT" />
-          <element id="library" level="project" name="Maven: org.obiba.magma:magma-api:1.2.18" />
+          <element id="library" level="project" name="Maven: org.obiba.opal:opal-rest-client:1.10.8" />
+          <element id="library" level="project" name="Maven: org.obiba.opal:opal-web-model:1.10.8" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-api:1.2.19" />
           <element id="library" level="project" name="Maven: com.google.guava:guava:10.0.1" />
           <element id="library" level="project" name="Maven: com.google.code.findbugs:jsr305:1.3.9" />
           <element id="library" level="project" name="Maven: com.google.protobuf:protobuf-java:2.3.0" />
@@ -81,24 +81,24 @@
           <element id="library" level="project" name="Maven: bouncycastle:bcmail-jdk14:138" />
           <element id="library" level="project" name="Maven: bouncycastle:bcprov-jdk14:138" />
           <element id="library" level="project" name="Maven: org.liquibase:liquibase-core:1.9.4" />
-          <element id="library" level="project" name="Maven: org.obiba.magma:magma-beans:1.2.18" />
-          <element id="library" level="project" name="Maven: org.obiba.magma:magma-js:1.2.18" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-beans:1.2.19" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-js:1.2.19" />
           <element id="library" level="project" name="Maven: rhino:js:1.7R2" />
           <element id="library" level="project" name="Maven: org.jscience:jscience-physics:5.0-r53p01" />
           <element id="library" level="project" name="Maven: org.unitsofmeasurement:unit-api:0.6.0" />
           <element id="library" level="project" name="Maven: javolution:javolution:5.5.1" />
-          <element id="library" level="project" name="Maven: org.obiba.magma:magma-filter:1.2.18" />
-          <element id="library" level="project" name="Maven: org.obiba.magma:magma-xstream:1.2.18" />
-          <element id="library" level="project" name="Maven: org.obiba.magma:magma-spring:1.2.18" />
-          <element id="library" level="project" name="Maven: org.obiba.magma:magma-datasource-fs:1.2.18" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-filter:1.2.19" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-xstream:1.2.19" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-spring:1.2.19" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-datasource-fs:1.2.19" />
           <element id="library" level="project" name="Maven: de.schlichtherle.io:truezip:6.6" />
-          <element id="library" level="project" name="Maven: org.obiba.magma:magma-datasource-csv:1.2.18" />
-          <element id="library" level="project" name="Maven: org.obiba.magma:magma-crypt:1.2.18" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-datasource-csv:1.2.19" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-crypt:1.2.19" />
           <element id="library" level="project" name="Maven: org.obiba.wicket:wicket-nanogong:0.0.3" />
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-log4j12:1.7.1" />
           <element id="library" level="project" name="Maven: log4j:log4j:1.2.17" />
           <element id="library" level="project" name="Maven: net.sourceforge.findbugs:annotations:1.3.2" />
-          <element id="library" level="project" name="Maven: org.obiba.magma:magma-datasource-excel:1.2.18" />
+          <element id="library" level="project" name="Maven: org.obiba.magma:magma-datasource-excel:1.2.19" />
           <element id="library" level="project" name="Maven: org.apache.poi:poi-ooxml:3.7" />
           <element id="library" level="project" name="Maven: org.apache.poi:poi-ooxml-schemas:3.7" />
           <element id="library" level="project" name="Maven: org.apache.xmlbeans:xmlbeans:2.3.0" />
