@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="onyx-webapp:war exploded">
-    <output-path>$PROJECT_DIR$/onyx-webapp/target/onyx-webapp-1.9-SNAPSHOT</output-path>
+    <output-path>$PROJECT_DIR$/onyx-webapp/target/onyx-webapp-1.10-SNAPSHOT</output-path>
     <root id="root">
       <element id="javaee-facet-resources" facet="onyx-webapp/web/Web" />
       <element id="directory" name="WEB-INF">
@@ -8,10 +8,10 @@
           <element id="module-output" name="onyx-webapp" />
         </element>
         <element id="directory" name="lib">
-          <element id="archive" name="onyx-core-1.9-SNAPSHOT.jar">
+          <element id="archive" name="onyx-core-1.10-SNAPSHOT.jar">
             <element id="module-output" name="onyx-core" />
           </element>
-          <element id="archive" name="onyx-util-1.9-SNAPSHOT.jar">
+          <element id="archive" name="onyx-util-1.10-SNAPSHOT.jar">
             <element id="module-output" name="onyx-util" />
           </element>
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.1" />
