@@ -665,9 +665,7 @@
         <artifactId>maven-release-plugin</artifactId>
         <version>${maven-release-plugin.version}</version>
         <configuration>
-          <!--
-            <tagBase>https://svn.obiba.org/onyx/tags/releases</tagBase>
-          -->
+          <tagBase>https://svn.obiba.org/onyx/tags/releases</tagBase>
           <!-- Use parent version as modules' version -->
           <autoVersionSubmodules>true</autoVersionSubmodules>
           <!-- Need to install artifacts due to onyx-integration-test's use of dependency-plugin -->
