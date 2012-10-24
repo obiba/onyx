@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -13,7 +14,7 @@
   <licenses>
     <license>
       <name>GNU Public License version 3</name>
-      <url>LICENSE</url>
+      <url>http://www.obiba.org/node/62</url>
     </license>
   </licenses>
 
@@ -194,7 +195,7 @@
           </exclusion>
         </exclusions>
       </dependency>
-      
+
       <dependency>
         <groupId>org.opensymphony.quartz</groupId>
         <artifactId>quartz</artifactId>
@@ -537,25 +538,25 @@
         <artifactId>magma-crypt</artifactId>
         <version>${magma.version}</version>
       </dependency>
-      
+
       <dependency>
         <groupId>net.sourceforge.findbugs</groupId>
         <artifactId>annotations</artifactId>
         <version>${findbugs-annotation.version}</version>
       </dependency>
-      
-			<dependency>
-	    	<groupId>org.codehaus.jackson</groupId>
-	    	<artifactId>jackson-mapper-asl</artifactId>
-	    	<version>${jackson.version}</version>
-			</dependency>
 
       <dependency>
-		    <groupId>org.obiba.wicket</groupId>
-		    <artifactId>wicket-nanogong</artifactId>
-		    <version>${wicket-nanogong.version}</version>		
-		  </dependency>      
-      
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-mapper-asl</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.obiba.wicket</groupId>
+        <artifactId>wicket-nanogong</artifactId>
+        <version>${wicket-nanogong.version}</version>
+      </dependency>
+
     </dependencies>
 
   </dependencyManagement>
@@ -612,27 +613,37 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>findbugs-maven-plugin</artifactId>
-          <version>2.3.3</version>
+          <version>${maven-findbugs-plugin.version}</version>
           <configuration>
             <failOnError>false</failOnError>
             <maxHeap>200</maxHeap>
           </configuration>
         </plugin>
+
         <plugin>
           <artifactId>maven-pmd-plugin</artifactId>
+          <version>${maven-pmd-plugin.version}</version>
           <configuration>
             <linkXref>false</linkXref>
-            <sourceEncoding>ISO-8859-1</sourceEncoding>
+            <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
             <minimumTokens>30</minimumTokens>
-            <targetJdk>1.6</targetJdk>
+            <targetJdk>${maven.compiler.target}</targetJdk>
             <rulesets>
-              <ruleset>${pmd.ruleset.dir}/onyx-pmd-ruleset.xml</ruleset>        
+              <ruleset>${pmd.ruleset.dir}/onyx-pmd-ruleset.xml</ruleset>
             </rulesets>
           </configuration>
         </plugin>
+
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.6</version>
+          <version>${maven-javadoc-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${maven-deploy-plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -640,26 +651,47 @@
     <plugins>
 
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>${maven-buildnumber-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>createBuildNumber</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+            <configuration>
+              <format>{0,date,yyyyMMddHHmmss}</format>
+              <items>
+                <item>timestamp</item>
+              </items>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>2.1</version>
+        <version>${maven-release-plugin.version}</version>
         <configuration>
-          <tagBase>https://svn.obiba.org/onyx/tags/releases</tagBase>
           <!-- Use parent version as modules' version -->
           <autoVersionSubmodules>true</autoVersionSubmodules>
-          <!-- Need to install artifacts due to onyx-example's use of dependency-plugin -->
+          <!-- Need to install artifacts due to onyx-integration-test's use of dependency-plugin -->
           <preparationGoals>clean install</preparationGoals>
+          <releaseProfiles>release</releaseProfiles>
         </configuration>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>${maven-compiler-plugin.version}</version>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-          <encoding>ISO-8859-1</encoding>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
+          <encoding>${project.build.sourceEncoding}</encoding>
           <showWarnings>true</showWarnings>
         </configuration>
       </plugin>
@@ -667,7 +699,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>2.2</version>
+        <version>${maven-war-plugin.version}</version>
         <configuration>
           <archive>
             <manifest>
@@ -683,7 +715,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.3.1</version>
+        <version>${maven-jar-plugin.version}</version>
         <configuration>
           <archive>
             <manifest>
@@ -698,7 +730,7 @@
 
       <plugin>
         <artifactId>maven-source-plugin</artifactId>
-        <version>2.1.2</version>
+        <version>${maven-source-plugin.version}</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -708,12 +740,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-
-      <plugin>
-        <!-- Setting the maven-deploy-plugin version -->
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>2.4</version>
       </plugin>
 
     </plugins>
@@ -823,11 +849,33 @@
   </distributionManagement>
 
   <scm>
-    <connection>scm:svn:http://svn.obiba.org/onyx/branches/onyx-1.8.x</connection>
-    <developerConnection>scm:svn:https://svn.obiba.org/onyx/branches/onyx-1.8.x</developerConnection>
+    <connection>scm:git:git://github.com/obiba/onyx.git</connection>
+    <developerConnection>scm:git:https://github.com/obiba/onyx.git</developerConnection>
+    <url>https://github.com/obiba/onyx</url>
   </scm>
 
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://jira.obiba.org/</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>Jenkins</system>
+    <url>http://ci.obiba.org/view/Onyx/job/Onyx%201.8.x</url>
+  </ciManagement>
+
+  <mailingLists>
+    <mailingList>
+      <name>OBiBa Users</name>
+      <post>obiba-users@googlegroups.com</post>
+      <archive>https://groups.google.com/forum/?fromgroups#!forum/obiba-users</archive>
+    </mailingList>
+  </mailingLists>
+
   <properties>
+
+    <maven.compiler.target>1.6</maven.compiler.target>
+    <maven.compiler.source>1.6</maven.compiler.source>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 
     <wicket.version>1.4.17</wicket.version>
@@ -866,73 +914,65 @@
     <pmd.ruleset.dir>${basedir}</pmd.ruleset.dir>
     <jackson.version>1.5.3</jackson.version>
     <wicket-nanogong.version>0.0.3</wicket-nanogong.version>
+
+    <!-- maven plugins -->
+    <maven-buildnumber-plugin.version>1.2</maven-buildnumber-plugin.version>
+    <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+    <maven-deploy-plugin.version>2.7</maven-deploy-plugin.version>
+    <maven-javadoc-plugin.version>2.9</maven-javadoc-plugin.version>
+    <maven-findbugs-plugin.version>2.5.2</maven-findbugs-plugin.version>
+    <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+    <maven-pmd-plugin.version>2.7.1</maven-pmd-plugin.version>
+    <maven-release-plugin.version>2.3.2</maven-release-plugin.version>
+    <maven-source-plugin.version>2.2</maven-source-plugin.version>
+    <maven-war-plugin.version>2.3</maven-war-plugin.version>
+
   </properties>
 
   <profiles>
     <profile>
-      <!--
-        A profile for the builds NOT performed by the continuous integration server. This profile is active by default, which means that it will be deactivated
-        if any other profile is specifically activated (ie: using mvn -P build-id).
-      -->
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
+      <id>release</id>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>buildnumber-maven-plugin</artifactId>
-            <version>1.0-beta-4</version>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
             <executions>
               <execution>
-                <id>createBuildNumber</id>
-                <phase>validate</phase>
+                <id>html-aggregate-javadocs</id>
+                <phase>verify</phase>
                 <goals>
-                  <goal>create</goal>
+                  <goal>aggregate</goal>
                 </goals>
                 <configuration>
-                  <!-- This configuation should allow machines without the SCM client to create a buildNumber property -->
-                  <format>{0,date,yyyyMMddHHmmss}</format>
-                  <items>
-                    <item>timestamp</item>
-                  </items>
-                  <revisionOnScmFailure>LOCAL</revisionOnScmFailure>
+                  <reportOutputDirectory>${obiba.docs.url}/${project.artifactId}</reportOutputDirectory>
+                  <destDir>${project.version}</destDir>
                 </configuration>
+              </execution>
+              <execution>
+                <id>jar-javadocs</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>jar</goal>
+                  <goal>aggregate-jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <!-- Deploy javadoc and sources: explicitly define maven-deploy-plugin after other to force exec order -->
+            <artifactId>maven-deploy-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>deploy</id>
+                <phase>deploy</phase>
+                <goals><goal>deploy</goal></goals>
               </execution>
             </executions>
           </plugin>
         </plugins>
       </build>
-    </profile>
-
-    <profile>
-      <!-- A profile for the builds performed by the continuous integration server -->
-      <id>ci-build</id>
-
-      <build>
-        <plugins>
-
-          <!-- Creates a ${buildNumber} variable within Maven that can be used throughout the build process -->
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>buildnumber-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>createBuildNumber</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>create</goal>
-                </goals>
-                <configuration>
-                  <useLastCommittedRevision>true</useLastCommittedRevision>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-        </plugins>
-      </build>
-
     </profile>
   </profiles>
+
 </project>
