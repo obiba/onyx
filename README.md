@@ -1,6 +1,6 @@
 # Onyx [![Build Status](http://ci.obiba.org/view/Onyx/job/Onyx/badge/icon)](http://ci.obiba.org/view/Onyx/job/Onyx/)
 
-Web-based application that manages participant baseline interviews at assessment centres or clinics.
+Web-based application that manages participant baseline interviews at biobanks assessment centres or clinics.
 
 ## Documentation
 
