@@ -17,11 +17,13 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.PurgeParticipantDataService;
 import org.obiba.onyx.engine.variable.export.OnyxDataPurge;
+import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 
 /**
@@ -34,51 +36,51 @@ public class PurgeParticipantDataTasklet implements Tasklet {
 
   private static final Logger log = LoggerFactory.getLogger(PurgeParticipantDataTasklet.class);
 
+  public static final String TOTAL_DELETED = "totalDeleted";
+
+  public static final String TOTAL_TIME = "totalTime";
+
   private ParticipantService participantService;
 
   private PurgeParticipantDataService purgeParticipantDataService;
 
   private OnyxDataPurge onyxDataPurge;
 
-  // ONYX-1692: Required to set FlushMode
-  private SessionFactory sessionFactory;
-
   public RepeatStatus execute(StepContribution stepContribution, ChunkContext context) {
 
-    log.info("**** STARTING PARTICIPANT DATA PURGE ****");
-    log.info("Current purge configuration is [{}] days", purgeParticipantDataService.getPurgeDataOlderThanInDays());
+    ExecutionContext execCtx = context.getStepContext().getStepExecution().getJobExecution().getExecutionContext();
+    if(execCtx.containsKey(TOTAL_DELETED) == false) {
+      log.info("**** STARTING PARTICIPANT DATA PURGE ****");
+      log.info("Current purge configuration is [{}] days", purgeParticipantDataService.getPurgeDataOlderThanInDays());
+    }
     long start = System.currentTimeMillis();
 
     List<Participant> participantsToBePurged = onyxDataPurge.getParticipantsToPurge();
 
-    FlushMode originalMode = sessionFactory.getCurrentSession().getFlushMode();
-    // Change the flushMode. We'll flush the session manually
-    sessionFactory.getCurrentSession().setFlushMode(FlushMode.MANUAL);
-    try {
-      for(Participant participant : participantsToBePurged) {
-        participantService.deleteParticipant(participant);
-        sessionFactory.getCurrentSession().flush();
-        log.info("Deleted Participant [{}] and related data", participant.getBarcode());
+    if(participantsToBePurged.isEmpty() == false) {
+      Participant participant = participantsToBePurged.iterator().next();
+      participantService.deleteParticipant(participant);
+      long duration = System.currentTimeMillis() - start;
+      log.info("Participant [{}] was deleted in [{}] ms (remains {}).",
+          new Object[] {participant.getBarcode(), duration, participantsToBePurged.size() - 1});
+      int totalDeleted = 1;
+      long totalTime = duration;
+      if(execCtx.containsKey(TOTAL_DELETED)) {
+        totalDeleted = totalDeleted + execCtx.getInt(TOTAL_DELETED);
+        totalTime = totalTime + execCtx.getLong(TOTAL_TIME);
       }
-    } finally {
-      // Reset the flushMode
-      sessionFactory.getCurrentSession().setFlushMode(originalMode);
+      execCtx.put(TOTAL_DELETED, totalDeleted);
+      execCtx.put(TOTAL_TIME, totalTime);
     }
 
-    context.getStepContext().getStepExecution().getJobExecution().getExecutionContext()
-        .put("totalDeleted", participantsToBePurged.size());
+    boolean continuable = participantsToBePurged.size() > 1;
 
-    long end = System.currentTimeMillis();
+    if(continuable == false) {
+      log.info("**** PARTICIPANT DATA PURGE COMPLETED IN {}ms ****",
+          execCtx.containsKey(TOTAL_TIME) ? execCtx.getLong(TOTAL_TIME) : 0);
+    }
 
-    log.info("A total of [{}] Participants were deleted in [{}] ms.", participantsToBePurged.size(), end - start);
-
-    log.info("**** PARTICIPANT DATA PURGE COMPLETED ****");
-
-    return RepeatStatus.FINISHED;
-  }
-
-  public void setSessionFactory(SessionFactory sessionFactory) {
-    this.sessionFactory = sessionFactory;
+    return continuable ? RepeatStatus.CONTINUABLE : RepeatStatus.FINISHED;
   }
 
   public void setParticipantService(ParticipantService participantService) {
