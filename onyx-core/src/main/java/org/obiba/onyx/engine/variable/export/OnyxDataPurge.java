@@ -53,7 +53,7 @@ public class OnyxDataPurge {
     List<Participant> result = new ArrayList<Participant>();
 
     long purgeListStartTime = new Date().getTime();
-    log.info("Starting to determine which Participants need to be purged.");
+    log.debug("Starting to determine which Participants need to be purged.");
 
     Datasource datasource = magmaInstanceProvider.getOnyxDatasource();
     for(OnyxDataExportDestination purge : purgeConfiguration) {
@@ -73,7 +73,8 @@ public class OnyxDataPurge {
     }
 
     long purgeListEndTime = new Date().getTime();
-    log.info("Determined that [{}] Participants need to be purged in [{}ms].", new Object[] { result.size(), purgeListEndTime - purgeListStartTime });
+    log.debug("Determined that [{}] Participants need to be purged in [{}ms].", new Object[] { result.size(),
+        purgeListEndTime - purgeListStartTime });
 
     return result;
   }
