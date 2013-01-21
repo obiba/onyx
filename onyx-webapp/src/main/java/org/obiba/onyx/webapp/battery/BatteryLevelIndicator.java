@@ -48,7 +48,7 @@ public class BatteryLevelIndicator extends Panel {
         }
       }));
     } else {
-      log.info("Battery Level Indicator is disabled: only supported under Windows");
+      log.debug("Battery Level Indicator is disabled: only supported under Windows");
       add(new Label("percentLeft", ""));
       add(new Label("power", ""));
     }
@@ -68,8 +68,8 @@ public class BatteryLevelIndicator extends Panel {
   private Kernel32.SYSTEM_POWER_STATUS readBatteryStatus() {
     Kernel32.SYSTEM_POWER_STATUS status = new Kernel32.SYSTEM_POWER_STATUS();
     kernel32.GetSystemPowerStatus(status);
-    log.debug("Battery status: {}", status);
-    log.debug("Battery flag: {}", status.BatteryFlag);
+    log.trace("Battery status: {}", status);
+    log.trace("Battery flag: {}", status.BatteryFlag);
     return status;
   }
 }

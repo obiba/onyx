@@ -23,7 +23,6 @@ Have a bug? Please create an issue on [OBiBa JIRA](http://jira.obiba.org/jira/br
 
 See [OBiBa Jenkins](http://ci.obiba.org/view/Onyx).
 
-
 ## Mailing list
 
 Have a question? Ask on our mailing list!

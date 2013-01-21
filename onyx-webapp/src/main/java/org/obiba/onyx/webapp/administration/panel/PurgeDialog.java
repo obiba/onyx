@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -20,6 +20,7 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.purge.PurgeParticipantDataTasklet;
 import org.obiba.onyx.core.service.JobExecutionService;
 import org.obiba.onyx.wicket.model.OnyxDataPurgeModel;
 import org.obiba.onyx.wicket.reusable.Dialog;
@@ -158,7 +159,9 @@ public class PurgeDialog extends Dialog {
       JobExecution jobExecution = jobExecutionService.launchJob(purgeParticipantDataJob, jobParameterMap);
       boolean jobCompleted = jobExecution.getExitStatus().getExitCode().equals("COMPLETED");
 
-      participantsDeleted = (jobCompleted) ? jobExecution.getExecutionContext().getInt("totalDeleted") : 0;
+      participantsDeleted = jobExecution.getExecutionContext()
+          .containsKey(PurgeParticipantDataTasklet.TOTAL_DELETED) ? jobExecution.getExecutionContext()
+          .getInt(PurgeParticipantDataTasklet.TOTAL_DELETED) : 0;
       return jobCompleted;
     }
   }
