@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -26,6 +26,9 @@ import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A helper class for launching an external application.
+ */
 public class ExternalAppLauncherHelper {
 
   private static final Logger log = LoggerFactory.getLogger(ExternalAppLauncherHelper.class);
@@ -39,36 +42,24 @@ public class ExternalAppLauncherHelper {
   // Parameters of external software command
   protected String parameterStr;
 
-  public void launchExternalSoftware() {
-
-    class OuputPurger extends Thread {
-
-      InputStream inputStream;
-
-      OuputPurger(InputStream pInputStream) {
-        inputStream = pInputStream;
-      }
-
-      public void run() {
-        try {
-          InputStreamReader wReader = new InputStreamReader(inputStream);
-          BufferedReader wBuffReader = new BufferedReader(wReader);
-
-          while((wBuffReader.readLine()) != null) {
-          }
-
-        } catch(IOException wEx) {
-        }
-      }
+  public void launch() {
+    if(isSotfwareAlreadyStarted()) {
+      JOptionPane.showMessageDialog(null,
+          getExecutable() + " already lock for execution.  Please make sure that another instance is not running.",
+          "Cannot start application!", JOptionPane.ERROR_MESSAGE);
+    } else {
+      launchExternalSoftware();
     }
+  }
+
+  public void launchExternalSoftware() {
 
     List<String> command = new ArrayList<String>();
     command.add("cmd");
     command.add("/c");
 
     if(getParameterStr() == null) command.add(getExecutable());
-    else
-      command.add(getExecutable() + " " + getParameterStr());
+    else command.add(getExecutable() + " " + getParameterStr());
 
     log.info("Launching {} (Work directory={})", command, getWorkDir());
 
@@ -79,12 +70,13 @@ public class ExternalAppLauncherHelper {
     try {
       wProcess = builder.start();
     } catch(IOException e) {
-      JOptionPane.showMessageDialog(null, "Could not create external process for: " + getWorkDir() + getExecutable(), "Cannot start application!", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null, "Could not create external process for: " + getWorkDir() + getExecutable(),
+          "Cannot start application!", JOptionPane.ERROR_MESSAGE);
       throw new RuntimeException(e);
     }
 
-    OuputPurger wOutputErrorPurger = new OuputPurger(wProcess.getErrorStream());
-    OuputPurger wOutputPurger = new OuputPurger(wProcess.getInputStream());
+    OutputPurger wOutputErrorPurger = new OutputPurger(wProcess.getErrorStream());
+    OutputPurger wOutputPurger = new OutputPurger(wProcess.getInputStream());
 
     wOutputErrorPurger.start();
     wOutputPurger.start();
@@ -129,14 +121,6 @@ public class ExternalAppLauncherHelper {
 
   }
 
-  public void launch() {
-    if(!isSotfwareAlreadyStarted()) {
-      launchExternalSoftware();
-    } else {
-      JOptionPane.showMessageDialog(null, getExecutable() + " already lock for execution.  Please make sure that another instance is not running.", "Cannot start application!", JOptionPane.ERROR_MESSAGE);
-    }
-  }
-
   public String getExecutable() {
     return executable;
   }
@@ -159,6 +143,28 @@ public class ExternalAppLauncherHelper {
 
   public void setWorkDir(String workDir) {
     this.workDir = workDir;
+  }
+
+  private static class OutputPurger extends Thread {
+
+    InputStream inputStream;
+
+    OutputPurger(InputStream pInputStream) {
+      inputStream = pInputStream;
+    }
+
+    @Override
+    public void run() {
+      try {
+        InputStreamReader wReader = new InputStreamReader(inputStream);
+        BufferedReader wBuffReader = new BufferedReader(wReader);
+
+        while(wBuffReader.readLine() != null) {
+        }
+
+      } catch(IOException wEx) {
+      }
+    }
   }
 
 }

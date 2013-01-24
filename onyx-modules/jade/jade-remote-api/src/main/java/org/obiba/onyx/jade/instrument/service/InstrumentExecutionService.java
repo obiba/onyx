@@ -19,30 +19,59 @@ import org.obiba.onyx.util.data.Data;
 
 /**
  * Defines the interface through which code running on local stations may communicate with the server.
- * <p>
- * This interface must be kept simple and should not exchange persisted objects, unless these have no relationship to
- * any other persisted entity.
  */
 public interface InstrumentExecutionService {
 
+  // Developer note: This interface must be kept simple and should not exchange persisted objects,
+  // unless these have no relationship to any other persisted entity.
+
+  //
+  // Operator methods
+  //
+
   /**
-   * Returns the name of the instrument's operator.
-   * 
-   * @return the instrument's operator name.
+   * Get the instrument's operator full name.
    */
-  public String getInstrumentOperator();
+  String getInstrumentOperator();
 
-  public String getInstrumentOperatorUsername();
+  /**
+   * Get the instrument's operator login name.
+   */
+  String getInstrumentOperatorUsername();
 
-  public Locale getInstrumentOperatorLocale();
+  /**
+   * Get the instrument's operator user interface language.
+   */
+  Locale getInstrumentOperatorLocale();
 
-  public String getParticipantID();
+  //
+  // Participant methods
+  //
 
-  public String getParticipantLastName();
+  /**
+   * Get the participant's identifier in Onyx.
+   */
+  String getParticipantID();
 
-  public String getParticipantFirstName();
+  /**
+   * Get the participant's last name.
+   */
+  String getParticipantLastName();
 
-  public Date getParticipantBirthDate();
+  /**
+   * Get the participant's first name.
+   */
+  String getParticipantFirstName();
+
+  /**
+   * Get the participant's birth date.
+   */
+  Date getParticipantBirthDate();
+
+  /**
+   * Get the participant's gender.
+   */
+  String getParticipantGender();
 
   /**
    * Convert a date parameter to a String in the specified format.
@@ -50,33 +79,82 @@ public interface InstrumentExecutionService {
    * @param format The requested date format.
    * @return The formatted date.
    */
-  public String getDateAsString(String parameter, SimpleDateFormat dateFormat);
+  String getDateAsString(String parameter, SimpleDateFormat dateFormat);
 
-  public String getParticipantGender();
-
-  public int getExpectedMeasureCount();
-
-  public int getCurrentMeasureCount();
-
-  public boolean isRepeatableMeasure();
-
-  public boolean hasInputParameter(String parameterCode);
-
-  public boolean hasOutputParameter(String parameterCode);
-
-  public Map<String, Data> getInputParametersValue(String... parameters);
-
-  public Map<String, String> getInputParametersVendorNames(String... parameters);
-
-  public Data getInputParameterValue(String parameter);
-
-  public void addOutputParameterValues(Map<String, Data> values);
+  //
+  // Instrument configuration
+  //
 
   /**
-   * Returns a set of expected output parameters using the vendor's name
+   * Get the number of expected measures: can be a calculated (for instance more measures could be required to
+   * increase the quality of data already collected).
    */
-  public Set<String> getExpectedOutputParameterVendorNames();
+  int getExpectedMeasureCount();
 
-  public void instrumentRunnerError(Exception error);
+  /**
+   * Current number of measures already sent to the server.
+   */
+  int getCurrentMeasureCount();
+
+  /**
+   * Multiple measures are expected (default is false).
+   */
+  boolean isRepeatableMeasure();
+
+  /**
+   * Check that the input parameter with the given name is part of the instrument configuration. This is to be
+   * checked before getting data for this parameter.
+   * @param parameter
+   * @return
+   */
+  boolean hasInputParameter(String parameter);
+
+  /**
+   * Get input data for the list of input parameter names.
+   * @param parameters
+   * @return
+   */
+  Map<String, Data> getInputParametersValue(String... parameters);
+
+  /**
+   * Get the vendor names of given input parameter names (the name of parameter can be different in Onyx and in the
+   * instrument).
+   * @param parameters
+   * @return
+   */
+  Map<String, String> getInputParametersVendorNames(String... parameters);
+
+  /**
+   * Get a specific input parameter data.
+   * @param parameter
+   * @return
+   */
+  Data getInputParameterValue(String parameter);
+
+  /**
+   * Check that the output parameter with the given name is part of the instrument configuration. This is to be
+   * checked before sending data for this parameter.
+   * @param parameter
+   * @return
+   */
+  boolean hasOutputParameter(String parameter);
+
+  /**
+   * Get a set of expected output parameters using their vendor name.
+   */
+  Set<String> getExpectedOutputParameterVendorNames();
+
+  /**
+   * Sends the data collected for each output parameter name.
+   * @param values
+   */
+  void addOutputParameterValues(Map<String, Data> values);
+
+
+  /**
+   * To be called in case of a fatal error occurs when interacting with the instrument.
+   * @param error
+   */
+  void instrumentRunnerError(Exception error);
 
 }
