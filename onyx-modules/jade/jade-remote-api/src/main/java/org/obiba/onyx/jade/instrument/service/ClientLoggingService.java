@@ -12,10 +12,14 @@ package org.obiba.onyx.jade.instrument.service;
 import java.util.logging.LogRecord;
 
 /**
- * Define logging service for the client so we can let client log information to server
+ * Define logging service for the client so we can let client log information to server.
  */
 public interface ClientLoggingService {
 
-  public void logging(LogRecord record);
+  /**
+   * Log message on Onyx server.
+   * @param record
+   */
+  void logging(LogRecord record);
 
 }
