@@ -30,19 +30,9 @@ public interface InstrumentExecutionService {
   //
 
   /**
-   * Get the instrument's operator full name.
-   */
-  String getInstrumentOperator();
-
-  /**
    * Get the instrument's operator login name.
    */
   String getInstrumentOperatorUsername();
-
-  /**
-   * Get the instrument's operator user interface language.
-   */
-  Locale getInstrumentOperatorLocale();
 
   //
   // Participant methods
