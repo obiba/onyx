@@ -28,6 +28,7 @@ import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.FileSystemUtils;
 
@@ -39,7 +40,7 @@ public class APEXInstrumentRunner implements InstrumentRunner {
 
   private JdbcTemplate patScanDb;
 
-  private File scanDataDir;
+  private JdbcTemplate refCurveDb;
 
   private DicomSettings dicomSettings;
 
@@ -47,7 +48,7 @@ public class APEXInstrumentRunner implements InstrumentRunner {
 
   private File dcmDir;
 
-  private List<String> participantFiles = new ArrayList<String>();
+  //private List<String> participantFiles = new ArrayList<String>();
 
   private Set<String> outVendorNames;
 
@@ -57,131 +58,19 @@ public class APEXInstrumentRunner implements InstrumentRunner {
 
   private ApexReceiver apexReceiver = new ApexReceiver();
 
-  private String participantKey;
-
   private String participantID;
+
+  private Map<String, String> participantData = new HashMap<String, String>();
 
   private boolean isRepeatable;
 
-  private List<Map<String, Data>> retrieveDeviceData() {
-
-    List<Map<String, Data>> dataList = new ArrayList<Map<String, Data>>();
-
-    log.info("participantId: " + participantID);
-    participantKey = patScanDb
-        .queryForObject("select p.PATIENT_KEY from PATIENT p where p.IDENTIFIER1=?", String.class, participantID);
-    log.info("participantKey: " + participantKey);
-    if(instrumentExecutionService.hasInputParameter("HipSide")) {
-      String hipSide = instrumentExecutionService.getInputParameterValue("HipSide").getValue();
-      log.info("hipSide: " + hipSide);
-      log.info("expected: " + instrumentExecutionService.getExpectedMeasureCount());
-      if(hipSide != null) {
-        if(hipSide.toUpperCase().startsWith("L")) {
-          extractLeftHip(dataList);
-        } else if(hipSide.toUpperCase().startsWith("R")) {
-          extractRightHip(dataList);
-        } else if(hipSide.toUpperCase().startsWith("B")) {
-          if(instrumentExecutionService.getExpectedMeasureCount() > 1) {
-            extractLeftHip(dataList);
-            extractRightHip(dataList);
-          } else {
-            extractScanData(dataList,
-                new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver));
-            extractScanData(dataList,
-                new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver));
-          }
-        }
-      }
-    } else if(instrumentExecutionService.getExpectedMeasureCount() > 1) {
-      extractLeftHip(dataList);
-      extractRightHip(dataList);
-    } else {
-      extractScanData(dataList,
-          new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver));
-      extractScanData(dataList,
-          new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver));
-    }
-    if(instrumentExecutionService.hasInputParameter("ForearmSide")) {
-      String forearmSide = instrumentExecutionService.getInputParameterValue("ForearmSide").getValue();
-      if(forearmSide != null) {
-        if(forearmSide.toUpperCase().startsWith("L")) {
-          extractScanData(dataList,
-              new ForearmScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver) {
-                @Override
-                public String getName() {
-                  return "FA";
-                }
-              });
-        } else if(forearmSide.toUpperCase().startsWith("R")) {
-          extractScanData(dataList,
-              new ForearmScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver) {
-                @Override
-                public String getName() {
-                  return "FA";
-                }
-              });
-        }
-      }
-    } else {
-      extractScanData(dataList,
-          new ForearmScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver));
-      extractScanData(dataList,
-          new ForearmScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver));
-    }
-    extractScanData(dataList,
-        new WholeBodyScanDataExtractor(patScanDb, scanDataDir, participantKey, server, apexReceiver));
-    extractScanData(dataList,
-        new IVAImagingScanDataExtractor(patScanDb, scanDataDir, participantKey, Energy.CLSA_DXA, server, apexReceiver));
-
-    return dataList;
-
-  }
-
-  private void extractRightHip(List<Map<String, Data>> dataList) {
-    extractScanData(dataList,
-        new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.RIGHT, server, apexReceiver) {
-          @Override
-          public String getName() {
-            return "HIP";
-          }
-        });
-  }
-
-  private void extractLeftHip(List<Map<String, Data>> dataList) {
-    extractScanData(dataList,
-        new HipScanDataExtractor(patScanDb, scanDataDir, participantKey, Side.LEFT, server, apexReceiver) {
-          @Override
-          public String getName() {
-            return "HIP";
-          }
-        });
-  }
-
-  private void extractScanData(List<Map<String, Data>> dataList, APEXScanDataExtractor extractor) {
-    log.info("extractScanData");
-    // filter the values to output
-    Map<String, Data> extractedData = extractor.extractData();
-    Map<String, Data> outputData = new HashMap<String, Data>();
-
-    for(Entry<String, Data> entry : extractedData.entrySet()) {
-      if(outVendorNames.contains(entry.getKey())) {
-        outputData.put(entry.getKey(), entry.getValue());
-      }
-    }
-    log.info(extractedData + "");
-    log.info(outputData + "");
-    dataList.add(outputData);
-
-    participantFiles.addAll(extractor.getFileNames());
-  }
-
-  public void sendDataToServer(Map<String, Data> data) {
-    instrumentExecutionService.addOutputParameterValues(data);
+  public enum Side {
+    LEFT, RIGHT
   }
 
   /**
-   * Implements parent method initialize from InstrumentRunner Delete results from previous measurement and initiate the
-   * input file to be read by the external application
+   * Implements initialize() of parent InstrumentRunner. Delete results from previous measurement and initiate the input
+   * file to be read by the external application.
    */
   public void initialize() {
     participantID = instrumentExecutionService.getParticipantID();
@@ -194,16 +83,16 @@ public class APEXInstrumentRunner implements InstrumentRunner {
       if(tmpDir.delete() == false || tmpDir.mkdir() == false) {
         throw new RuntimeException("Cannot create temp directory");
       }
-      this.dcmDir = tmpDir;
+      dcmDir = tmpDir;
       log.info("DICOM files stored to {}", dcmDir.getAbsolutePath());
     } catch(IOException e) {
       throw new RuntimeException(e);
     }
-    this.server = new DicomServer(dcmDir, dicomSettings);
+    server = new DicomServer(dcmDir, dicomSettings);
   }
 
   /**
-   * Implements parent method run from InstrumentRunner Launch the external application, retrieve and send the data
+   * Implements run() of parent InstrumentRunner. Launch the external application, retrieve and send the data.
    */
   public void run() {
     log.info("Start Dicom server");
@@ -215,28 +104,10 @@ public class APEXInstrumentRunner implements InstrumentRunner {
     apexReceiver.waitForExit();
   }
 
-  private void retrieveMeasurements() {
-    log.info("Retrieving measurements");
-    List<Map<String, Data>> dataList = retrieveDeviceData();
-
-    log.info("Sending data to server");
-    sentVariables.clear();
-    for(Map<String, Data> dataMap : dataList) {
-      for(Map.Entry<String, Data> entry : dataMap.entrySet()) {
-        sentVariables.add(entry.getKey());
-      }
-      // send only if measure is complete (all variable assigned)
-      // because repeatable measure accept partial variable set
-      if(isRepeatable) {
-        if(outVendorNames.equals(dataMap.keySet())) {
-          sendDataToServer(dataMap);
-        }
-      } else {
-        sendDataToServer(dataMap);
-      }
-    }
-  }
-
+  /**
+   * Implements shutdown() of parent InstrumentRunner. Closes dicom communication channel, deletes temporary dcm files
+   * transferred by DICOM transfer from Apex sender to dcm4che receiver.
+   */
   public void shutdown() {
     log.info("Shutdown Dicom server");
     server.stop();
@@ -244,35 +115,8 @@ public class APEXInstrumentRunner implements InstrumentRunner {
   }
 
   /**
-   * Return true if you sent all required variable, false otherwise
-   *
-   * @return
+   * Called by initialize(). Initialize and display the GUI for capturing the dcm files from Apex.
    */
-  private boolean isCompleteVariable() {
-    List<String> missing = new ArrayList<String>();
-    List<String> sentVariablesCopy = new ArrayList<String>(sentVariables);
-    boolean retValue = true;
-
-    // if repeatable measure check if all variables in measure has been sent
-    for(int i = 0; i < instrumentExecutionService.getExpectedMeasureCount(); i++) {
-      for(String out : outVendorNames) {
-        if(sentVariablesCopy.contains(out) == false) {
-          missing.add(out);
-          retValue = false;
-        } else {
-          sentVariablesCopy.remove(out);
-        }
-      }
-    }
-    log.info("Missing variables: " + missing);
-    return retValue;
-  }
-
-  private void deleteTemporaryDicomFiles() {
-    log.info("Delete temporary dicom files");
-    FileSystemUtils.deleteRecursively(dcmDir);
-  }
-
   public void initApexReceiverStatus() {
     apexReceiver.setParticipantId(participantID);
     apexReceiver.setCheckActionListener(new ActionListener() {
@@ -301,9 +145,219 @@ public class APEXInstrumentRunner implements InstrumentRunner {
     apexReceiver.setVisible(true);
   }
 
-  public enum Side {
-    LEFT, RIGHT
+  /**
+   * Called by initApexReceiverStatus(). Retrieve the device data, add to list of variables to send, send to
+   * instrumentExecutionService.
+   */
+  private void retrieveMeasurements() {
+    log.info("Retrieving measurements");
+    List<Map<String, Data>> dataList = retrieveDeviceData();
+    log.info("Sending data to server");
+    sentVariables.clear();
+    for(Map<String, Data> dataMap : dataList) {
+      for(Map.Entry<String, Data> entry : dataMap.entrySet()) {
+        sentVariables.add(entry.getKey());
+      }
+      // send only if the measure is complete (all variables assigned)
+      // because repeatable measures accept partial variable sets
+      if(isRepeatable) {
+        if(outVendorNames.equals(dataMap.keySet())) {
+          sendDataToServer(dataMap);
+        }
+      } else {
+        sendDataToServer(dataMap);
+      }
+    }
   }
+
+  /**
+   * Called by initApexReceiverStatus(). Return true if all required variables were sent, false otherwise.
+   * 
+   * @return
+   */
+  private boolean isCompleteVariable() {
+    List<String> missing = new ArrayList<String>();
+    List<String> sentVariablesCopy = new ArrayList<String>(sentVariables);
+    boolean retValue = true;
+
+    // if this is a repeatable measure, check if all variables in the measure have been sent
+    for(int i = 0; i < instrumentExecutionService.getExpectedMeasureCount(); i++) {
+      for(String out : outVendorNames) {
+        if(sentVariablesCopy.contains(out) == false) {
+          missing.add(out);
+          retValue = false;
+        } else {
+          sentVariablesCopy.remove(out);
+        }
+      }
+    }
+    log.info("Missing variables: " + missing);
+    return retValue;
+  }
+
+  /**
+   * Called by retrieveMeasurements(). Queries Apex PatScanDb for patient key, DOB, gender based on participant visit
+   * ID. Extracts Hip, Forearm, Whole Body and Spine scans and analysis data.
+   */
+  private List<Map<String, Data>> retrieveDeviceData() {
+
+    List<Map<String, Data>> dataList = new ArrayList<Map<String, Data>>();
+
+    log.info("participantId: " + participantID);
+
+    participantData.clear();
+
+    String sql = "SELECT PATIENT_KEY, BIRTHDATE, SEX FROM PATIENT WHERE IDENTIFIER1 = ?";
+    try {
+      Map<String, Object> results = patScanDb.queryForMap(sql, new Object[] { participantID });
+      if(results != null) {
+        participantData.put("participantKey", results.get("PATIENT_KEY").toString());
+        participantData.put("participantDOB", results.get("BIRTHDATE").toString());
+        participantData.put("participantGender", results.get("SEX").toString());
+      }
+    } catch(DataAccessException e) {
+      throw e;
+    }
+
+    log.info("hip block in runner start");
+    if(instrumentExecutionService.hasInputParameter("HipSide")) {
+      String hipSide = instrumentExecutionService.getInputParameterValue("HipSide").getValue();
+      log.info("hipSide: " + hipSide);
+      log.info("expected: " + instrumentExecutionService.getExpectedMeasureCount());
+      if(hipSide != null) {
+        if(hipSide.toUpperCase().startsWith("L")) {
+          extractLeftHip(dataList);
+        } else if(hipSide.toUpperCase().startsWith("R")) {
+          extractRightHip(dataList);
+        } else if(hipSide.toUpperCase().startsWith("B")) {
+          if(instrumentExecutionService.getExpectedMeasureCount() > 1) {
+            extractLeftHip(dataList);
+            extractRightHip(dataList);
+          } else {
+            extractScanData(dataList, new HipScanDataExtractor(patScanDb, refCurveDb, participantData, Side.LEFT, server, apexReceiver));
+            extractScanData(dataList, new HipScanDataExtractor(patScanDb, refCurveDb, participantData, Side.RIGHT, server, apexReceiver));
+          }
+        }
+      }
+    } else if(instrumentExecutionService.getExpectedMeasureCount() > 1) {
+      extractLeftHip(dataList);
+      extractRightHip(dataList);
+    } else {
+      extractScanData(dataList, new HipScanDataExtractor(patScanDb, refCurveDb, participantData, Side.LEFT, server, apexReceiver));
+      extractScanData(dataList, new HipScanDataExtractor(patScanDb, refCurveDb, participantData, Side.RIGHT, server, apexReceiver));
+    }
+    log.info("hip block in runner end");
+
+    log.info("forearm block in runner start");
+    if(instrumentExecutionService.hasInputParameter("ForearmSide")) {
+      String forearmSide = instrumentExecutionService.getInputParameterValue("ForearmSide").getValue();
+      if(forearmSide != null) {
+        if(forearmSide.toUpperCase().startsWith("L")) {
+          extractScanData(dataList, new ForearmScanDataExtractor(patScanDb, refCurveDb, participantData, Side.LEFT, server, apexReceiver) {
+            @Override
+            public String getName() {
+              return "FA";
+            }
+          });
+        } else if(forearmSide.toUpperCase().startsWith("R")) {
+          extractScanData(dataList, new ForearmScanDataExtractor(patScanDb, refCurveDb, participantData, Side.RIGHT, server, apexReceiver) {
+            @Override
+            public String getName() {
+              return "FA";
+            }
+          });
+        }
+      }
+    } else {
+      extractScanData(dataList, new ForearmScanDataExtractor(patScanDb, refCurveDb, participantData, Side.LEFT, server, apexReceiver));
+      extractScanData(dataList, new ForearmScanDataExtractor(patScanDb, refCurveDb, participantData, Side.RIGHT, server, apexReceiver));
+    }
+    log.info("forearm block in runner end");
+
+    log.info("wbody block in runner start");
+    extractScanData(dataList, new WholeBodyScanDataExtractor(patScanDb, refCurveDb, participantData, server, apexReceiver));
+    log.info("wbody block in runner end");
+
+    log.info("spine block in runner start");
+    extractScanData(dataList, new IVAImagingScanDataExtractor(patScanDb, refCurveDb, participantData, Energy.CLSA_DXA, server, apexReceiver));
+    log.info("spine block in runner end");
+
+    return dataList;
+  }
+
+  /**
+   * Called by retrieveMeasurements().
+   * 
+   * @param data
+   */
+  public void sendDataToServer(Map<String, Data> data) {
+    instrumentExecutionService.addOutputParameterValues(data);
+  }
+
+  /**
+   * Called by retrieveDeviceData(). Generic calling interface to extract Apex data. Passes abstract data extractor:
+   * child classes unique to scan type (ie., forearm, spine etc.).
+   * 
+   * @param dataList
+   * @param extractor
+   */
+  private void extractScanData(List<Map<String, Data>> dataList, APEXScanDataExtractor extractor) {
+    log.info("extractScanData");
+    // filter the values to output
+    Map<String, Data> extractedData = extractor.extractData();
+    Map<String, Data> outputData = new HashMap<String, Data>();
+
+    for(Entry<String, Data> entry : extractedData.entrySet()) {
+      if(outVendorNames.contains(entry.getKey())) {
+        outputData.put(entry.getKey(), entry.getValue());
+      }
+    }
+    log.info(extractedData + "");
+    log.info(outputData + "");
+    dataList.add(outputData);
+
+    // participantFiles.addAll(extractor.getFileNames());
+  }
+
+  /**
+   * Called by retrieveDeviceData(). Calling interface to extract Apex right hip data.
+   * 
+   * @param dataList
+   */
+  private void extractRightHip(List<Map<String, Data>> dataList) {
+    extractScanData(dataList, new HipScanDataExtractor(patScanDb, refCurveDb, participantData, Side.RIGHT, server, apexReceiver) {
+      @Override
+      public String getName() {
+        return "HIP";
+      }
+    });
+  }
+
+  /**
+   * Called by retrieveDeviceData(). Calling interface to extract Apex left hip data.
+   * 
+   * @param dataList
+   */
+  private void extractLeftHip(List<Map<String, Data>> dataList) {
+    extractScanData(dataList, new HipScanDataExtractor(patScanDb, refCurveDb, participantData, Side.LEFT, server, apexReceiver) {
+      @Override
+      public String getName() {
+        return "HIP";
+      }
+    });
+  }
+
+  /**
+   * Called by shutdown(). Deletes all temporary dcm files transferred from Apex to client.
+   */
+  private void deleteTemporaryDicomFiles() {
+    log.info("Delete temporary dicom files");
+    FileSystemUtils.deleteRecursively(dcmDir);
+  }
+
+  //
+  // Set/Get methods.
+  //
 
   public void setInstrumentExecutionService(InstrumentExecutionService instrumentExecutionService) {
     this.instrumentExecutionService = instrumentExecutionService;
@@ -311,6 +365,10 @@ public class APEXInstrumentRunner implements InstrumentRunner {
 
   public void setPatScanDb(JdbcTemplate patScanDb) {
     this.patScanDb = patScanDb;
+  }
+
+  public void setRefCurveDb(JdbcTemplate refCurveDb) {
+    this.refCurveDb = refCurveDb;
   }
 
   public void setDicomSettings(DicomSettings dicomSettings) {

@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.holologic;
 
-import java.io.File;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -24,8 +23,8 @@ public class ForearmScanDataExtractor extends APEXScanDataExtractor {
 
   private Side side;
 
-  public ForearmScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String pFileName, Side side, DicomServer server, ApexReceiver apexReceiver) {
-    super(patScanDb, scanDataDir, pFileName, server, apexReceiver);
+  public ForearmScanDataExtractor(JdbcTemplate patScanDb, JdbcTemplate refCurveDb, Map<String, String> participantData, Side side, DicomServer server, ApexReceiver apexReceiver) {
+    super(patScanDb, refCurveDb, participantData, server, apexReceiver);
     this.side = side;
   }
 
@@ -52,6 +51,16 @@ public class ForearmScanDataExtractor extends APEXScanDataExtractor {
     default:
       return 7l;
     }
+  }
+
+  @Override
+  public String getRefType() {
+    return "R";
+  }
+
+  @Override
+  public String getRefSource() {
+    return "Hologic";
   }
 
   @Override
