@@ -39,6 +39,8 @@ public class Attribute implements Serializable {
 
   private String unit;
 
+  private List<AttributeValue> defaultValues = new ArrayList<AttributeValue>();
+
   //
   // Methods
   //
@@ -128,4 +130,16 @@ public class Attribute implements Serializable {
     this.unit = unit;
   }
 
+  public List<AttributeValue> getDefaultValues() {
+    if(defaultValues == null) defaultValues = new ArrayList<AttributeValue>();
+    return defaultValues;
+  }
+
+  public void setDefaultValues(List<AttributeValue> defaultValues) {
+    this.defaultValues = defaultValues;
+  }
+
+  public boolean hasDefaultValues() {
+    return defaultValues != null && !defaultValues.isEmpty();
+  }
 }
