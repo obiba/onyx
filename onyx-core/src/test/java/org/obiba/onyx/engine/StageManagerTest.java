@@ -64,5 +64,8 @@ public class StageManagerTest {
     Assert.assertEquals(7, stageManager.getStages().size());
     Assert.assertNotNull(stageManager.getStage("NewStage"));
 
+    stageManager.removeStage(stage);
+    Assert.assertEquals(6, stageManager.getStages().size());
+    Assert.assertNull(stageManager.getStage("NewStage"));
   }
 }
