@@ -1,21 +1,24 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package org.obiba.onyx.util.data;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
 public class Data implements Serializable, Comparable<Data> {
 
   private static final long serialVersionUID = -2470483891384378865L;
+
+  public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
   private Serializable value;
 
@@ -80,10 +83,14 @@ public class Data implements Serializable, Comparable<Data> {
   }
 
   public String getValueAsString() {
-    if(type == DataType.DATA) {
-      return "binary: " + (value == null ? 0 : ((byte[]) value).length) + " bytes";
+    switch(type) {
+      case DATA:
+        return "binary: " + (value == null ? 0 : ((byte[]) value).length) + " bytes";
+      case DATE:
+        return value == null ? null : DATE_FORMAT.format((Date) value);
+      default:
+        return value == null ? null : value.toString();
     }
-    return value != null ? value.toString() : null;
   }
 
   @Override
