@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -14,11 +14,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.obiba.onyx.core.domain.AttributeValue;
+import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.data.validation.converter.DataValidatorConverter;
 import org.springframework.core.io.Resource;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public class ParticipantAttributeReader {
   //
@@ -39,6 +47,10 @@ public class ParticipantAttributeReader {
 
     // Create an alias for ParticipantAttribute nodes
     xstream.alias("attribute", ParticipantAttribute.class);
+
+    // defaultValues
+    xstream.alias("attributeValue", AttributeValue.class);
+    xstream.registerConverter(new AttributeValueConverter());
 
     xstream.alias("group", Group.class);
 
@@ -110,6 +122,30 @@ public class ParticipantAttributeReader {
       for(ParticipantElement childElement : childElements) {
         doFlatten(childElement, childGroup, attributeList);
       }
+    }
+  }
+
+  private static class AttributeValueConverter implements Converter {
+
+    @Override
+    public boolean canConvert(@SuppressWarnings("rawtypes") Class type) {
+      return AttributeValue.class.equals(type);
+    }
+
+    @Override
+    public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+      AttributeValue value = (AttributeValue) source;
+      writer.addAttribute("type", value.getAttributeType().name());
+      writer.setValue(value.getData().getValueAsString());
+    }
+
+    @Override
+    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+      DataType dataType = DataType.valueOf(reader.getAttribute("type"));
+      AttributeValue value = new AttributeValue();
+      value.setAttributeType(dataType);
+      value.setData(new Data(dataType, reader.getValue()));
+      return value;
     }
   }
 

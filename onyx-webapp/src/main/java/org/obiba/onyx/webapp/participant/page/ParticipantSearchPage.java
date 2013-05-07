@@ -60,6 +60,7 @@ import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.participant.ParticipantFactory;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.domain.user.Role;
@@ -119,6 +120,9 @@ public class ParticipantSearchPage extends BasePage {
 
   @SpringBean
   private ApplicationConfigurationService applicationConfigurationService;
+
+  @SpringBean
+  private ParticipantFactory participantFactory;
 
   private OnyxEntityList<Participant> participantList;
 
@@ -513,7 +517,7 @@ public class ParticipantSearchPage extends BasePage {
         private static final long serialVersionUID = 1L;
 
         public void onClick(AjaxRequestTarget target) {
-          Participant volunteer = new Participant();
+          Participant volunteer = participantFactory.createWithDefaultEssentialAttributes();
           volunteer.setRecruitmentType(RecruitmentType.VOLUNTEER);
           setResponsePage(new ParticipantReceptionPage(new Model<Participant>(volunteer), ParticipantSearchPage.this));
         }

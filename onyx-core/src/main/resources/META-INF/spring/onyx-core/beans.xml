@@ -93,6 +93,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="participantRegistryEnabled"  value="${org.obiba.onyx.participant.registry.enabled}" />
   </bean>
 
+  <bean id="participantFactory" class="org.obiba.onyx.core.domain.participant.ParticipantFactory">
+    <property name="participantMetadata" ref="participantMetadata" />
+  </bean>
+
   <bean id="pdfPrintingService" class="org.obiba.onyx.print.PdfPrintingService">
     <property name="printerName" value="${org.obiba.onyx.pdfPrinterName}" />
   </bean>

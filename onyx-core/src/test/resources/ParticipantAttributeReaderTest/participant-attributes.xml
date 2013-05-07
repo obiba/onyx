@@ -8,6 +8,9 @@
       <mandatoryAtReception>false</mandatoryAtReception>
       <editableAtReception>false</editableAtReception>
       <editableAfterReception>false</editableAfterReception>
+      <defaultValues>
+        <attributeValue type="TEXT">Default Doctor First Name</attributeValue>
+      </defaultValues>
     </attribute>
     <attribute>
       <name>Doctor Last Name</name>

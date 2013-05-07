@@ -20,6 +20,8 @@ import org.obiba.onyx.core.etl.participant.impl.ParticipantReaderTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
+import static junit.framework.Assert.assertEquals;
+
 /**
  * Tests reading and and flattening a participant attribute xml file.
  */
@@ -35,7 +37,7 @@ public class ParticipantAttributeReaderTest {
 
   @Test
   public void testSizeOfAttributeList() {
-    Assert.assertEquals(6, participantAttributes.size());
+    assertEquals(6, participantAttributes.size());
   }
 
   @Test
@@ -58,36 +60,36 @@ public class ParticipantAttributeReaderTest {
 
   @Test
   public void testAttributesInSameOrderAsXmlFile() {
-    Assert.assertEquals("Doctor First Name", participantAttributes.get(0).getName());
-    Assert.assertEquals("Doctor Last Name", participantAttributes.get(1).getName());
-    Assert.assertEquals("Special Needs", participantAttributes.get(2).getName());
-    Assert.assertEquals("Family Member First Name", participantAttributes.get(3).getName());
-    Assert.assertEquals("Family Member Last Name", participantAttributes.get(4).getName());
-    Assert.assertEquals("Marital Status", participantAttributes.get(5).getName());
+    assertEquals("Doctor First Name", participantAttributes.get(0).getName());
+    assertEquals("Doctor Last Name", participantAttributes.get(1).getName());
+    assertEquals("Special Needs", participantAttributes.get(2).getName());
+    assertEquals("Family Member First Name", participantAttributes.get(3).getName());
+    assertEquals("Family Member Last Name", participantAttributes.get(4).getName());
+    assertEquals("Marital Status", participantAttributes.get(5).getName());
   }
 
   @Test
   public void testDefaultGroupContainsAllDefaultAttributes() {
     List<ParticipantAttribute> defaultGroupAttributes = participantAttributes.get(2).getGroup().getParticipantAttributes();
-    Assert.assertEquals(2, defaultGroupAttributes.size());
-    Assert.assertEquals("Special Needs", defaultGroupAttributes.get(0).getName());
-    Assert.assertEquals("Marital Status", defaultGroupAttributes.get(1).getName());
+    assertEquals(2, defaultGroupAttributes.size());
+    assertEquals("Special Needs", defaultGroupAttributes.get(0).getName());
+    assertEquals("Marital Status", defaultGroupAttributes.get(1).getName());
   }
 
   @Test
   public void testAttributesInFamilyMemberGroupAreContiguous() {
     List<ParticipantAttribute> familyMemberGroupAttributes = participantAttributes.get(3).getGroup().getParticipantAttributes();
-    Assert.assertEquals(2, familyMemberGroupAttributes.size());
-    Assert.assertEquals(participantAttributes.get(3), familyMemberGroupAttributes.get(0));
-    Assert.assertEquals(participantAttributes.get(4), familyMemberGroupAttributes.get(1));
+    assertEquals(2, familyMemberGroupAttributes.size());
+    assertEquals(participantAttributes.get(3), familyMemberGroupAttributes.get(0));
+    assertEquals(participantAttributes.get(4), familyMemberGroupAttributes.get(1));
   }
 
   @Test
   public void testAttributesInDoctorGroupAreContiguous() {
     List<ParticipantAttribute> doctorGroupAttributes = participantAttributes.get(0).getGroup().getParticipantAttributes();
-    Assert.assertEquals(2, doctorGroupAttributes.size());
-    Assert.assertEquals(participantAttributes.get(0), doctorGroupAttributes.get(0));
-    Assert.assertEquals(participantAttributes.get(1), doctorGroupAttributes.get(1));
+    assertEquals(2, doctorGroupAttributes.size());
+    assertEquals(participantAttributes.get(0), doctorGroupAttributes.get(0));
+    assertEquals(participantAttributes.get(1), doctorGroupAttributes.get(1));
   }
 
   @Test
@@ -100,8 +102,14 @@ public class ParticipantAttributeReaderTest {
     Group defaultGroup = participantAttributes1.get(0).getGroup();
     int numberOfAttributesInDefaultGroup = defaultGroup.getParticipantAttributes().size();
 
-    Assert.assertEquals("Expect all attributes to be part of the default group.", Group.DEFAULT_GROUP_NAME, defaultGroup.getName());
-    Assert.assertEquals(participantAttributes1.size(), numberOfAttributesInDefaultGroup);
+    assertEquals("Expect all attributes to be part of the default group.", Group.DEFAULT_GROUP_NAME,
+        defaultGroup.getName());
+    assertEquals(participantAttributes1.size(), numberOfAttributesInDefaultGroup);
+  }
+
+  @Test
+  public void testDefaultValues() {
+    assertEquals("Default Doctor First Name", participantAttributes.get(0).getDefaultValues().get(0).getValue());
   }
 
   private List<ParticipantAttribute> getParticipantAttributes() throws IOException {
