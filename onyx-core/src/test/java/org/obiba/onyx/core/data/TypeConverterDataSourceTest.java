@@ -75,7 +75,7 @@ public class TypeConverterDataSourceTest {
     c.set(1955, 8, 15, 0, 0, 0);
 
     Assert.assertEquals(DataType.DATE, data.getType());
-    Assert.assertEquals(c.getTime().toString(), data.getValueAsString());
+    Assert.assertEquals(Data.DATE_FORMAT.format(c.getTime()), data.getValueAsString());
 
   }
 
