@@ -10,6 +10,7 @@
 package org.obiba.onyx.core.domain.participant;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -17,6 +18,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.core.etl.participant.impl.ParticipantReaderTest;
+import org.obiba.onyx.util.data.Data;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -37,7 +39,7 @@ public class ParticipantAttributeReaderTest {
 
   @Test
   public void testSizeOfAttributeList() {
-    assertEquals(6, participantAttributes.size());
+    assertEquals(7, participantAttributes.size());
   }
 
   @Test
@@ -71,9 +73,10 @@ public class ParticipantAttributeReaderTest {
   @Test
   public void testDefaultGroupContainsAllDefaultAttributes() {
     List<ParticipantAttribute> defaultGroupAttributes = participantAttributes.get(2).getGroup().getParticipantAttributes();
-    assertEquals(2, defaultGroupAttributes.size());
+    assertEquals(3, defaultGroupAttributes.size());
     assertEquals("Special Needs", defaultGroupAttributes.get(0).getName());
     assertEquals("Marital Status", defaultGroupAttributes.get(1).getName());
+    assertEquals("Birth Date", defaultGroupAttributes.get(2).getName());
   }
 
   @Test
@@ -110,6 +113,8 @@ public class ParticipantAttributeReaderTest {
   @Test
   public void testDefaultValues() {
     assertEquals("Default Doctor First Name", participantAttributes.get(0).getDefaultValues().get(0).getValue());
+    Date date = participantAttributes.get(6).getDefaultValues().get(0).getValue();
+    assertEquals("2010-01-01 00:00:00", Data.DATE_FORMAT.format(date));
   }
 
   private List<ParticipantAttribute> getParticipantAttributes() throws IOException {

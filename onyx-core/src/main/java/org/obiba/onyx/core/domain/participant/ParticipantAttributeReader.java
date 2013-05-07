@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.obiba.onyx.core.domain.AttributeValue;
-import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.data.validation.converter.DataValidatorConverter;
@@ -144,7 +144,7 @@ public class ParticipantAttributeReader {
       DataType dataType = DataType.valueOf(reader.getAttribute("type"));
       AttributeValue value = new AttributeValue();
       value.setAttributeType(dataType);
-      value.setData(new Data(dataType, reader.getValue()));
+      value.setData(DataBuilder.build(dataType, reader.getValue()));
       return value;
     }
   }

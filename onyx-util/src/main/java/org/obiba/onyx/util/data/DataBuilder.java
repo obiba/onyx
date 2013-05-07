@@ -59,8 +59,7 @@ public class DataBuilder {
 
   public static Data buildDate(String date) {
     try {
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-      return new Data(DataType.DATE, dateFormat.parse(date));
+      return new Data(DataType.DATE, Data.DATE_FORMAT.parse(date));
     } catch(ParseException e) {
       throw new IllegalArgumentException("Unable to parse date string: " + date, e);
     }
