@@ -2,8 +2,11 @@ package org.obiba.onyx.quartz.core.wicket.wizard;
 
 import java.util.Locale;
 
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.wicket.StageModel;
@@ -25,6 +28,9 @@ public class QuestionnaireWizardPanel extends WizardPanel<Questionnaire> {
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+
+  @SpringBean(name = "activeInterviewService")
+  private ActiveInterviewService activeInterviewService;
 
   private final FeedbackWindow feedbackWindow;
 
@@ -48,6 +54,10 @@ public class QuestionnaireWizardPanel extends WizardPanel<Questionnaire> {
     feedbackWindow.setOutputMarkupId(true);
     add(feedbackWindow);
 
+    WebMarkupContainer interviewDetails = new WebMarkupContainer("interviewDetails");
+    interviewDetails.add(new Label("participant", activeInterviewService.getParticipant().getBarcode()));
+    interviewDetails.add(new Label("user", activeInterviewService.getOperator()));
+    add(interviewDetails);
   }
 
   //

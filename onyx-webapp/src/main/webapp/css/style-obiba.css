@@ -1950,3 +1950,16 @@ div#essentialAttributes td.keyValueTableKey, div#configuredAttributeGroups td.ke
   width:9.25em;
 }
 
+table#interview-details {
+  width: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+table#interview-details td.participant {
+  text-align: left;
+}
+
+table#interview-details td.interviewer {
+  text-align: right;
+}

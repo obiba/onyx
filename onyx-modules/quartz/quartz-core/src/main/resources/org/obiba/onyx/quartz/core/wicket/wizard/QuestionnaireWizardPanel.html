@@ -1,7 +1,13 @@
-<wicket:panel>
+<wicket:panel xmlns:wicket="http://www.w3.org/1999/XSL/Transform">
 	<div id="feedback">
   		<span wicket:id="feedback" />
 	</div>
+  <table id="interview-details" wicket:id="interviewDetails">
+    <tr>
+      <td class="participant"><wicket:message key="Participant"/>&nbsp;<span wicket:id="participant" /></td>
+      <td class="interviewer"><wicket:message key="Interviewer"/>&nbsp;<span wicket:id="user" /></td>
+    </tr>
+  </table>
 	<form wicket:id="form" class="wizard" autocomplete="off">
 		<div id="wizardContent" class="form-data obiba-quartz-form-data">
 			<span wicket:id="step" />
