@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.holologic;
 
-import java.io.File;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -24,8 +23,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class WholeBodyScanDataExtractor extends APEXScanDataExtractor {
 
-  protected WholeBodyScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, DicomServer server, ApexReceiver apexReceiver) {
-    super(patScanDb, scanDataDir, participantKey, server, apexReceiver);
+  protected WholeBodyScanDataExtractor(JdbcTemplate patScanDb, JdbcTemplate refCurveDb, Map<String, String> participantData, DicomServer server, ApexReceiver apexReceiver) {
+    super(patScanDb, refCurveDb, participantData, server, apexReceiver);
   }
 
   @Override
@@ -41,6 +40,16 @@ public class WholeBodyScanDataExtractor extends APEXScanDataExtractor {
   @Override
   protected long getScanType() {
     return 5l;
+  }
+
+  @Override
+  public String getRefType() {
+    return "W";
+  }
+
+  @Override
+  public String getRefSource() {
+    return "NHANES";
   }
 
   @Override

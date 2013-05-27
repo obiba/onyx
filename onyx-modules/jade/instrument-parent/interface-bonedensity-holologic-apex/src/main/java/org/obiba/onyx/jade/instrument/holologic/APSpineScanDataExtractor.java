@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.holologic;
 
-import java.io.File;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -26,8 +25,8 @@ public class APSpineScanDataExtractor extends APEXScanDataExtractor {
    * @param participantKey
    * @param server
    */
-  protected APSpineScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, DicomServer server, ApexReceiver apexReceiver) {
-    super(patScanDb, scanDataDir, participantKey, server, apexReceiver);
+  protected APSpineScanDataExtractor(JdbcTemplate patScanDb, JdbcTemplate refCurveDb, Map<String, String> participantData, DicomServer server, ApexReceiver apexReceiver) {
+    super(patScanDb, refCurveDb, participantData, server, apexReceiver);
   }
 
   @Override
@@ -48,6 +47,16 @@ public class APSpineScanDataExtractor extends APEXScanDataExtractor {
   @Override
   protected long getScanType() {
     return 1l;
+  }
+
+  @Override
+  public String getRefType() {
+    return "S";
+  }
+
+  @Override
+  public String getRefSource() {
+    return "NHANES";
   }
 
   private final class SpineResultSetExtractor extends ResultSetDataExtractor {

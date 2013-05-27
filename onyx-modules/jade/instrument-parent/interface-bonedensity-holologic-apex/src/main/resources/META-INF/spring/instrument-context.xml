@@ -8,34 +8,43 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:tx="http://www.springframework.org/schema/tx"
-  xsi:schemaLocation="
-http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
   <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.holologic.APEXInstrumentRunner">
-    <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
+    <property name="instrumentExecutionService" ref="instrumentExecutionService" />
     <property name="patScanDb" ref="patScanDb" />
+    <property name="refCurveDb" ref="refCurveDb" />
     <property name="dicomSettings">
-	    <bean class="org.obiba.onyx.jade.instrument.holologic.DicomSettings">
-		    <property name="aeTitle" value="${org.obiba.onyx.jade.instrument.holologic.apex.dicom.aeTitle}" />
-		    <property name="hostname" value="${org.obiba.onyx.jade.instrument.holologic.apex.dicom.hostname}" />
-		    <property name="port" value="${org.obiba.onyx.jade.instrument.holologic.apex.dicom.port}" />
-		    <property name="stgCmtPort" value="${org.obiba.onyx.jade.instrument.holologic.apex.dicom.stgCmtPort}" />
- 		</bean>
+      <bean class="org.obiba.onyx.jade.instrument.holologic.DicomSettings">
+        <property name="aeTitle" value="${org.obiba.onyx.jade.instrument.holologic.apex.dicom.aeTitle}" />
+        <property name="hostname" value="${org.obiba.onyx.jade.instrument.holologic.apex.dicom.hostname}" />
+        <property name="port" value="${org.obiba.onyx.jade.instrument.holologic.apex.dicom.port}" />
+        <property name="stgCmtPort" value="${org.obiba.onyx.jade.instrument.holologic.apex.dicom.stgCmtPort}" />
+      </bean>
     </property>
-    <property name="locale" ref="locale"/>
+    <property name="locale" ref="locale" />
   </bean>
-  
+
   <bean id="patScanDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-    <property name="driverClassName" value="${org.obiba.onyx.jade.instrument.holologic.apex.driver}"/>
-    <property name="url" value="${org.obiba.onyx.jade.instrument.holologic.apex.url}"/>
-    <property name="username" value="${org.obiba.onyx.jade.instrument.holologic.apex.username}"/>
-    <property name="password" value="${org.obiba.onyx.jade.instrument.holologic.apex.password}"/>
+    <property name="driverClassName" value="${org.obiba.onyx.jade.instrument.holologic.apex.patscan.driver}" />
+    <property name="url" value="${org.obiba.onyx.jade.instrument.holologic.apex.patscan.url}" />
+    <property name="username" value="${org.obiba.onyx.jade.instrument.holologic.apex.patscan.username}" />
+    <property name="password" value="${org.obiba.onyx.jade.instrument.holologic.apex.patscan.password}" />
   </bean>
-  
+
   <bean name="patScanDb" class="org.springframework.jdbc.core.JdbcTemplate">
     <property name="dataSource" ref="patScanDataSource" />
-  </bean>  
-    
+  </bean>
+  
+  <bean id="refCurveDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <property name="driverClassName" value="${org.obiba.onyx.jade.instrument.holologic.apex.refcurve.driver}"/>
+    <property name="url" value="${org.obiba.onyx.jade.instrument.holologic.apex.refcurve.url}"/>
+    <property name="username" value="${org.obiba.onyx.jade.instrument.holologic.apex.refcurve.username}"/>
+    <property name="password" value="${org.obiba.onyx.jade.instrument.holologic.apex.refcurve.password}"/>
+  </bean>
+  
+  <bean name="refCurveDb" class="org.springframework.jdbc.core.JdbcTemplate">
+    <property name="dataSource" ref="refCurveDataSource" />
+  </bean> 
+
 </beans>
