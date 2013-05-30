@@ -191,7 +191,9 @@ public class APEXInstrumentRunner implements InstrumentRunner {
         }
       }
     }
-    log.info("Missing variables: " + missing);
+    if(missing.isEmpty() == false) {
+      log.info("Missing variables: " + missing);
+    }
     return retValue;
   }
 
