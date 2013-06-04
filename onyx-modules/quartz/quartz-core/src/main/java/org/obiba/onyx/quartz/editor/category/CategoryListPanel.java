@@ -10,17 +10,13 @@
 package org.obiba.onyx.quartz.editor.category;
 
 import java.io.Serializable;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -69,6 +65,13 @@ import org.obiba.onyx.quartz.editor.widget.sortable.SortableList;
 import org.obiba.onyx.wicket.Images;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimap;
+
+import static java.text.Normalizer.normalize;
 import static org.apache.commons.lang.StringUtils.abbreviate;
 import static org.apache.commons.lang.StringUtils.equalsIgnoreCase;
 
@@ -368,7 +371,8 @@ public class CategoryListPanel extends Panel {
           List<CategoryWithQuestions> choices = new ArrayList<CategoryWithQuestions>(AUTO_COMPLETE_SIZE);
           for(Category category : questionnaireCategories) {
             String name = category.getName();
-            if(!questionCatNames.contains(name) && name.startsWith(input)) {
+            if(!questionCatNames.contains(name)
+                && normalize(name, Normalizer.Form.NFD).toLowerCase().startsWith(normalize(input, Normalizer.Form.NFD).toLowerCase())) {
               choices.add(new CategoryWithQuestions(category, questionsByCategory.get(category)));
               if(choices.size() == AUTO_COMPLETE_SIZE) break;
             }
