@@ -119,7 +119,7 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
     FormComponentLabel checkboxLabel = new FormComponentLabel("categoryLabel", checkbox);
     add(checkboxLabel);
     checkboxLabel.add(checkbox);
-    checkboxLabel.add(new Label("label", checkbox.getLabel()).setRenderBodyOnly(true).setVisible(radioLabelVisible));
+    checkboxLabel.add(new Label("label", checkbox.getLabel()).setRenderBodyOnly(true).setVisible(radioLabelVisible).setEscapeModelStrings(false));
 
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
       // there is an open field
