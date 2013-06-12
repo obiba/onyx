@@ -19,6 +19,8 @@ import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
+import org.obiba.onyx.core.domain.user.Role;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.util.Base64;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.slf4j.Logger;
@@ -42,6 +44,9 @@ public abstract class AbstractWebServicePage extends WebPage {
 
   @SpringBean
   private EntityQueryService queryService;
+
+  @SpringBean(name = "userSessionService")
+  private UserSessionService userSessionService;
 
   private int status = 400;
 
@@ -87,19 +92,11 @@ public abstract class AbstractWebServicePage extends WebPage {
    * @return
    */
   protected boolean isAuthorized() {
-    return ((OnyxAuthenticatedSession) getSession()).isSignedIn();
+    return OnyxAuthenticatedSession.get().isSignedIn();
   }
 
-  protected boolean hasRole(String role) {
-    return ((OnyxAuthenticatedSession) getSession()).getRoles().hasRole(role);
-  }
-
-  protected boolean hasAnyRole(Roles roles) {
-    return ((OnyxAuthenticatedSession) getSession()).getRoles().hasAnyRole(roles);
-  }
-
-  protected boolean hasAllRoles(Roles roles) {
-    return ((OnyxAuthenticatedSession) getSession()).getRoles().hasAllRoles(roles);
+  protected boolean hasRole(Role role) {
+    return userSessionService.getRoles().contains(role);
   }
 
   @Override
