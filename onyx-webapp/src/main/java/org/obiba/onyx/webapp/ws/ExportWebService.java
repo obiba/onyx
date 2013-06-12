@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.purge.PurgeParticipantDataTasklet;
 import org.obiba.onyx.core.service.JobExecutionService;
 import org.obiba.onyx.engine.variable.export.OnyxDataExport;
@@ -26,7 +27,7 @@ public class ExportWebService extends JsonWebServicePage {
 
   @Override
   protected boolean isAuthorized() {
-    return hasRole("PARTICIPANT_MANAGER");
+    return hasRole(Role.PARTICIPANT_MANAGER);
   }
 
   @Override

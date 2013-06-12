@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.purge.PurgeParticipantDataTasklet;
 import org.obiba.onyx.core.service.JobExecutionService;
 import org.springframework.batch.core.Job;
@@ -28,7 +29,7 @@ public class PurgeWebService extends JsonWebServicePage {
 
   @Override
   protected boolean isAuthorized() {
-    return hasRole("SYSTEM_ADMINISTRATOR");
+    return hasRole(Role.SYSTEM_ADMINISTRATOR);
   }
 
   @Override
