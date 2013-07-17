@@ -218,6 +218,7 @@ public class APEXInstrumentRunner implements InstrumentRunner {
         participantData.put("participantGender", results.get("SEX").toString());
       }
     } catch(DataAccessException e) {
+      log.info("Cannot find the requested participant in Apex: " + sql );
       throw e;
     }
 
