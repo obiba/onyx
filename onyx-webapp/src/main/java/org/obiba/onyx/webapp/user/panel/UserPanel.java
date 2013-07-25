@@ -36,6 +36,7 @@ import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.Status;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserService;
+import org.obiba.onyx.webapp.user.page.ProfilePage;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.obiba.wicket.markup.html.form.LocaleDropDownChoice;
@@ -130,7 +131,8 @@ public class UserPanel extends Panel {
       });
       add(roles);
 
-      LocaleDropDownChoice ddc = new LocaleDropDownChoice("language", new PropertyModel(getModel(), "language"), Arrays.asList(new Locale[] { Locale.FRENCH, Locale.ENGLISH }));
+      LocaleDropDownChoice ddc = new LocaleDropDownChoice("language", new PropertyModel(getModel(), "language"), Arrays.asList(
+          ProfilePage.LOCALS));
       ddc.setUseSessionLocale(true);
       // ddc.setLabel(new StringResourceModel("Language", this, null));
       ddc.add(new RequiredFormFieldBehavior());

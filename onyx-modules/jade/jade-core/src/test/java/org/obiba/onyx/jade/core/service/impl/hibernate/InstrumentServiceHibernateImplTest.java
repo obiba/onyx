@@ -16,18 +16,22 @@ import junit.framework.Assert;
 
 import org.hibernate.SessionFactory;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.service.SortingClause;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.test.spring.Dataset;
+import org.obiba.core.test.spring.DatasetOperationType;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentMeasurementType;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.impl.InstrumentTypeFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -60,7 +64,7 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
   }
 
   @Test
-  @Dataset
+  @Dataset(beforeOperation = DatasetOperationType.CLEAN_INSERT)
   public void getWorkstationInstrumentsTest() {
     List<Instrument> instruments = instrumentServiceHibernateImpl.getWorkstationInstruments("onyx001-127.0.32.5", new PagingClause(0, 10), new SortingClause("barcode", true));
     Assert.assertEquals(6, instruments.size());
@@ -74,7 +78,7 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
   }
 
   @Test
-  @Dataset
+  @Dataset(beforeOperation = DatasetOperationType.CLEAN_INSERT)
   public void countWorkstationInstrumentsTest() {
     int count = instrumentServiceHibernateImpl.countWorkstationInstruments("onyx001-127.0.32.5");
     Assert.assertEquals(6, count);
@@ -83,7 +87,7 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
   }
 
   @Test
-  @Dataset
+  @Dataset(beforeOperation = DatasetOperationType.CLEAN_INSERT)
   public void getWorkstationInstrumentMeasurementTypesTest() {
     List<InstrumentMeasurementType> instrumentMeasurementTypes = instrumentServiceHibernateImpl.getWorkstationInstrumentMeasurementTypes("onyx001-127.0.32.5", null, (SortingClause[]) null);
     Assert.assertEquals(6, instrumentMeasurementTypes.size());
@@ -93,14 +97,14 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
   }
 
   @Test
-  @Dataset
+  @Dataset(beforeOperation = DatasetOperationType.CLEAN_INSERT)
   public void countWorkstationInstrumentMeasurementTypesTest() {
     Assert.assertEquals(6, instrumentServiceHibernateImpl.countWorkstationInstrumentMeasurementTypes("onyx001-127.0.32.5"));
     Assert.assertEquals(4, instrumentServiceHibernateImpl.countWorkstationInstrumentMeasurementTypes("onyx001-127.0.32.6"));
   }
 
   @Test
-  @Dataset
+  @Dataset(beforeOperation = DatasetOperationType.CLEAN_INSERT)
   public void updateStatusTest() {
     Instrument instrument = new Instrument();
     instrument.setId(5l);
@@ -111,7 +115,7 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
   }
 
   @Test
-  @Dataset
+  @Dataset(beforeOperation = DatasetOperationType.CLEAN_INSERT)
   public void updateWorkstationTest() {
     Instrument instrument = persistenceManager.get(Instrument.class, 2l);
     Assert.assertNull(instrument.getWorkstation());
@@ -120,10 +124,12 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
 
     instrument = persistenceManager.get(Instrument.class, 2l);
     Assert.assertEquals("onyx001-127.0.32.5", instrument.getWorkstation());
+    // do clean up manually
+    instrumentServiceHibernateImpl.deleteInstrument(instrument);
   }
 
   @Test
-  @Dataset
+  @Dataset(beforeOperation = DatasetOperationType.CLEAN_INSERT)
   public void createInstrumentTest() {
     Instrument instrument = new Instrument();
     instrument.addType("testType");
@@ -143,7 +149,7 @@ public class InstrumentServiceHibernateImplTest extends BaseDefaultSpringContext
   }
 
   @Test
-  @Dataset
+  @Dataset(beforeOperation = DatasetOperationType.CLEAN_INSERT)
   public void updateInstrumentTest() {
     Instrument instrument = instrumentServiceHibernateImpl.getInstrumentByBarcode("sta01");
     instrument.setModel("newModel STA");

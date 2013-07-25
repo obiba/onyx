@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -27,6 +27,7 @@ import org.apache.wicket.markup.html.pages.AccessDeniedPage;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebResponse;
+import org.apache.wicket.request.target.coding.QueryStringUrlCodingStrategy;
 import org.apache.wicket.spring.ISpringContextLocator;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.PackageName;
@@ -41,6 +42,8 @@ import org.obiba.onyx.webapp.login.page.LoginPage;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 import org.obiba.onyx.webapp.stage.page.StagePage;
 import org.obiba.onyx.webapp.workstation.page.WorkstationPage;
+import org.obiba.onyx.webapp.ws.ExportWebService;
+import org.obiba.onyx.webapp.ws.PurgeWebService;
 import org.obiba.runtime.Version;
 import org.obiba.wicket.application.ISpringWebApplication;
 import org.obiba.wicket.application.WebApplicationStartupListener;
@@ -159,14 +162,16 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
       applicationContext = new XmlWebApplicationContext();
       applicationContext.setServletContext(getServletContext());
       applicationContext.addBeanFactoryPostProcessor(configurer);
-      applicationContext.setConfigLocation("WEB-INF/spring/context.xml," + configurer.getConfigPath() + "/*/module-context.xml");
+      applicationContext.setConfigLocation(
+          "WEB-INF/spring/context.xml," + configurer.getConfigPath() + "/*/module-context.xml");
       applicationContext.refresh();
 
       // Required for WebApplicationContext
       getServletContext().setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, applicationContext);
 
       // Inject our dependencies
-      applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(this, AutowireCapableBeanFactory.AUTOWIRE_BY_NAME, false);
+      applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(this,
+          AutowireCapableBeanFactory.AUTOWIRE_BY_NAME, false);
 
       // Call the configure() method again because we depend on the ApplicationContext for certain
       // configuration settings (specifically, the Deployment mode)
@@ -202,6 +207,8 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
     mount("participants", PackageName.forClass(ParticipantSearchPage.class));
     mount("workstation", PackageName.forClass(WorkstationPage.class));
     mount("stage", PackageName.forClass(StagePage.class));
+    mount(new QueryStringUrlCodingStrategy("/ws/purge", PurgeWebService.class));
+    mount(new QueryStringUrlCodingStrategy("/ws/export", ExportWebService.class));
     // mount("administration", PackageName.forClass(AdministrationPage.class));
 
     getSecuritySettings().setAuthorizationStrategy(new RoleAuthorizationStrategy(new UserRolesAuthorizer()));
@@ -246,7 +253,8 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
    * @param callback the callback implementation to call for each listener instance
    */
   private void forEachListeners(IListenerCallback callback) {
-    Map<String, WebApplicationStartupListener> listeners = applicationContext.getBeansOfType(WebApplicationStartupListener.class);
+    Map<String, WebApplicationStartupListener> listeners = applicationContext.getBeansOfType(
+        WebApplicationStartupListener.class);
     if(listeners != null) {
       for(Map.Entry<String, WebApplicationStartupListener> entry : listeners.entrySet()) {
         log.info("Executing WebApplicationStartupListener named {} of type {}", entry.getKey(), entry.getValue().getClass().getSimpleName());
