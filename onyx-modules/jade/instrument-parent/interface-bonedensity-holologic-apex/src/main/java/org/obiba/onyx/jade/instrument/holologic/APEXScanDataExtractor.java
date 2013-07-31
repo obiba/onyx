@@ -254,6 +254,8 @@ public abstract class APEXScanDataExtractor {
       } catch(ParseException e) {
       }
 
+      log.info("computed age from scandate and dob: " + age.toString() );
+
       ageBracket bracket = new ageBracket();
       bracket.compute(age, ageTable);
 
@@ -280,26 +282,12 @@ public abstract class APEXScanDataExtractor {
         bmdValues.add(new Double(mapResult.get("L_VALUE").toString()));
         bmdValues.add(new Double(mapResult.get("STD").toString()));
       }
-
-      Double u = 0.;
-      if(age != bracket.ageMin) u = (age - bracket.ageMin) / bracket.ageSpan;
-
-      List<Double> interpValues = new ArrayList<Double>();
-      for(int i = 0; i < bmdValues.size() / 3; i++)
-        interpValues.add((1. - u) * bmdValues.get(i) + u * bmdValues.get(i + 3));
-
-      Double M_value = interpValues.get(0);
-      Double L_value = interpValues.get(1);
-      Double sigma = interpValues.get(2);
-      Double X_value = bmdValue;
-      Double Z_score = M_value * (Math.pow(X_value / M_value, L_value) - 1.) / (L_value * sigma);
+      
       DecimalFormat df = new DecimalFormat("#.0");
-      Z_score = Double.valueOf(df.format(Z_score));
-      if(Math.abs(Z_score) == 0.) Z_score = 0.;
-
-      M_value = bmdValues.get(6);
-      L_value = bmdValues.get(7);
-      sigma = bmdValues.get(8);
+      Double X_value = bmdValue;
+      Double M_value = bmdValues.get(6);
+      Double L_value = bmdValues.get(7);
+      Double sigma = bmdValues.get(8);
 
       Double T_score = M_value * (Math.pow(X_value / M_value, L_value) - 1.) / (L_value * sigma);
       T_score = Double.valueOf(df.format(T_score));
@@ -310,12 +298,38 @@ public abstract class APEXScanDataExtractor {
         throw new IllegalArgumentException("Instrument variable name already defined: " + varName);
       }
       data.put(varName, DataBuilder.buildDecimal(T_score));
+      log.info( varName + " = " + T_score.toString() );
+
+      Double Z_score = null;
+
+      if(bracket.ageSpan != 0.) {
+        Double u = (age - bracket.ageMin) / bracket.ageSpan;
+
+        List<Double> interpValues = new ArrayList<Double>();
+        for(int i = 0; i < bmdValues.size() / 3; i++)
+          interpValues.add((1. - u) * bmdValues.get(i) + u * bmdValues.get(i + 3));
+
+        M_value = interpValues.get(0);
+        L_value = interpValues.get(1);
+        sigma = interpValues.get(2);
+
+        Z_score = M_value * (Math.pow(X_value / M_value, L_value) - 1.) / (L_value * sigma);
+        Z_score = Double.valueOf(df.format(Z_score));
+        if(Math.abs(Z_score) == 0.) Z_score = 0.;
+      }
 
       varName = getResultPrefix() + "_" + bmdBoneRangeKey.replace("_BMD", "_Z");
       if(data.keySet().contains(varName)) {
         throw new IllegalArgumentException("Instrument variable name already defined: " + varName);
       }
       data.put(varName, DataBuilder.buildDecimal(Z_score));
+
+      if(Z_score != null) {
+        log.info( varName + " = " + Z_score.toString() );
+      }
+      else {
+        log.info( varName + " = null" );
+      }  
 
       log.info("finished current key: " + bmdBoneRangeKey);
     }
@@ -354,8 +368,6 @@ public abstract class APEXScanDataExtractor {
         // ARM = forearm, expects 1 to 2 files
         //
         String bodyPartName = getDicomBodyPartName();
-        // String laterality = getSide().toString();
-        // boolean completeSet = false;
 
         for(StoredDicomFile sdf : listDicomFiles) {
           try {
@@ -383,24 +395,6 @@ public abstract class APEXScanDataExtractor {
                 selectList.add(sdf);
               }
             }
-
-            // if there is a body part examined but it is not equal to the expected bodypart name
-
-            // log.info("contains body part key: " + (containsBodyPartKey ? "true" : "false"));
-            // log.info("body part exam tag: " + (bodyPartExam == null ? "NULL" : bodyPartExam));
-            // log.info("body part name: " + (bodyPartName == null ? "NULL" : bodyPartName));
-
-            // BodyPartExamined dicom tag is empty for whole body
-
-            // boolean include = (containsBodyPartKey && bodyPartExam == null && getDicomBodyPartName() == null) ? true
-            // :
-            // (getDicomBodyPartName() != null && getDicomBodyPartName().equals(bodyPartExam));
-
-            // if((containsBodyPartKey && bodyPartExam == null && bodyPartName == null) || (bodyPartName != null &&
-            // bodyPartName.equals(bodyPartExam))) {
-            // log.info("added dicom file to list of files");
-            // selectList.add(sdf);
-            // }
           } catch(IOException e) {
             throw new RuntimeException(e);
           }
@@ -676,10 +670,12 @@ public abstract class APEXScanDataExtractor {
     public ageBracket() {
       ageMin = Double.MIN_VALUE;
       ageMax = Double.MAX_VALUE;
-      ageSpan = ageMax - ageMin;
+      ageSpan = 0.;
     }
 
     public void compute(Double age, List<Double> ageTable) {
+      ageMin = Double.MIN_VALUE;
+      ageMax = Double.MAX_VALUE;
       for(int i = 0; i < ageTable.size() - 1; i++) {
         double min = ageTable.get(i);
         double max = ageTable.get(i + 1);
@@ -687,7 +683,14 @@ public abstract class APEXScanDataExtractor {
           ageMin = min;
           ageMax = age == min ? min : max;
         }
+        else if( age > max )
+        {
+          ageMin = max;
+          ageMax = max;
+        }
       }
+      if( ageMin == Double.MIN_VALUE ) ageMin = age;
+      if( ageMax == Double.MAX_VALUE ) ageMax = age;
       ageSpan = ageMax - ageMin;
     }
   }
@@ -696,10 +699,18 @@ public abstract class APEXScanDataExtractor {
   // Set/Get methods
   //
   /*
+   * Methods to get P and R data files are not needed.
+   * Hologic embeds P and R data files in the DICOM data exported from APEX.
+   *
    * protected String getPFileName() { return pFileName; }
    * 
    * protected String getRFileName() { return rFileName; }
    */
+  /*
+   * public List<String> getFileNames() { return fileNames != null ? fileNames : (fileNames = new ArrayList<String>());
+   * }
+   */
+
   protected JdbcTemplate getPatScanDb() {
     return patScanDb;
   }
@@ -727,8 +738,4 @@ public abstract class APEXScanDataExtractor {
   protected String getScanDate() {
     return scanDate;
   }
-  /*
-   * public List<String> getFileNames() { return fileNames != null ? fileNames : (fileNames = new ArrayList<String>());
-   * }
-   */
 }
