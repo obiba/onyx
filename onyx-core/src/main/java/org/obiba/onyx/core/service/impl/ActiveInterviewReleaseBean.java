@@ -20,10 +20,10 @@ public class ActiveInterviewReleaseBean {
 
   private InterviewManager interviewManager;
 
-  private String sessionId;
+  private final String sessionId;
 
   public ActiveInterviewReleaseBean(UserSessionService userSessionService) {
-    this.sessionId = userSessionService.getSessionId();
+    sessionId = userSessionService.getSessionId();
   }
 
   public void setInterviewManager(InterviewManager interviewManager) {

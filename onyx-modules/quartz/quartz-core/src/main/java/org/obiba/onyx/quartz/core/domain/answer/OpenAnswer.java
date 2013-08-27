@@ -146,6 +146,7 @@ public class OpenAnswer extends AbstractEntity {
     return data;
   }
 
+  @SuppressWarnings("OverlyLongMethod")
   public void setData(Data data) {
 
     if(data != null) {
