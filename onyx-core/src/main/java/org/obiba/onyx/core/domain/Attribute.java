@@ -11,6 +11,7 @@ package org.obiba.onyx.core.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -35,7 +36,7 @@ public class Attribute implements Serializable {
 
   private Set<String> allowedValues;
 
-  private List<IDataValidator> validators;
+  private List<IDataValidator<?>> validators;
 
   private String unit;
 
@@ -45,11 +46,11 @@ public class Attribute implements Serializable {
   // Methods
   //
 
-  public List<IDataValidator> getValidators() {
-    return (validators != null) ? validators : (validators = new ArrayList<IDataValidator>());
+  public List<IDataValidator<?>> getValidators() {
+    return validators == null ? (validators = new ArrayList<IDataValidator<?>>()) : validators;
   }
 
-  public void addValidators(IDataValidator validator) {
+  public void addValidators(IDataValidator<?> validator) {
     getValidators().add(validator);
   }
 
@@ -94,7 +95,7 @@ public class Attribute implements Serializable {
    * 
    * @param allowedValues allowed values of attribute
    */
-  public void setAllowedValues(Set<String> allowedValues) {
+  public void setAllowedValues(Collection<String> allowedValues) {
     if(this.allowedValues == null) {
       this.allowedValues = new LinkedHashSet<String>();
     } else {
@@ -118,7 +119,7 @@ public class Attribute implements Serializable {
     return Collections.unmodifiableSet(allowedValues);
   }
 
-  public void setValidators(List<IDataValidator> validators) {
+  public void setValidators(List<IDataValidator<?>> validators) {
     this.validators = validators;
   }
 

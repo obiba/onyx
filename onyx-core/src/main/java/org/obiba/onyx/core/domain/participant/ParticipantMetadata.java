@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -12,6 +12,7 @@ package org.obiba.onyx.core.domain.participant;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,13 +33,9 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   // private static final Logger logger = LoggerFactory.getLogger(ParticipantMetadata.class);
 
-  private static final Boolean updateAppointmentListEnabledDefault = Boolean.TRUE;
+  private static final Boolean UPDATE_APPOINTMENT_LIST_ENABLED_DEFAULT = Boolean.TRUE;
 
-  private static final Boolean participantRegistryEnabledDefault = Boolean.FALSE;
-
-  //
-  // Constants
-  //
+  private static final Boolean PARTICIPANT_REGISTRY_ENABLED_DEFAULT = Boolean.FALSE;
 
   private static final String PARTICIPANT_ATTRIBUTES_FILENAME = "participant-attributes.xml";
 
@@ -68,18 +65,22 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   private String onyxConfigPath;
 
-  private List<ParticipantAttribute> essentialAttributes;
+  private final List<ParticipantAttribute> essentialAttributes;
 
-  private List<ParticipantAttribute> configuredAttributes;
+  private final List<ParticipantAttribute> configuredAttributes;
 
   private List<RecruitmentType> supportedRecruitmentTypes;
 
   private String participantIdPattern;
 
-  /** Controls availability of "Update Appointment List" Button in UI along with the supportedRecruitmentType ENROLLED */
+  /**
+   * Controls availability of "Update Appointment List" Button in UI along with the supportedRecruitmentType ENROLLED
+   */
   private Boolean updateAppointmentListEnabled;
 
-  /** Controls availability of "Participant Registry" Button in UI. */
+  /**
+   * Controls availability of "Participant Registry" Button in UI.
+   */
   private Boolean participantRegistryEnabled;
 
   //
@@ -111,8 +112,7 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
     // Add a validator for the participant id.
     // This validator has to be declared as regular expression in the application configuration.
     ParticipantAttribute attribute = getEssentialAttribute("Participant ID");
-    DataValidator participantIdValidator = new DataValidator(new PatternValidator(participantIdPattern), attribute.getType());
-    attribute.addValidators(participantIdValidator);
+    attribute.addValidators(new DataValidator(new PatternValidator(participantIdPattern), attribute.getType()));
 
   }
 
@@ -122,7 +122,7 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   /**
    * Sets the path to the Onyx configuration folder.
-   * 
+   *
    * @param onyxConfigPath path to the Onyx configuration folder (e.g., "WEB-INF/config").
    */
   public void setOnyxConfigPath(String onyxConfigPath) {
@@ -131,28 +131,28 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   /**
    * Set the essential participant attributes.
-   * 
+   *
    * @param attributes participant attributes
    */
-  public void setEssentialAttributes(List<ParticipantAttribute> attributes) {
-    this.essentialAttributes.clear();
+  public void setEssentialAttributes(Collection<ParticipantAttribute> attributes) {
+    essentialAttributes.clear();
     if(attributes != null) {
-      this.essentialAttributes.addAll(attributes);
+      essentialAttributes.addAll(attributes);
     }
   }
 
   /**
    * Returns the essential participant attributes.
-   * 
+   *
    * @return participant attributes
    */
-  public List<ParticipantAttribute> getEssentialAttributes() {
+  public Collection<ParticipantAttribute> getEssentialAttributes() {
     return Collections.unmodifiableList(essentialAttributes);
   }
 
   /**
    * Returns the essential attribute with the specified name.
-   * 
+   *
    * @param name attribute name
    * @return attribute with the specified name (or <code>null</code> if no such attribute exists)
    */
@@ -167,20 +167,20 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   /**
    * Set the configured participant attributes.
-   * 
+   *
    * @param attributes participant attributes
    */
-  public void setConfiguredAttributes(List<ParticipantAttribute> attributes) {
-    this.configuredAttributes.clear();
+  public void setConfiguredAttributes(Collection<ParticipantAttribute> attributes) {
+    configuredAttributes.clear();
 
     if(attributes != null) {
-      this.configuredAttributes.addAll(attributes);
+      configuredAttributes.addAll(attributes);
     }
   }
 
   /**
    * Returns the (configurable) participant attributes.
-   * 
+   *
    * @return participant attributes
    */
   public List<ParticipantAttribute> getConfiguredAttributes() {
@@ -189,7 +189,7 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   /**
    * Returns the configured attribute with the specified name.
-   * 
+   *
    * @param name attribute name
    * @return attribute with the specified name (or <code>null</code> if no such attribute exists)
    */
@@ -205,11 +205,11 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   /**
    * Loads (or re-loads) configuration information stored in the configuration file.
-   * 
+   *
    * @throws IOException on an I/O error
    */
   public void initConfig() throws IOException {
-    ResourcePatternResolver resolver = (ResourcePatternResolver) this.resourceLoader;
+    ResourcePatternResolver resolver = (ResourcePatternResolver) resourceLoader;
     Resource[] resources = null;
     Resource configPath = resolver.getResource(onyxConfigPath);
 
@@ -219,19 +219,19 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
       resources = resolver.getResources(onyxConfigPath + "/" + ESSENTIAL_PARTICIPANT_ATTRIBUTES_FILENAME);
     }
     if(!resources[0].exists()) {
-      // ...if not load from within the onyx-core.jar file.
-      resources = resolver.getResources(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "META-INF/" + ESSENTIAL_PARTICIPANT_ATTRIBUTES_FILENAME);
+      // if not load from within the onyx-core.jar file.
+      resources = resolver.getResources(
+          ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "META-INF/" + ESSENTIAL_PARTICIPANT_ATTRIBUTES_FILENAME);
     }
     initEssentialAttributes(resources);
 
     // Load configured participant attributes.
     if(configPath != null && configPath.exists()) {
-      resources = resolver.getResources(onyxConfigPath + "/" + PARTICIPANT_ATTRIBUTES_FILENAME);
-      initConfiguredAttributes(resources);
+      initConfiguredAttributes(resolver.getResources(onyxConfigPath + "/" + PARTICIPANT_ATTRIBUTES_FILENAME));
     }
   }
 
-  private void initEssentialAttributes(Resource[] resources) throws IOException {
+  private void initEssentialAttributes(Resource... resources) throws IOException {
     if(resources != null && resources.length > 0) {
       ParticipantAttributeReader reader = new ParticipantAttributeReader();
       reader.setResources(resources);
@@ -239,13 +239,11 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
     }
   }
 
-  private void initConfiguredAttributes(Resource[] resources) throws IOException {
+  private void initConfiguredAttributes(Resource... resources) throws IOException {
     if(resources != null && resources.length > 0) {
       ParticipantAttributeReader reader = new ParticipantAttributeReader();
       reader.setResources(resources);
-      List<ParticipantAttribute> attributes = reader.read();
-
-      setConfiguredAttributes(attributes);
+      setConfiguredAttributes(reader.read());
     }
   }
 
@@ -267,6 +265,7 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   /**
    * Set the supported recruitment type using a comma separated list of recruitment types.
+   *
    * @param supportedRecruitmentTypes.
    */
   public void setSupportedRecruitmentTypesString(String supportedRecruitmentTypes) {
@@ -279,12 +278,12 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
         recruitmentTypeList.add(RecruitmentType.valueOf(name));
       }
 
-      this.setSupportedRecruitmentTypes(recruitmentTypeList);
+      setSupportedRecruitmentTypes(recruitmentTypeList);
     }
   }
 
-  public List<RecruitmentType> getSupportedRecruitmentTypes() {
-    return this.supportedRecruitmentTypes;
+  public Collection<RecruitmentType> getSupportedRecruitmentTypes() {
+    return supportedRecruitmentTypes;
   }
 
   public void setParticipantIdPattern(String participantIdPattern) {
@@ -292,7 +291,7 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
   }
 
   public Boolean getUpdateAppointmentListEnabled() {
-    if(updateAppointmentListEnabled == null) return updateAppointmentListEnabledDefault;
+    if(updateAppointmentListEnabled == null) return UPDATE_APPOINTMENT_LIST_ENABLED_DEFAULT;
     return updateAppointmentListEnabled;
   }
 
@@ -301,7 +300,7 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
   }
 
   public Boolean getParticipantRegistryEnabled() {
-    if(participantRegistryEnabled == null) return participantRegistryEnabledDefault;
+    if(participantRegistryEnabled == null) return PARTICIPANT_REGISTRY_ENABLED_DEFAULT;
     return participantRegistryEnabled;
   }
 
@@ -309,7 +308,7 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
     this.participantRegistryEnabled = participantRegistryEnabled;
   }
 
-  public List<Group> getGroups(List<ParticipantAttribute> attributes) {
+  public List<Group> getGroups(Collection<ParticipantAttribute> attributes) {
     List<Group> groups = new ArrayList<Group>();
 
     if(attributes.size() != 0) {
@@ -318,7 +317,10 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
       for(ParticipantAttribute attribute : attributes) {
         Group group = attribute.getGroup();
 
-        if((currentGroup == null) || (group.getName() == null && currentGroup.getName() != null) || (group.getName() != null && currentGroup.getName() == null) || (group.getName() != null && currentGroup.getName() != null && !group.getName().equals(currentGroup.getName()))) {
+        if((currentGroup == null) || (group.getName() == null && currentGroup.getName() != null) ||
+            (group.getName() != null && currentGroup.getName() == null) ||
+            (group.getName() != null && currentGroup.getName() != null &&
+                !group.getName().equals(currentGroup.getName()))) {
           groups.add(group);
           currentGroup = group;
         }
