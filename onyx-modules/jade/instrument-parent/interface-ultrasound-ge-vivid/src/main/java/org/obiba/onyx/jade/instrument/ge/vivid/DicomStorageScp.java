@@ -36,6 +36,7 @@ import javax.swing.table.DefaultTableModel;
 
 import org.dcm4che2.data.DicomObject;
 import org.dcm4che2.data.Tag;
+import org.dcm4che2.data.UID;
 import org.dcm4che2.tool.dcmrcv.DicomServer;
 import org.dcm4che2.tool.dcmrcv.DicomServer.State;
 import org.dcm4che2.tool.dcmrcv.DicomServer.StateListener;
@@ -70,6 +71,7 @@ public class DicomStorageScp {
   public static final String LATERALITY = "Laterality";
 
   public static final List<String> columns = new ArrayList<String>();
+
   static {
     columns.add("#");
     columns.add(PATIENT_ID);
@@ -89,18 +91,34 @@ public class DicomStorageScp {
 
       @Override
       public void onStored(File file, DicomObject dicomObject) {
+
+        String mediaStorageSOPClassUID = dicomObject.contains(Tag.MediaStorageSOPClassUID) ? dicomObject
+            .getString(Tag.MediaStorageSOPClassUID) : null;
+        String modality = dicomObject.getString(Tag.Modality);
+
+        if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundImageStorage)) {
+          addRow(dicomObject);
+        } else if(mediaStorageSOPClassUID != null &&
+            mediaStorageSOPClassUID.equals(UID.UltrasoundMultiframeImageStorage)) {
+          addRow(dicomObject);
+        } else if("SR".equals(modality)) {
+          addRow(dicomObject);
+        }
+        // else ignore that file
+      }
+
+      private void addRow(DicomObject dicomObject) {
         model = (DefaultTableModel) table.getModel();
         int rows = model.getRowCount();
-
         String siuid = dicomObject.getString(Tag.StudyInstanceUID);
 
         int row = getRowBySIUID(siuid);
         if(row == -1) {
           model.addRow(new Object[] { "" + (rows + 1), //
-          dicomObject.getString(Tag.PatientID),//
-          siuid, //
-          1,//
-          "" });
+              dicomObject.getString(Tag.PatientID),//
+              siuid, //
+              1,//
+              "" });
         } else {
           int columnIndex = columns.indexOf(NUMBER);
           int value = (Integer) getData().get(row).get(columnIndex);
@@ -239,7 +257,8 @@ public class DicomStorageScp {
     table.getColumnModel().getColumn(0).setPreferredWidth(15);
     table.getColumnModel().getColumn(0).setMaxWidth(15);
 
-    table.getColumnModel().getColumn(columns.indexOf(LATERALITY)).setCellEditor(new DefaultCellEditor(new JComboBox(new Object[] { "Left", "Right" })));
+    table.getColumnModel().getColumn(columns.indexOf(LATERALITY))
+        .setCellEditor(new DefaultCellEditor(new JComboBox(new Object[] { "Left", "Right" })));
     panel_3.add(table, BorderLayout.CENTER);
     panel_3.add(table.getTableHeader(), BorderLayout.NORTH);
 
