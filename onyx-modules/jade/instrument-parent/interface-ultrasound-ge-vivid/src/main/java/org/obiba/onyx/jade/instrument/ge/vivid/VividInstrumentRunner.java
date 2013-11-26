@@ -57,21 +57,22 @@ public class VividInstrumentRunner implements InstrumentRunner {
       if(tmpDir.delete() == false || tmpDir.mkdir() == false) {
         throw new RuntimeException("Cannot create temp directory");
       }
-      this.dcmDir = tmpDir;
+      dcmDir = tmpDir;
       log.info("DICOM files stored to {}", dcmDir.getAbsolutePath());
     } catch(IOException e) {
       throw new RuntimeException(e);
     }
 
-    this.server = new DicomServer(dcmDir, dicomSettings);
+    server = new DicomServer(dcmDir, dicomSettings);
   }
 
   @Override
   public void run() {
-    gui = new DicomStorageScp(server);
+    gui = new DicomStorageScp(server,
+        new VividDicomStoragePredicate(instrumentExecutionService.getExpectedOutputParameterVendorNames()));
 
     try {
-      this.server.start();
+      server.start();
     } catch(IOException e) {
       // ignore
     }
@@ -84,7 +85,9 @@ public class VividInstrumentRunner implements InstrumentRunner {
   public void shutdown() {
     EventQueue.invokeLater(new Runnable() {
       public void run() {
-        JOptionPane.showMessageDialog(null, "Uploading data to Onyx. Please wait. This dialog will close automatically.", "Uploading...", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane
+            .showMessageDialog(null, "Uploading data to Onyx. Please wait. This dialog will close automatically.",
+                "Uploading...", JOptionPane.INFORMATION_MESSAGE);
       }
     });
 
@@ -110,20 +113,23 @@ public class VividInstrumentRunner implements InstrumentRunner {
           try {
             DicomObject dicomObject = dcm.getDicomObject();
             String studyInstanceUid = dicomObject.getString(Tag.StudyInstanceUID);
-            String mediaStorageSOPClassUID = dicomObject.contains(Tag.MediaStorageSOPClassUID) ? dicomObject.getString(Tag.MediaStorageSOPClassUID) : null;
+            String mediaStorageSOPClassUID = dicomObject.contains(Tag.MediaStorageSOPClassUID) ? dicomObject
+                .getString(Tag.MediaStorageSOPClassUID) : null;
             String modality = dicomObject.getString(Tag.Modality);
             // Allow garbage collection, as the instance may be quite large
             dicomObject = null;
             if(studyInstanceUid.equals(studyInstanceUID)) {
               // This will contain a large byte-array
               Data dicomData = DataBuilder.buildBinary(compress(dcm.getFile()));
-              log.info(String.format("dicom file: %d bytes -- compressed file: %d bytes", dcm.getFile().length(), ((byte[]) dicomData.getValue()).length));
+              log.info(String.format("dicom file: %d bytes -- compressed file: %d bytes", dcm.getFile().length(),
+                  ((byte[]) dicomData.getValue()).length));
 
               if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundImageStorage)) {
                 if(output.contains("STILL_IMAGE")) {
                   values.put("STILL_IMAGE", dicomData);
                 }
-              } else if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundMultiframeImageStorage)) {
+              } else if(mediaStorageSOPClassUID != null &&
+                  mediaStorageSOPClassUID.equals(UID.UltrasoundMultiframeImageStorage)) {
                 if(output.contains("CINELOOP_" + idx)) {
                   values.put("CINELOOP_" + idx, dicomData);
                 }
@@ -155,5 +161,41 @@ public class VividInstrumentRunner implements InstrumentRunner {
     GZIPOutputStream compressed = new GZIPOutputStream(baos);
     FileCopyUtils.copy(new FileInputStream(file), compressed);
     return baos.toByteArray();
+  }
+
+  private static class VividDicomStoragePredicate implements DicomStorageScp.DicomStoragePredicate {
+
+    private final Set<String> output;
+
+    private int cineLoopIdx = 0;
+
+    private VividDicomStoragePredicate(Set<String> output) {
+      this.output = output;
+    }
+
+    @Override
+    public boolean apply(DicomObject dicomObject) {
+      String mediaStorageSOPClassUID = dicomObject.contains(Tag.MediaStorageSOPClassUID) ? dicomObject
+          .getString(Tag.MediaStorageSOPClassUID) : null;
+      String modality = dicomObject.getString(Tag.Modality);
+      if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundImageStorage)) {
+        if(output.contains("STILL_IMAGE")) {
+          return true;
+        }
+      } else if(mediaStorageSOPClassUID != null &&
+          mediaStorageSOPClassUID.equals(UID.UltrasoundMultiframeImageStorage)) {
+        cineLoopIdx++;
+        if(output.contains("CINELOOP_" + cineLoopIdx)) {
+          return true;
+        }
+      } else if("SR".equals(modality)) {
+        if(output.contains("SR")) {
+          return true;
+        }
+      }
+      // else ignore
+      return false;
+    }
+
   }
 }

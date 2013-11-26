@@ -48,6 +48,8 @@ public class DicomStorageScp {
 
   private final DicomServer server;
 
+  private final DicomStoragePredicate dicomStoragePredicate;
+
   private JFrame frmDicomServer;
 
   private JTextField aeTitle;
@@ -84,48 +86,15 @@ public class DicomStorageScp {
    * Create the application.
    */
   public DicomStorageScp(DicomServer server) {
+    this(server, null);
+  }
+
+  public DicomStorageScp(DicomServer server, DicomStoragePredicate dicomStoragePredicate) {
     if(server == null) throw new IllegalArgumentException();
     this.server = server;
+    this.dicomStoragePredicate = dicomStoragePredicate;
 
-    this.server.addStorageListener(new StorageListener() {
-
-      @Override
-      public void onStored(File file, DicomObject dicomObject) {
-
-        String mediaStorageSOPClassUID = dicomObject.contains(Tag.MediaStorageSOPClassUID) ? dicomObject
-            .getString(Tag.MediaStorageSOPClassUID) : null;
-        String modality = dicomObject.getString(Tag.Modality);
-
-        if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundImageStorage)) {
-          addRow(dicomObject);
-        } else if(mediaStorageSOPClassUID != null &&
-            mediaStorageSOPClassUID.equals(UID.UltrasoundMultiframeImageStorage)) {
-          addRow(dicomObject);
-        } else if("SR".equals(modality)) {
-          addRow(dicomObject);
-        }
-        // else ignore that file
-      }
-
-      private void addRow(DicomObject dicomObject) {
-        model = (DefaultTableModel) table.getModel();
-        int rows = model.getRowCount();
-        String siuid = dicomObject.getString(Tag.StudyInstanceUID);
-
-        int row = getRowBySIUID(siuid);
-        if(row == -1) {
-          model.addRow(new Object[] { "" + (rows + 1), //
-              dicomObject.getString(Tag.PatientID),//
-              siuid, //
-              1,//
-              "" });
-        } else {
-          int columnIndex = columns.indexOf(NUMBER);
-          int value = (Integer) getData().get(row).get(columnIndex);
-          model.setValueAt(value + 1, row, columnIndex);
-        }
-      }
-    });
+    this.server.addStorageListener(new DicomStorageListener());
 
     this.server.addStateListener(new StateListener() {
 
@@ -352,5 +321,40 @@ public class DicomStorageScp {
     DicomStorageScp scp = new DicomStorageScp(new DicomServer(f, new DicomSettings()));
     scp.show();
     scp.waitForExit();
+  }
+
+  private class DicomStorageListener implements StorageListener {
+
+    @Override
+    public void onStored(File file, DicomObject dicomObject) {
+      if (dicomStoragePredicate == null) addRow(dicomObject);
+      else if (dicomStoragePredicate.apply(dicomObject)) addRow(dicomObject);
+      // else ignore that file
+    }
+
+    private void addRow(DicomObject dicomObject) {
+      model = (DefaultTableModel) table.getModel();
+      int rows = model.getRowCount();
+      String siuid = dicomObject.getString(Tag.StudyInstanceUID);
+
+      int row = getRowBySIUID(siuid);
+      if(row == -1) {
+        model.addRow(new Object[] { "" + (rows + 1), //
+            dicomObject.getString(Tag.PatientID),//
+            siuid, //
+            1,//
+            "" });
+      } else {
+        int columnIndex = columns.indexOf(NUMBER);
+        int value = (Integer) getData().get(row).get(columnIndex);
+        model.setValueAt(value + 1, row, columnIndex);
+      }
+    }
+  }
+
+  public interface DicomStoragePredicate {
+
+    boolean apply(DicomObject dicomObject);
+
   }
 }
