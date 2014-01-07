@@ -116,15 +116,6 @@ public class DicomStorageScp {
     bind();
   }
 
-  private int getRowBySIUID(String siuid) {
-    Vector<Vector<Object>> data = getData();
-    for(int i = 0; i < data.size(); i++) {
-      Vector<Object> row = data.get(i);
-      String currentSiuid = (String) row.get(columns.indexOf(STUDYINSTANCEUID));
-      if(currentSiuid.equals(siuid)) return i;
-    }
-    return -1;
-  }
 
   public void show() {
     EventQueue.invokeLater(new Runnable() {
@@ -349,6 +340,16 @@ public class DicomStorageScp {
         int value = (Integer) getData().get(row).get(columnIndex);
         model.setValueAt(value + 1, row, columnIndex);
       }
+    }
+
+    private int getRowBySIUID(String siuid) {
+      Vector<Vector<Object>> data = getData();
+      for(int i = 0; i < data.size(); i++) {
+        Vector<Object> row = data.get(i);
+        String currentSiuid = (String) row.get(columns.indexOf(STUDYINSTANCEUID));
+        if(currentSiuid.equals(siuid)) return i;
+      }
+      return -1;
     }
   }
 

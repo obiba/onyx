@@ -93,22 +93,14 @@ public class VividInstrumentRunner implements InstrumentRunner {
 
     Set<String> output = instrumentExecutionService.getExpectedOutputParameterVendorNames();
     try {
-      Map<String, Data> values = new HashMap<String, Data>();
+      List<StoredDicomFile> listDicomFiles = server.listDicomFiles();
 
-      Vector<Vector<Object>> data = gui.getData();
-      for(int i = 0; i < data.size(); i++) {
-        Vector<Object> row = data.get(i);
-        List<String> columns = DicomStorageScp.columns;
-        String studyInstanceUID = (String) row.get(columns.indexOf(DicomStorageScp.STUDYINSTANCEUID));
+      for(Vector<Object> row : gui.getData()) {
+        Map<String, Data> values = new HashMap<String, Data>();
+        String suid = (String) row.get(DicomStorageScp.columns.indexOf(DicomStorageScp.STUDYINSTANCEUID));
+        int cineLoopIdx = 1;
+        boolean added = false;
 
-        List<StoredDicomFile> listDicomFiles = server.listDicomFiles();
-
-        String laterality = (String) row.get(columns.indexOf(DicomStorageScp.LATERALITY));
-        if(output.contains("SIDE")) {
-          values.put("SIDE", DataBuilder.buildText(laterality));
-        }
-
-        int idx = 1;
         for(StoredDicomFile dcm : listDicomFiles) {
           try {
             DicomObject dicomObject = dcm.getDicomObject();
@@ -118,35 +110,43 @@ public class VividInstrumentRunner implements InstrumentRunner {
             String modality = dicomObject.getString(Tag.Modality);
             // Allow garbage collection, as the instance may be quite large
             dicomObject = null;
-            if(studyInstanceUid.equals(studyInstanceUID)) {
-              // This will contain a large byte-array
-              Data dicomData = DataBuilder.buildBinary(compress(dcm.getFile()));
-              log.info(String.format("dicom file: %d bytes -- compressed file: %d bytes", dcm.getFile().length(),
-                  ((byte[]) dicomData.getValue()).length));
+
+            if(studyInstanceUid.equals(suid)) {
+              String key = null;
 
               if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundImageStorage)) {
-                if(output.contains("STILL_IMAGE")) {
-                  values.put("STILL_IMAGE", dicomData);
-                }
+                key = "STILL_IMAGE";
               } else if(mediaStorageSOPClassUID != null &&
                   mediaStorageSOPClassUID.equals(UID.UltrasoundMultiframeImageStorage)) {
-                if(output.contains("CINELOOP_" + idx)) {
-                  values.put("CINELOOP_" + idx, dicomData);
-                }
-                idx++;
+                key = "CINELOOP_" + cineLoopIdx;
+                cineLoopIdx++;
               } else if("SR".equals(modality)) {
-                if(output.contains("SR")) {
-                  values.put("SR", dicomData);
-                }
+                key = "SR";
               } else {
                 // don't know what this file is.
                 log.warn("Received unknown DICOM file. Ignoring.");
+              }
+
+              if(key != null && output.contains(key)) {
+                // This will contain a large byte-array
+                Data dicomData = DataBuilder.buildBinary(compress(dcm.getFile()));
+                log.info(String.format("dicom file: %d bytes -- compressed file: %d bytes", dcm.getFile().length(),
+                    ((byte[]) dicomData.getValue()).length));
+
+                values.put(key, dicomData);
+                added = true;
               }
             }
           } catch(IOException e) {
             log.error("Unexpected excepion while reading DICOM file.", e);
           }
         }
+        // one or more dicom data were added, then report the SIDE it applies to as well
+        if(added && output.contains("SIDE")) {
+          String laterality = (String) row.get(DicomStorageScp.columns.indexOf(DicomStorageScp.LATERALITY));
+          values.put("SIDE", DataBuilder.buildText(laterality));
+        }
+        // send data to server
         instrumentExecutionService.addOutputParameterValues(values);
       }
     } catch(Exception e) {
