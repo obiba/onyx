@@ -41,6 +41,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory;
@@ -52,6 +53,8 @@ import org.springframework.context.MessageSource;
 public class QuartzPanelTest {
 
   private WicketTester tester;
+
+  private QuestionnaireParticipantService questionnaireParticipantServiceMock;
 
   private ActiveInterviewService activeInterviewServiceMock;
 
@@ -68,6 +71,7 @@ public class QuartzPanelTest {
   @Before
   public void setUp() {
     ApplicationContextMock mockCtx = new ApplicationContextMock();
+    questionnaireParticipantServiceMock = createMock(QuestionnaireParticipantService.class);
     activeInterviewServiceMock = createMock(ActiveInterviewService.class);
     activeQuestionnaireAdministrationServiceMock = createMock(ActiveQuestionnaireAdministrationService.class);
     questionnaireBundleManagerMock = createMock(QuestionnaireBundleManager.class);
@@ -75,6 +79,7 @@ public class QuartzPanelTest {
     questionnaireBundleMock = createMock(QuestionnaireBundle.class);
     messageSourceMock = createMock(MessageSource.class);
 
+    mockCtx.putBean("questionnaireParticipantService", questionnaireParticipantServiceMock);
     mockCtx.putBean("activeInterviewService", activeInterviewServiceMock);
     mockCtx.putBean("activeQuestionnaireAdministrationService", activeQuestionnaireAdministrationServiceMock);
     mockCtx.putBean("questionnaireBundleManager", questionnaireBundleManagerMock);

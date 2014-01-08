@@ -9,6 +9,7 @@
 package org.obiba.onyx.quartz.core.service.impl.hibernate;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -67,6 +68,14 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
     Criteria criteria = createQuestionnaireParticipantCriteria(QuestionAnswer.class, null, participant, questionnaireName).add("questionName", Operation.eq, questionName).getCriteria();
     QuestionAnswer answer = (QuestionAnswer) criteria.uniqueResult();
     return (answer != null) ? answer.getActive() : null;
+  }
+
+  @Override
+  public Locale getPreferedLanguage(Participant participant) {
+    Criteria criteria = AssociationCriteria.create(QuestionnaireParticipant.class, getSession()).add("participant", Operation.eq, participant).getCriteria().setCacheable(true);
+    QuestionnaireParticipant qp = (QuestionnaireParticipant) criteria.setMaxResults(1).uniqueResult();
+    if (qp != null) return qp.getLocale();
+    return null;
   }
 
   private AssociationCriteria createQuestionnaireParticipantCriteria(Class<?> entityType, String prefix, Participant participant, String questionnaireName) {
