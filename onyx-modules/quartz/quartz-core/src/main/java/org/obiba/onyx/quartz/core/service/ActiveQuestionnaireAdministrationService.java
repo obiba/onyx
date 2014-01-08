@@ -41,6 +41,12 @@ public interface ActiveQuestionnaireAdministrationService {
   public void setQuestionnaireDevelopmentMode(boolean mode);
 
   /**
+   * Get currently interviewed participant.
+   * @return
+   */
+  public Participant getParticipant();
+
+  /**
    * Get the current participant for the currently administered questionnaire.
    * @return
    */
