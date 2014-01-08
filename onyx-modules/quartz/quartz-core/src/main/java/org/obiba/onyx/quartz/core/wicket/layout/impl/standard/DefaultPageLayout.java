@@ -80,10 +80,10 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
       }
       section = section.getParentSection();
     }
-    add(new Label("section", sectionString).setVisible(!isEmptyString(sectionString)));
+    add(new Label("section", sectionString).setVisible(!isEmptyString(sectionString)).setEscapeModelStrings(false));
 
     QuestionnaireStringResourceModel pageLabelModel = new QuestionnaireStringResourceModel(page, "label");
-    add(new Label("label", pageLabelModel).setVisible(!isEmptyString(pageLabelModel.getString())));
+    add(new Label("label", pageLabelModel).setVisible(!isEmptyString(pageLabelModel.getString())).setEscapeModelStrings(false));
 
     add(questionsView = new DataView<QuestionPanel>("questions", new PageQuestionsProvider(page)) {
 
