@@ -18,7 +18,9 @@ import org.obiba.magma.Value;
 import org.obiba.magma.Variable;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.data.VariableDataSource;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
+import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +97,8 @@ public class QuestionnaireStringResourceModel extends QuestionnaireResourceModel
           path = tableContext + ":" + path;
         }
         VariableDataSource varDs = new VariableDataSource(path);
-        Value value = varDs.getValue(activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant());
+        Participant p = activeQuestionnaireAdministrationService.getParticipant();
+        Value value = varDs.getValue(p);
 
         String dataStr = getValueAsString(varDs, value, locale);
         msg = msg.substring(0, refIndex) + dataStr + msg.substring(refEndIndex + 2, msg.length());

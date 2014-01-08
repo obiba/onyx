@@ -468,6 +468,11 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   @Override
+  public Participant getParticipant() {
+    return activeInterviewService.getParticipant();
+  }
+
+  @Override
   public QuestionnaireParticipant getQuestionnaireParticipant() {
     // Note: Don't include questionnaire version in the template. This is in case the version
     // of the questionnaire changes between cancelling and re-starting the questionnaire stage.

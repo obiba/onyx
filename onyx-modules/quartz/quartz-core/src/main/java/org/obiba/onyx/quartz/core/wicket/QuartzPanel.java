@@ -79,7 +79,7 @@ public class QuartzPanel extends Panel {
     if(locales.isEmpty() || locales.contains(sessionLocale)) defaultLanguage = sessionLocale;
     else {
       defaultLanguage = questionnaireParticipantService
-          .getPreferedLanguage(activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant());
+          .getPreferedLanguage(activeQuestionnaireAdministrationService.getParticipant());
 
       if(defaultLanguage == null) defaultLanguage = locales.get(0);
     }
