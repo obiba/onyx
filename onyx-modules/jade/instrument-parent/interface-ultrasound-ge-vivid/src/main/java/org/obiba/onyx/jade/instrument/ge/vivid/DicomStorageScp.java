@@ -41,8 +41,12 @@ import org.dcm4che2.tool.dcmrcv.DicomServer;
 import org.dcm4che2.tool.dcmrcv.DicomServer.State;
 import org.dcm4che2.tool.dcmrcv.DicomServer.StateListener;
 import org.dcm4che2.tool.dcmrcv.DicomServer.StorageListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DicomStorageScp {
+
+  protected Logger log = LoggerFactory.getLogger(DicomStorageScp.class);
 
   private final CountDownLatch exitLatch = new CountDownLatch(1);
 
@@ -329,6 +333,7 @@ public class DicomStorageScp {
       String siuid = dicomObject.getString(Tag.StudyInstanceUID);
 
       int row = getRowBySIUID(siuid);
+      log.info("Adding Dicom object with StudyInstanceUID {} at row {}", siuid, (row == -1 ? rows + 1 : row));
       if(row == -1) {
         model.addRow(new Object[] { "" + (rows + 1), //
             dicomObject.getString(Tag.PatientID),//

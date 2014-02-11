@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.FileSystemUtils;
+import org.springframework.util.StringUtils;
 
 public class VividInstrumentRunner implements InstrumentRunner {
 
@@ -130,7 +131,7 @@ public class VividInstrumentRunner implements InstrumentRunner {
               if(key != null && output.contains(key)) {
                 // This will contain a large byte-array
                 Data dicomData = DataBuilder.buildBinary(compress(dcm.getFile()));
-                log.info(String.format("dicom file: %d bytes -- compressed file: %d bytes", dcm.getFile().length(),
+                log.info(String.format("[%s] dicom file: %d bytes -- compressed file: %d bytes", key, dcm.getFile().length(),
                     ((byte[]) dicomData.getValue()).length));
 
                 values.put(key, dicomData);
@@ -144,6 +145,7 @@ public class VividInstrumentRunner implements InstrumentRunner {
         // one or more dicom data were added, then report the SIDE it applies to as well
         if(added && output.contains("SIDE")) {
           String laterality = (String) row.get(DicomStorageScp.columns.indexOf(DicomStorageScp.LATERALITY));
+          log.info("SIDE is {}", laterality);
           values.put("SIDE", DataBuilder.buildText(laterality));
         }
         // send data to server
@@ -165,6 +167,8 @@ public class VividInstrumentRunner implements InstrumentRunner {
 
   private static class VividDicomStoragePredicate implements DicomStorageScp.DicomStoragePredicate {
 
+    private final static Logger log = LoggerFactory.getLogger(VividDicomStoragePredicate.class);
+
     private final Set<String> output;
 
     private int cineLoopIdx = 0;
@@ -178,21 +182,26 @@ public class VividInstrumentRunner implements InstrumentRunner {
       String mediaStorageSOPClassUID = dicomObject.contains(Tag.MediaStorageSOPClassUID) ? dicomObject
           .getString(Tag.MediaStorageSOPClassUID) : null;
       String modality = dicomObject.getString(Tag.Modality);
+      log.info("Expected outputs: {}", StringUtils.collectionToCommaDelimitedString(output));
       if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundImageStorage)) {
+        log.info("  STILL_IMAGE found");
         if(output.contains("STILL_IMAGE")) {
           return true;
         }
       } else if(mediaStorageSOPClassUID != null &&
           mediaStorageSOPClassUID.equals(UID.UltrasoundMultiframeImageStorage)) {
         cineLoopIdx++;
+        log.info("  CINELOOP_{} found", cineLoopIdx);
         if(output.contains("CINELOOP_" + cineLoopIdx)) {
           return true;
         }
       } else if("SR".equals(modality)) {
+        log.info("  SR found");
         if(output.contains("SR")) {
           return true;
         }
       }
+      log.info("  Unknown file type");
       // else ignore
       return false;
     }
