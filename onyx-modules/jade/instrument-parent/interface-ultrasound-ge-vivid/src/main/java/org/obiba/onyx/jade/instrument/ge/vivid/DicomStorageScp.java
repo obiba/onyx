@@ -322,18 +322,20 @@ public class DicomStorageScp {
 
     @Override
     public void onStored(File file, DicomObject dicomObject) {
-      if (dicomStoragePredicate == null) addRow(dicomObject);
-      else if (dicomStoragePredicate.apply(dicomObject)) addRow(dicomObject);
+      String siuid = dicomObject.getString(Tag.StudyInstanceUID);
+
+      if (dicomStoragePredicate == null) addRow(siuid, dicomObject);
+      else if (dicomStoragePredicate.apply(siuid, dicomObject)) addRow(siuid, dicomObject);
       // else ignore that file
     }
 
-    private void addRow(DicomObject dicomObject) {
+    private void addRow(String siuid, DicomObject dicomObject) {
       model = (DefaultTableModel) table.getModel();
       int rows = model.getRowCount();
-      String siuid = dicomObject.getString(Tag.StudyInstanceUID);
+
 
       int row = getRowBySIUID(siuid);
-      log.info("Adding Dicom object with StudyInstanceUID {} at row {}", siuid, (row == -1 ? rows + 1 : row));
+      log.info("Adding Dicom object with StudyInstanceUID {} at row {}", siuid, row);
       if(row == -1) {
         model.addRow(new Object[] { "" + (rows + 1), //
             dicomObject.getString(Tag.PatientID),//
@@ -360,7 +362,7 @@ public class DicomStorageScp {
 
   public interface DicomStoragePredicate {
 
-    boolean apply(DicomObject dicomObject);
+    boolean apply(String siuid, DicomObject dicomObject);
 
   }
 }

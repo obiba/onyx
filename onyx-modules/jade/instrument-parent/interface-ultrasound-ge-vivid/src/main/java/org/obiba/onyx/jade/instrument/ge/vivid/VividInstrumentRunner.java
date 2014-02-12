@@ -171,18 +171,26 @@ public class VividInstrumentRunner implements InstrumentRunner {
 
     private final Set<String> output;
 
-    private int cineLoopIdx = 0;
+    private Map<String, Integer> cineLoopIdsMap = new HashMap<String, Integer>();
+
+
 
     private VividDicomStoragePredicate(Set<String> output) {
       this.output = output;
     }
 
     @Override
-    public boolean apply(DicomObject dicomObject) {
+    public boolean apply(String siuid, DicomObject dicomObject) {
+      if (!cineLoopIdsMap.containsKey(siuid)) {
+        cineLoopIdsMap.put(siuid, 0);
+      }
+      int cineLoopIdx = cineLoopIdsMap.get(siuid);
+
       String mediaStorageSOPClassUID = dicomObject.contains(Tag.MediaStorageSOPClassUID) ? dicomObject
           .getString(Tag.MediaStorageSOPClassUID) : null;
       String modality = dicomObject.getString(Tag.Modality);
-      log.info("Expected outputs: {}", StringUtils.collectionToCommaDelimitedString(output));
+      log.info("StudyInstanceUID={}", siuid);
+      log.info("  Expected outputs: {}", StringUtils.collectionToCommaDelimitedString(output));
       if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundImageStorage)) {
         log.info("  STILL_IMAGE found");
         if(output.contains("STILL_IMAGE")) {
@@ -201,7 +209,7 @@ public class VividInstrumentRunner implements InstrumentRunner {
           return true;
         }
       }
-      log.info("  Unknown file type");
+      log.info("  File type does not apply");
       // else ignore
       return false;
     }
