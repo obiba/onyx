@@ -152,7 +152,7 @@ public class VividInstrumentRunner implements InstrumentRunner {
         instrumentExecutionService.addOutputParameterValues(values);
       }
     } catch(Exception e) {
-      log.error("Unexpected excepion while processing DICOM files.", e);
+      log.error("Unexpected exception while processing DICOM files.", e);
     } finally {
       FileSystemUtils.deleteRecursively(dcmDir);
     }
@@ -172,8 +172,6 @@ public class VividInstrumentRunner implements InstrumentRunner {
     private final Set<String> output;
 
     private Map<String, Integer> cineLoopIdsMap = new HashMap<String, Integer>();
-
-
 
     private VividDicomStoragePredicate(Set<String> output) {
       this.output = output;
@@ -199,6 +197,7 @@ public class VividInstrumentRunner implements InstrumentRunner {
       } else if(mediaStorageSOPClassUID != null &&
           mediaStorageSOPClassUID.equals(UID.UltrasoundMultiframeImageStorage)) {
         cineLoopIdx++;
+        cineLoopIdsMap.put(siuid, cineLoopIdx);
         log.info("  CINELOOP_{} found", cineLoopIdx);
         if(output.contains("CINELOOP_" + cineLoopIdx)) {
           return true;
