@@ -63,29 +63,19 @@ public class PdfPrintingService implements InitializingBean {
 
   @Override
   public void afterPropertiesSet() throws Exception {
+
+    log.info("Configure printer for 'org.obiba.onyx.pdfPrinterName={}'", printerName);
+
     // Try to find a PrintService instance with the specified name if any
     if(Strings.isNullOrEmpty(printerName)) {
-      log.warn("No default printer found. Printing will not be available.");
+      log.warn("No printer defined. Printing will not be available.");
       return;
     }
 
     if(DEFAULT_PRINTER.equalsIgnoreCase(printerName)) {
       findDefaultPrinter();
     } else {
-      log.info("Looking for a printer named '{}'", printerName);
-      // Lookup all services
-      PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
-      for(PrintService ps : printServices) {
-        if(ps != null && printerName.equalsIgnoreCase(ps.getName())) {
-          log.info("Using printer '{}'", ps.getName());
-          printService = ps;
-          break;
-        }
-      }
-      if(printService == null) {
-        log.warn("Could not find printer with name '{}'. Will try default printer.", printerName);
-        findDefaultPrinter();
-      }
+      findSpecifiedPrinter();
     }
 
     // We have a PrintService instance. Find the first handler that this service accepts.
@@ -110,6 +100,23 @@ public class PdfPrintingService implements InitializingBean {
     printService = PrintServiceLookup.lookupDefaultPrintService();
     if(printService != null) {
       log.info("Using default printer '{}'.", printService.getName());
+    }
+  }
+
+  private void findSpecifiedPrinter() {
+    log.info("Looking for a printer named '{}'", printerName);
+    // Lookup all services
+    PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+    for(PrintService ps : printServices) {
+      if(ps != null && printerName.equalsIgnoreCase(ps.getName())) {
+        log.info("Using printer '{}'", ps.getName());
+        printService = ps;
+        break;
+      }
+    }
+    if(printService == null) {
+      log.warn("Could not find printer with name '{}'. Will try default printer.", printerName);
+      findDefaultPrinter();
     }
   }
 
