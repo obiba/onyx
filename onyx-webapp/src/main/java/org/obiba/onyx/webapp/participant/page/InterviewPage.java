@@ -42,6 +42,7 @@ import org.obiba.onyx.engine.ActionDefinitionConfiguration;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.print.IPrintableReport;
+import org.obiba.onyx.print.PdfPrintingService;
 import org.obiba.onyx.print.PrintableReportsRegistry;
 import org.obiba.onyx.webapp.action.panel.InterviewLogPanel;
 import org.obiba.onyx.webapp.action.panel.LoadableInterviewLogModel;
@@ -79,6 +80,9 @@ public class InterviewPage extends BasePage {
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
+
+  @SpringBean(name = "pdfPrintingService")
+  private PdfPrintingService pdfPrintingService;
 
   @SpringBean
   private ActionDefinitionConfiguration actionDefinitionConfiguration;
@@ -347,6 +351,7 @@ public class InterviewPage extends BasePage {
 
       ReportLink printReportLink = new ReportLink("printReport");
       printReportLink.add(new Label("reportLabel", new ResourceModel("PrintReport")));
+      printReportLink.setVisible(pdfPrintingService.supportsPdfPrinting());
       add(printReportLink);
 
       add(new StageSelectionPanel("stage-list", getFeedbackWindow()) {
