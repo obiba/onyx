@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.holologic;
 
-import java.io.File;
 import java.util.Map;
 
 import org.dcm4che2.tool.dcmrcv.DicomServer;
@@ -25,8 +24,8 @@ public class IVAImagingScanDataExtractor extends APEXScanDataExtractor {
 
   private Energy energy;
 
-  protected IVAImagingScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, Energy energy, DicomServer server, ApexReceiver apexReceiver) {
-    super(patScanDb, scanDataDir, participantKey, server, apexReceiver);
+  protected IVAImagingScanDataExtractor(JdbcTemplate patScanDb, JdbcTemplate refCurveDb, Map<String, String> participantData, Energy energy, DicomServer server, ApexReceiver apexReceiver) {
+    super(patScanDb, refCurveDb, participantData, server, apexReceiver);
     this.energy = energy;
   }
 
@@ -49,14 +48,29 @@ public class IVAImagingScanDataExtractor extends APEXScanDataExtractor {
   protected long getScanType() {
     switch(energy) {
     case CLSA_DXA:
-      return 29l;
+      return 29l; // QDR4500 single energy supine lateral image, used for VFA, ref_type = L
     case SINGLE_AP:
-      return 35l;
+      return 35l; // single energy AP image, ref_type = S
     case SINGLE_LATERAL:
-      return 36l;
+      return 36l; // single energy left/right lateral image, ref_type = L
     default:
-      return 37l;
+      return 37l; // dual energy left/right lateral image, ref_type = L
     }
+  }
+
+  @Override
+  public String getRefType() {
+    switch(energy) {
+    case SINGLE_AP:
+      return "S"; // single energy AP image, ref_type = S
+    default:
+      return "L"; // dual energy left/right lateral image, ref_type = L
+    }
+  }
+
+  @Override
+  public String getRefSource() {
+    return "NHANES";
   }
 
   @Override

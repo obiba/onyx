@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.holologic;
 
-import java.io.File;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -32,8 +31,8 @@ public class HipScanDataExtractor extends APEXScanDataExtractor {
    * @param participantKey
    * @param server
    */
-  protected HipScanDataExtractor(JdbcTemplate patScanDb, File scanDataDir, String participantKey, Side side, DicomServer server, ApexReceiver apexReceiver) {
-    super(patScanDb, scanDataDir, participantKey, server, apexReceiver);
+  protected HipScanDataExtractor(JdbcTemplate patScanDb, JdbcTemplate refCurveDb, Map<String, String> participantData, Side side, DicomServer server, ApexReceiver apexReceiver) {
+    super(patScanDb, refCurveDb, participantData, server, apexReceiver);
     this.side = side;
   }
 
@@ -67,6 +66,16 @@ public class HipScanDataExtractor extends APEXScanDataExtractor {
     default:
       return 3l;
     }
+  }
+
+  @Override
+  public String getRefType() {
+    return "H";
+  }
+
+  @Override
+  public String getRefSource() {
+    return "NHANES";
   }
 
   private final class HipResultSetExtractor extends ResultSetDataExtractor {
