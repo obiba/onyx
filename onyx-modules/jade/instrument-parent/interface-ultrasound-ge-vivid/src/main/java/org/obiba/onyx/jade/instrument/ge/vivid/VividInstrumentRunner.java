@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.FileSystemUtils;
+import org.springframework.util.StringUtils;
 
 public class VividInstrumentRunner implements InstrumentRunner {
 
@@ -57,21 +58,22 @@ public class VividInstrumentRunner implements InstrumentRunner {
       if(tmpDir.delete() == false || tmpDir.mkdir() == false) {
         throw new RuntimeException("Cannot create temp directory");
       }
-      this.dcmDir = tmpDir;
+      dcmDir = tmpDir;
       log.info("DICOM files stored to {}", dcmDir.getAbsolutePath());
     } catch(IOException e) {
       throw new RuntimeException(e);
     }
 
-    this.server = new DicomServer(dcmDir, dicomSettings);
+    server = new DicomServer(dcmDir, dicomSettings);
   }
 
   @Override
   public void run() {
-    gui = new DicomStorageScp(server);
+    gui = new DicomStorageScp(server,
+        new VividDicomStoragePredicate(instrumentExecutionService.getExpectedOutputParameterVendorNames()));
 
     try {
-      this.server.start();
+      server.start();
     } catch(IOException e) {
       // ignore
     }
@@ -84,67 +86,73 @@ public class VividInstrumentRunner implements InstrumentRunner {
   public void shutdown() {
     EventQueue.invokeLater(new Runnable() {
       public void run() {
-        JOptionPane.showMessageDialog(null, "Uploading data to Onyx. Please wait. This dialog will close automatically.", "Uploading...", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane
+            .showMessageDialog(null, "Uploading data to Onyx. Please wait. This dialog will close automatically.",
+                "Uploading...", JOptionPane.INFORMATION_MESSAGE);
       }
     });
 
     Set<String> output = instrumentExecutionService.getExpectedOutputParameterVendorNames();
     try {
-      Map<String, Data> values = new HashMap<String, Data>();
+      List<StoredDicomFile> listDicomFiles = server.listDicomFiles();
 
-      Vector<Vector<Object>> data = gui.getData();
-      for(int i = 0; i < data.size(); i++) {
-        Vector<Object> row = data.get(i);
-        List<String> columns = DicomStorageScp.columns;
-        String studyInstanceUID = (String) row.get(columns.indexOf(DicomStorageScp.STUDYINSTANCEUID));
+      for(Vector<Object> row : gui.getData()) {
+        Map<String, Data> values = new HashMap<String, Data>();
+        String suid = (String) row.get(DicomStorageScp.columns.indexOf(DicomStorageScp.STUDYINSTANCEUID));
+        int cineLoopIdx = 1;
+        boolean added = false;
 
-        List<StoredDicomFile> listDicomFiles = server.listDicomFiles();
-
-        String laterality = (String) row.get(columns.indexOf(DicomStorageScp.LATERALITY));
-        if(output.contains("SIDE")) {
-          values.put("SIDE", DataBuilder.buildText(laterality));
-        }
-
-        int idx = 1;
         for(StoredDicomFile dcm : listDicomFiles) {
           try {
             DicomObject dicomObject = dcm.getDicomObject();
             String studyInstanceUid = dicomObject.getString(Tag.StudyInstanceUID);
-            String mediaStorageSOPClassUID = dicomObject.contains(Tag.MediaStorageSOPClassUID) ? dicomObject.getString(Tag.MediaStorageSOPClassUID) : null;
+            String mediaStorageSOPClassUID = dicomObject.contains(Tag.MediaStorageSOPClassUID) ? dicomObject
+                .getString(Tag.MediaStorageSOPClassUID) : null;
             String modality = dicomObject.getString(Tag.Modality);
             // Allow garbage collection, as the instance may be quite large
             dicomObject = null;
-            if(studyInstanceUid.equals(studyInstanceUID)) {
-              // This will contain a large byte-array
-              Data dicomData = DataBuilder.buildBinary(compress(dcm.getFile()));
-              log.info(String.format("dicom file: %d bytes -- compressed file: %d bytes", dcm.getFile().length(), ((byte[]) dicomData.getValue()).length));
+
+            if(studyInstanceUid.equals(suid)) {
+              String key = null;
 
               if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundImageStorage)) {
-                if(output.contains("STILL_IMAGE")) {
-                  values.put("STILL_IMAGE", dicomData);
-                }
-              } else if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundMultiframeImageStorage)) {
-                if(output.contains("CINELOOP_" + idx)) {
-                  values.put("CINELOOP_" + idx, dicomData);
-                }
-                idx++;
+                key = "STILL_IMAGE";
+              } else if(mediaStorageSOPClassUID != null &&
+                  mediaStorageSOPClassUID.equals(UID.UltrasoundMultiframeImageStorage)) {
+                key = "CINELOOP_" + cineLoopIdx;
+                cineLoopIdx++;
               } else if("SR".equals(modality)) {
-                if(output.contains("SR")) {
-                  values.put("SR", dicomData);
-                }
+                key = "SR";
               } else {
                 // don't know what this file is.
                 log.warn("Received unknown DICOM file. Ignoring.");
+              }
+
+              if(key != null && output.contains(key)) {
+                // This will contain a large byte-array
+                Data dicomData = DataBuilder.buildBinary(compress(dcm.getFile()));
+                log.info(String.format("[%s] dicom file: %d bytes -- compressed file: %d bytes", key, dcm.getFile().length(),
+                    ((byte[]) dicomData.getValue()).length));
+
+                values.put(key, dicomData);
+                added = true;
               }
             }
           } catch(IOException e) {
             log.error("Unexpected excepion while reading DICOM file.", e);
           }
         }
+        // one or more dicom data were added, then report the SIDE it applies to as well
+        if(added && output.contains("SIDE")) {
+          String laterality = (String) row.get(DicomStorageScp.columns.indexOf(DicomStorageScp.LATERALITY));
+          log.info("SIDE is {}", laterality);
+          values.put("SIDE", DataBuilder.buildText(laterality));
+        }
+        // send data to server
         instrumentExecutionService.addOutputParameterValues(values);
       }
     } catch(Exception e) {
-      log.error("Unexpected excepion while processing DICOM files.", e);
+      log.error("Unexpected exception while processing DICOM files.", e);
     } finally {
       FileSystemUtils.deleteRecursively(dcmDir);
     }
@@ -155,5 +163,55 @@ public class VividInstrumentRunner implements InstrumentRunner {
     GZIPOutputStream compressed = new GZIPOutputStream(baos);
     FileCopyUtils.copy(new FileInputStream(file), compressed);
     return baos.toByteArray();
+  }
+
+  private static class VividDicomStoragePredicate implements DicomStorageScp.DicomStoragePredicate {
+
+    private final static Logger log = LoggerFactory.getLogger(VividDicomStoragePredicate.class);
+
+    private final Set<String> output;
+
+    private Map<String, Integer> cineLoopIdsMap = new HashMap<String, Integer>();
+
+    private VividDicomStoragePredicate(Set<String> output) {
+      this.output = output;
+    }
+
+    @Override
+    public boolean apply(String siuid, DicomObject dicomObject) {
+      if (!cineLoopIdsMap.containsKey(siuid)) {
+        cineLoopIdsMap.put(siuid, 0);
+      }
+      int cineLoopIdx = cineLoopIdsMap.get(siuid);
+
+      String mediaStorageSOPClassUID = dicomObject.contains(Tag.MediaStorageSOPClassUID) ? dicomObject
+          .getString(Tag.MediaStorageSOPClassUID) : null;
+      String modality = dicomObject.getString(Tag.Modality);
+      log.info("StudyInstanceUID={}", siuid);
+      log.info("  Expected outputs: {}", StringUtils.collectionToCommaDelimitedString(output));
+      if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundImageStorage)) {
+        log.info("  STILL_IMAGE found");
+        if(output.contains("STILL_IMAGE")) {
+          return true;
+        }
+      } else if(mediaStorageSOPClassUID != null &&
+          mediaStorageSOPClassUID.equals(UID.UltrasoundMultiframeImageStorage)) {
+        cineLoopIdx++;
+        cineLoopIdsMap.put(siuid, cineLoopIdx);
+        log.info("  CINELOOP_{} found", cineLoopIdx);
+        if(output.contains("CINELOOP_" + cineLoopIdx)) {
+          return true;
+        }
+      } else if("SR".equals(modality)) {
+        log.info("  SR found");
+        if(output.contains("SR")) {
+          return true;
+        }
+      }
+      log.info("  File type does not apply");
+      // else ignore
+      return false;
+    }
+
   }
 }
