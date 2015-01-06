@@ -389,7 +389,11 @@ public class EditParticipantPanel extends Panel {
         }
 
       } else {
+        if(participant.getId() == null) {
+          attributeValueModel = new PropertyModel<Data>(getConfiguredAttributeValue(attribute, participant), "data");
+        } else {
         attributeValueModel = new PropertyModel<Data>(new DetachableEntityModel(queryService, getConfiguredAttributeValue(attribute, participant)), "data");
+        }
       }
 
       // Field is editable if the Panel's mode is EDIT and the attribute allows edition AFTER reception
@@ -465,8 +469,7 @@ public class EditParticipantPanel extends Panel {
      * @return
      */
     private ParticipantAttributeValue getConfiguredAttributeValue(ParticipantAttribute attribute, Participant participant) {
-      ParticipantAttributeValue configuredAttributeValue = participant.getParticipantAttributeValue(attribute.getName());
-      return configuredAttributeValue;
+      return participant.getParticipantAttributeValue(attribute.getName());
     }
 
   }

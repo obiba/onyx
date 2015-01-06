@@ -30,7 +30,6 @@ public class VantageReportParserTest {
 
   private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd - HH:mm:ss");
 
-  @SuppressWarnings("ReuseOfLocalVariable")
   @Test
   public void testParse() throws URISyntaxException, IOException {
     VantageReportParser parser = new VantageReportParser();

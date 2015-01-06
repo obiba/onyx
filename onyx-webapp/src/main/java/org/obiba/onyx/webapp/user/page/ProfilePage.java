@@ -33,6 +33,10 @@ import org.obiba.onyx.wicket.reusable.Dialog.WindowClosedCallback;
 @SuppressWarnings("serial")
 public class ProfilePage extends BasePage {
 
+  private static final Locale FARSI = new Locale("fa");
+
+  public static final Locale[] LOCALS = new Locale[] { Locale.FRENCH, Locale.ENGLISH, FARSI };
+
   @SpringBean
   private UserService userService;
 
@@ -40,9 +44,7 @@ public class ProfilePage extends BasePage {
   private UserSessionService userSessionService;
 
   public ProfilePage(int previousPageId) {
-    super();
-
-    AjaxLanguageChoicePanel languageSelect = new AjaxLanguageChoicePanel("languageSelect", new StringResourceModel("Language", this, null), Arrays.asList(new Locale[] { Locale.FRENCH, Locale.ENGLISH })) {
+    AjaxLanguageChoicePanel languageSelect = new AjaxLanguageChoicePanel("languageSelect", new StringResourceModel("Language", this, null), Arrays.asList(LOCALS)) {
 
       private static final long serialVersionUID = 1L;
 

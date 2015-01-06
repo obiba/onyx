@@ -26,14 +26,14 @@ public interface InterviewManager {
    * 
    * @return the {@code Participant} being interviewed in the current session.
    */
-  public Participant getInterviewedParticipant();
+  Participant getInterviewedParticipant();
 
   /**
    * Returns a {@code Map} of {@code StageExecutionContext} instances for stages of the current interview. The keys are
    * stage names and the values are its associated {@code StageExecutionContext} instance.
    * @return a {@code Map} of {@code StageExecutionContext}
    */
-  public Map<String, StageExecutionContext> getStageContexts();
+  Map<String, StageExecutionContext> getStageContexts();
 
   /**
    * Returns {@code true} if the specified {@code Participant} interview is available for locking. Returns {@code false}
@@ -45,7 +45,7 @@ public interface InterviewManager {
    * @param participant the {@code Participant} for which to test the interview availability.
    * @return {@code true} if the participant's interview is available for locking by this session.
    */
-  public boolean isInterviewAvailable(Participant participant);
+  boolean isInterviewAvailable(Participant participant);
 
   /**
    * Returns the {@code User} instance associated with a {@code Participant}. This method returns the {@code User} that
@@ -55,7 +55,7 @@ public interface InterviewManager {
    * @return the {@code User} instance holding the interview lock or null if no lock is currently held for the specified
    * participant.
    */
-  public String getInterviewer(Participant participant);
+  String getInterviewer(Participant participant);
 
   /**
    * Locks the specified interview and binds it to the current user's session.
@@ -65,20 +65,20 @@ public interface InterviewManager {
    * @param participant the {@code Participant} instance for which to lock the interview.
    * @return the participant's {@code Interview} instance (which may have been created).
    */
-  public Interview obtainInterview(Participant participant);
+  Interview obtainInterview(Participant participant);
 
   /**
    * Release a lock that the current user session is holding. If the current user session has no lock, this method has
    * no effect.
    */
-  public void releaseInterview();
+  void releaseInterview();
 
   /**
    * Release a lock that the specified user session is holding. This method can be used to release locks outside of a
    * request-cycle when the current user session cannot be determined.
    * @param sessionId the unique ID of the session for which to release locks.
    */
-  public void releaseInterview(String sessionId);
+  void releaseInterview(String sessionId);
 
   /**
    * Release all locks for a given {@code Participant} and obtain a lock to the interview for the current user session.
@@ -86,6 +86,6 @@ public interface InterviewManager {
    * @param participant the {@code Participant} instance to lock
    * @return the locked {@code Interview} instance.
    */
-  public Interview overrideInterview(Participant participant);
+  Interview overrideInterview(Participant participant);
 
 }

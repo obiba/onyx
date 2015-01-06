@@ -18,12 +18,12 @@ import org.obiba.onyx.util.data.DataType;
  */
 public interface IDataValidator<T> extends IValidator<T> {
 
-  public DataType getDataType();
+  DataType getDataType();
 
   /**
    * Returns the decorated validator.
    * 
    * @return decorated validator
    */
-  public IValidator<T> getValidator();
+  IValidator<T> getValidator();
 }

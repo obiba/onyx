@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -42,6 +42,7 @@ import org.obiba.onyx.engine.ActionDefinitionConfiguration;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.print.IPrintableReport;
+import org.obiba.onyx.print.PdfPrintingService;
 import org.obiba.onyx.print.PrintableReportsRegistry;
 import org.obiba.onyx.webapp.action.panel.InterviewLogPanel;
 import org.obiba.onyx.webapp.action.panel.LoadableInterviewLogModel;
@@ -67,6 +68,7 @@ import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 
+@SuppressWarnings("MagicNumber")
 @AuthorizeInstantiation({ "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class InterviewPage extends BasePage {
 
@@ -79,6 +81,9 @@ public class InterviewPage extends BasePage {
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
+  @SpringBean(name = "pdfPrintingService")
+  private PdfPrintingService pdfPrintingService;
+
   @SpringBean
   private ActionDefinitionConfiguration actionDefinitionConfiguration;
 
@@ -89,15 +94,12 @@ public class InterviewPage extends BasePage {
 
   private Label commentsCount;
 
-  AjaxLink viewComments;
-
-  private KeyValueDataPanel kvPanel;
+  AjaxLink<?> viewComments;
 
   @SpringBean
   private InterviewManager interviewManager;
 
   public InterviewPage() {
-    super();
 
     if(activeInterviewService.getParticipant() == null || activeInterviewService.getInterview() == null) {
       setResponsePage(WebApplication.get().getHomePage());
@@ -113,7 +115,9 @@ public class InterviewPage extends BasePage {
       final InterviewLogPanel interviewLogPanel;
       final Dialog interviewLogsDialog;
       interviewLogPanel = new InterviewLogPanel("content", 338, new LoadableInterviewLogModel());
-      interviewLogsDialog = DialogBuilder.buildDialog("interviewLogsDialog", new StringResourceModel("Log", this, null), interviewLogPanel).setOptions(Option.CLOSE_OPTION).setFormCssClass("interview-log-dialog-form").getDialog();
+      interviewLogsDialog = DialogBuilder
+          .buildDialog("interviewLogsDialog", new StringResourceModel("Log", this, null), interviewLogPanel)
+          .setOptions(Option.CLOSE_OPTION).setFormCssClass("interview-log-dialog-form").getDialog();
       interviewLogsDialog.setHeightUnit("em");
       interviewLogsDialog.setWidthUnit("em");
       interviewLogsDialog.setInitialHeight(34);
@@ -121,6 +125,7 @@ public class InterviewPage extends BasePage {
       interviewLogsDialog.setCloseButtonCallback(new CloseButtonCallback() {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
           // Update comment count on interview page once the modal window closes. User may have added comments.
           updateCommentCount(target);
@@ -128,7 +133,7 @@ public class InterviewPage extends BasePage {
         }
       });
       interviewLogPanel.setup(interviewLogsDialog);
-      interviewLogPanel.add(new AttributeModifier("class", true, new Model("interview-log-panel-content")));
+      interviewLogPanel.add(new AttributeModifier("class", true, new Model<String>("interview-log-panel-content")));
       interviewLogPanel.setMarkupId("interviewLogPanel");
       interviewLogPanel.setOutputMarkupId(true);
 
@@ -136,7 +141,7 @@ public class InterviewPage extends BasePage {
 
       Participant participant = activeInterviewService.getParticipant();
 
-      add(new ParticipantPanel("participant", new DetachableEntityModel(queryService, participant), true));
+      add(new ParticipantPanel("participant", new DetachableEntityModel<Participant>(queryService, participant), true));
 
       // Create modal comments window
       final ModalWindow commentsWindow;
@@ -152,17 +157,20 @@ public class InterviewPage extends BasePage {
 
         private static final long serialVersionUID = 1L;
 
+        @Override
         public void onClose(AjaxRequestTarget target) {
 
         }
       });
 
-      ViewInterviewLogsLink viewCommentsIconLink = createIconLink("viewCommentsIconLink", interviewLogsDialog, interviewLogPanel, true);
+      ViewInterviewLogsLink viewCommentsIconLink = createIconLink("viewCommentsIconLink", interviewLogsDialog,
+          interviewLogPanel, true);
       add(viewCommentsIconLink);
       ContextImage commentIcon = createContextImage("commentIcon", "icons/note.png");
       viewCommentsIconLink.add(commentIcon);
 
-      ViewInterviewLogsLink viewLogIconLink = createIconLink("viewLogIconLink", interviewLogsDialog, interviewLogPanel, false);
+      ViewInterviewLogsLink viewLogIconLink = createIconLink("viewLogIconLink", interviewLogsDialog, interviewLogPanel,
+          false);
       add(viewLogIconLink);
       ContextImage logIcon = createContextImage("logIcon", "icons/loupe_button.png");
       viewLogIconLink.add(logIcon);
@@ -177,7 +185,8 @@ public class InterviewPage extends BasePage {
           interviewLogPanel.setCommentsOnly(true);
 
           // Disable Show All Button
-          target.appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
+          target.appendJavascript(
+              "$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
           super.onClick(target);
         }
 
@@ -191,7 +200,8 @@ public class InterviewPage extends BasePage {
           interviewLogPanel.setCommentsOnly(false);
 
           // Disable Show All Button
-          target.appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
+          target.appendJavascript(
+              "$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
           super.onClick(target);
         }
 
@@ -213,14 +223,15 @@ public class InterviewPage extends BasePage {
 
       ActiveInterviewModel interviewModel = new ActiveInterviewModel();
 
-      kvPanel = new KeyValueDataPanel("interview");
+      KeyValueDataPanel kvPanel = new KeyValueDataPanel("interview");
       kvPanel.addRow(new StringResourceModel("StartDate", this, null), new PropertyModel(interviewModel, "startDate"));
       kvPanel.addRow(new StringResourceModel("EndDate", this, null), new PropertyModel(interviewModel, "endDate"));
       kvPanel.addRow(new StringResourceModel("Status", this, null), new PropertyModel(interviewModel, "status"));
       add(kvPanel);
 
       // Interview cancellation
-      final ActionDefinition cancelInterviewDef = actionDefinitionConfiguration.getActionDefinition(ActionType.STOP, "Interview", null, null);
+      final ActionDefinition cancelInterviewDef = actionDefinitionConfiguration
+          .getActionDefinition(ActionType.STOP, "Interview", null, null);
       final ActionWindow interviewActionWindow = new ActionWindow("modal") {
 
         private static final long serialVersionUID = 1L;
@@ -234,14 +245,15 @@ public class InterviewPage extends BasePage {
       };
       add(interviewActionWindow);
 
-      AjaxLink link = new AjaxLink("cancelInterview") {
+      AjaxLink<?> link = new AjaxLink("cancelInterview") {
 
         private static final long serialVersionUID = 1L;
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          Label label = new Label("content", new StringResourceModel("ConfirmCancellationOfInterview", InterviewPage.this, null));
-          label.add(new AttributeModifier("class", true, new Model("confirmation-dialog-content")));
+          Label label = new Label("content",
+              new StringResourceModel("ConfirmCancellationOfInterview", InterviewPage.this, null));
+          label.add(new AttributeModifier("class", true, new Model<String>("confirmation-dialog-content")));
           ConfirmationDialog confirmationDialog = getConfirmationDialog();
 
           confirmationDialog.setContent(label);
@@ -250,6 +262,7 @@ public class InterviewPage extends BasePage {
 
             private static final long serialVersionUID = -6691702933562884991L;
 
+            @Override
             public void onYesButtonClicked(AjaxRequestTarget target) {
               interviewActionWindow.show(target, null, cancelInterviewDef);
             }
@@ -261,14 +274,15 @@ public class InterviewPage extends BasePage {
         @Override
         public boolean isVisible() {
           InterviewStatus status = activeInterviewService.getInterview().getStatus();
-          return (status == InterviewStatus.IN_PROGRESS || status == InterviewStatus.COMPLETED);
+          return status == InterviewStatus.IN_PROGRESS || status == InterviewStatus.COMPLETED;
         }
       };
       MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER");
       add(link);
 
       // Interview closing
-      final ActionDefinition closeInterviewDef = actionDefinitionConfiguration.getActionDefinition(ActionType.STOP, "Closed.Interview", null, null);
+      final ActionDefinition closeInterviewDef = actionDefinitionConfiguration
+          .getActionDefinition(ActionType.STOP, "Closed.Interview", null, null);
       final ActionWindow closeInterviewActionWindow = new ActionWindow("closeModal") {
 
         private static final long serialVersionUID = 1L;
@@ -282,14 +296,15 @@ public class InterviewPage extends BasePage {
       };
       add(closeInterviewActionWindow);
 
-      AjaxLink closeLink = new AjaxLink("closeInterview") {
+      AjaxLink<?> closeLink = new AjaxLink("closeInterview") {
 
         private static final long serialVersionUID = 1L;
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          Label label = new Label("content", new StringResourceModel("ConfirmClosingOfInterview", InterviewPage.this, null));
-          label.add(new AttributeModifier("class", true, new Model("confirmation-dialog-content")));
+          Label label = new Label("content",
+              new StringResourceModel("ConfirmClosingOfInterview", InterviewPage.this, null));
+          label.add(new AttributeModifier("class", true, new Model<String>("confirmation-dialog-content")));
           ConfirmationDialog confirmationDialog = getConfirmationDialog();
 
           confirmationDialog.setContent(label);
@@ -298,6 +313,7 @@ public class InterviewPage extends BasePage {
 
             private static final long serialVersionUID = -6691702933562884991L;
 
+            @Override
             public void onYesButtonClicked(AjaxRequestTarget target) {
               closeInterviewActionWindow.show(target, null, closeInterviewDef);
             }
@@ -309,7 +325,7 @@ public class InterviewPage extends BasePage {
         @Override
         public boolean isVisible() {
           InterviewStatus status = activeInterviewService.getInterview().getStatus();
-          return (status == InterviewStatus.IN_PROGRESS);
+          return status == InterviewStatus.IN_PROGRESS;
         }
       };
       MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER");
@@ -323,7 +339,7 @@ public class InterviewPage extends BasePage {
 
         private static final long serialVersionUID = 1L;
 
-        public ReportLink(String id) {
+        ReportLink(String id) {
           super(id);
         }
 
@@ -335,6 +351,7 @@ public class InterviewPage extends BasePage {
 
       ReportLink printReportLink = new ReportLink("printReport");
       printReportLink.add(new Label("reportLabel", new ResourceModel("PrintReport")));
+      printReportLink.setVisible(pdfPrintingService.supportsPdfPrinting());
       add(printReportLink);
 
       add(new StageSelectionPanel("stage-list", getFeedbackWindow()) {
@@ -350,8 +367,8 @@ public class InterviewPage extends BasePage {
 
             @Override
             public void onAddComments(AjaxRequestTarget target) {
-              InterviewPage.this.updateCommentsCount();
-              target.addComponent(InterviewPage.this.commentsCount);
+              updateCommentsCount();
+              target.addComponent(commentsCount);
             }
 
           });
@@ -373,15 +390,15 @@ public class InterviewPage extends BasePage {
           if(activeInterviewService.getStageExecution(action.getStage()).isFinal()) {
             setResponsePage(InterviewPage.class);
           } else {
-            InterviewPage.this.updateCommentsCount();
-            target.addComponent(InterviewPage.this.commentsCount);
+            updateCommentsCount();
+            target.addComponent(commentsCount);
           }
 
         }
 
       });
 
-      AjaxLink exitLink = new AjaxLink("exitInterview") {
+      AjaxLink<?> exitLink = new AjaxLink("exitInterview") {
 
         private static final long serialVersionUID = 1L;
 
@@ -397,11 +414,12 @@ public class InterviewPage extends BasePage {
   }
 
   public void updateCommentsCount() {
-    viewComments.addOrReplace(commentsCount = new Label("commentsCount", String.valueOf(activeInterviewService.getInterviewComments().size())));
+    viewComments.addOrReplace(commentsCount = new Label("commentsCount",
+        String.valueOf(activeInterviewService.getInterviewComments().size())));
     commentsCount.setOutputMarkupId(true);
   }
 
-  private AjaxLink createReinstateInterviewLink() {
+  private AjaxLink<?> createReinstateInterviewLink() {
     String stateName = null;
     if(activeInterviewService.getInterview().getStatus() == InterviewStatus.CANCELLED) {
       stateName = "Cancelled";
@@ -409,7 +427,8 @@ public class InterviewPage extends BasePage {
       stateName = "Closed";
     }
 
-    final ActionDefinition reinstateInterviewDef = actionDefinitionConfiguration.getActionDefinition(ActionType.EXECUTE, stateName, null, null);
+    final ActionDefinition reinstateInterviewDef = actionDefinitionConfiguration
+        .getActionDefinition(ActionType.EXECUTE, stateName, null, null);
 
     final ActionWindow reinstateInterviewActionWindow = new ActionWindow("reinstateModal") {
 
@@ -424,14 +443,15 @@ public class InterviewPage extends BasePage {
     };
     add(reinstateInterviewActionWindow);
 
-    AjaxLink reinstateLink = new AjaxLink("reinstateInterview") {
+    AjaxLink<?> reinstateLink = new AjaxLink("reinstateInterview") {
 
       private static final long serialVersionUID = 1L;
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        Label label = new Label("content", new StringResourceModel("ConfirmReinstatementOfInterview", InterviewPage.this, null));
-        label.add(new AttributeModifier("class", true, new Model("confirmation-dialog-content")));
+        Label label = new Label("content",
+            new StringResourceModel("ConfirmReinstatementOfInterview", InterviewPage.this, null));
+        label.add(new AttributeModifier("class", true, new Model<String>("confirmation-dialog-content")));
         ConfirmationDialog confirmationDialog = getConfirmationDialog();
 
         confirmationDialog.setContent(label);
@@ -440,6 +460,7 @@ public class InterviewPage extends BasePage {
 
           private static final long serialVersionUID = -6691702933562884991L;
 
+          @Override
           public void onYesButtonClicked(AjaxRequestTarget target) {
             reinstateInterviewActionWindow.show(target, null, reinstateInterviewDef);
           }
@@ -451,7 +472,7 @@ public class InterviewPage extends BasePage {
       @Override
       public boolean isVisible() {
         InterviewStatus status = activeInterviewService.getInterview().getStatus();
-        return (status == InterviewStatus.CANCELLED || status == InterviewStatus.CLOSED);
+        return status == InterviewStatus.CANCELLED || status == InterviewStatus.CLOSED;
       }
     };
 
@@ -469,12 +490,13 @@ public class InterviewPage extends BasePage {
 
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void onClose(AjaxRequestTarget target, Status status) {
-        if(status.equals(Status.SUCCESS)) {
+        if(status == Status.SUCCESS) {
           Action comment = (Action) dialogContent.getDefaultModelObject();
           activeInterviewService.doAction(null, comment);
-          InterviewPage.this.updateCommentsCount();
-          target.addComponent(InterviewPage.this.commentsCount);
+          updateCommentsCount();
+          target.addComponent(commentsCount);
         }
         dialogContent.clearCommentField();
       }
@@ -484,21 +506,22 @@ public class InterviewPage extends BasePage {
   }
 
   public void updateCommentCount(AjaxRequestTarget target) {
-    InterviewPage.this.updateCommentsCount();
-    target.addComponent(InterviewPage.this.commentsCount);
+    updateCommentsCount();
+    target.addComponent(commentsCount);
   }
 
   private class ViewInterviewLogsLink extends AjaxLink {
 
     private static final long serialVersionUID = -2193340839515835159L;
 
-    private Dialog interviewLogsDialog;
+    private final Dialog interviewLogsDialog;
 
-    private InterviewLogPanel interviewLogPanel;
+    private final InterviewLogPanel interviewLogPanel;
 
-    private boolean commentsOnly;
+    private final boolean commentsOnly;
 
-    public ViewInterviewLogsLink(String id, Dialog interviewLogsDialog, InterviewLogPanel interviewLogPanel, boolean commentsOnly) {
+    private ViewInterviewLogsLink(String id, Dialog interviewLogsDialog, InterviewLogPanel interviewLogPanel,
+        boolean commentsOnly) {
       super(id);
       this.interviewLogsDialog = interviewLogsDialog;
       this.interviewLogPanel = interviewLogPanel;
@@ -524,14 +547,18 @@ public class InterviewPage extends BasePage {
       DateFormat dateTimeFormat = userSessionService.getDateTimeFormat();
       Date date = activeInterviewService.getInterview().getStartDate();
 
-      return date == null ? "" : DateModelUtils.getDateTimeModel(new Model(dateTimeFormat), new Model(date)).getObject().toString();
+      return date == null
+          ? ""
+          : DateModelUtils.getDateTimeModel(new Model<DateFormat>(dateTimeFormat), new Model<Date>(date)).getObject();
     }
 
     public String getEndDate() {
       DateFormat dateTimeFormat = userSessionService.getDateTimeFormat();
       Date date = activeInterviewService.getInterview().getEndDate();
 
-      return date == null ? "" : DateModelUtils.getDateTimeModel(new Model(dateTimeFormat), new Model(date)).getObject().toString();
+      return date == null
+          ? ""
+          : DateModelUtils.getDateTimeModel(new Model<DateFormat>(dateTimeFormat), new Model<Date>(date)).getObject();
     }
 
     public String getStatus() {
@@ -539,24 +566,29 @@ public class InterviewPage extends BasePage {
 
       // act.getStage() == null => action is on interview and not on a stage
       if(act != null && act.getStage() == null && act.getEventReason() != null) {
-        String reason = (new SpringStringResourceModel(act.getEventReason())).getString();
+        String reason = new SpringStringResourceModel(act.getEventReason()).getString();
         ValueMap map = new ValueMap("reason=" + reason);
-        return (new StringResourceModel("InterviewStatus." + activeInterviewService.getInterview().getStatus() + ".WithReason", InterviewPage.this, new Model(map))).getString();
-      } else {
-        return (new StringResourceModel("InterviewStatus." + activeInterviewService.getInterview().getStatus(), InterviewPage.this, null)).getString();
+        return new StringResourceModel(
+            "InterviewStatus." + activeInterviewService.getInterview().getStatus() + ".WithReason", InterviewPage.this,
+            new Model<ValueMap>(map)).getString();
       }
+      return new StringResourceModel("InterviewStatus." + activeInterviewService.getInterview().getStatus(),
+          InterviewPage.this, null).getString();
     }
   }
 
-  private ViewInterviewLogsLink createIconLink(String id, Dialog dialog, InterviewLogPanel interviewLogPanel, boolean commentsOnly) {
-    ViewInterviewLogsLink viewCommentsIconLink = new ViewInterviewLogsLink(id, dialog, interviewLogPanel, commentsOnly) {
+  private ViewInterviewLogsLink createIconLink(String id, Dialog dialog, InterviewLogPanel interviewLogPanel,
+      boolean commentsOnly) {
+    ViewInterviewLogsLink viewCommentsIconLink = new ViewInterviewLogsLink(id, dialog, interviewLogPanel,
+        commentsOnly) {
 
       private static final long serialVersionUID = 1L;
 
       @Override
       public void onClick(AjaxRequestTarget target) {
         // Disable Show All Button
-        target.appendJavascript("$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
+        target.appendJavascript(
+            "$('[name=showAll]').attr('disabled','true');$('[name=showAll]').css('color','rgba(0, 0, 0, 0.2)');$('[name=showAll]').css('border-color','rgba(0, 0, 0, 0.2)');");
         super.onClick(target);
       }
 
@@ -567,25 +599,25 @@ public class InterviewPage extends BasePage {
   }
 
   private ContextImage createContextImage(String id, String image) {
-    ContextImage commentIcon = new ContextImage(id, new Model(image));
+    ContextImage commentIcon = new ContextImage(id, new Model<String>(image));
     commentIcon.setMarkupId(id);
     commentIcon.setOutputMarkupId(true);
     return commentIcon;
   }
 
-  private class PrintableReportModel extends LoadableDetachableModel {
+  private class PrintableReportModel extends LoadableDetachableModel<IPrintableReport> {
 
     private static final long serialVersionUID = 1L;
 
     String name;
 
-    public PrintableReportModel(IPrintableReport report) {
+    private PrintableReportModel(IPrintableReport report) {
       super(report);
-      this.name = report.getName();
+      name = report.getName();
     }
 
     @Override
-    protected Object load() {
+    protected IPrintableReport load() {
       return printableReportsRegistry.getReportByName(name);
     }
   }
