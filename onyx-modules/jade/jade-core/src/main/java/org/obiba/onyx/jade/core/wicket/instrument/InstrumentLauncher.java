@@ -11,7 +11,6 @@ package org.obiba.onyx.jade.core.wicket.instrument;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,7 +63,9 @@ public class InstrumentLauncher implements Serializable {
       props.setProperty("org.obiba.onyx.remoting.url", makeUrl("remoting"));
       props.setProperty("codebaseUrl", makeUrl(instrumentCodeBase));
       props.setProperty("JSESSIONID", Session.get().getId());
-      props.setProperty("jnlpPath", context.getRealPath(File.separatorChar + instrumentCodeBase + File.separatorChar + "launch.jnlp"));
+      String jnlpPath = context.getRealPath("/" + instrumentCodeBase + "/launch.jnlp");
+      log.debug("jnlpPath={}", jnlpPath);
+      props.setProperty("jnlpPath", jnlpPath);
 
       log.info("Current language is = {} getDisplayLanguage()", Session.get().getLocale().getDisplayLanguage());
       props.setProperty("locale", Session.get().getLocale().getLanguage());
