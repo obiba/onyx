@@ -222,7 +222,7 @@ public class Tracker5InstrumentRunner implements InstrumentRunner, InitializingB
   }
 
   private File getTrackerDatabaseFolder() {
-    return new File("c:\\Program Files\\Tracker 5\\Data", trackerDatabaseName);
+    return new File(externalAppHelper.getWorkDir(), trackerDatabaseName);
   }
 
 }
