@@ -11,8 +11,8 @@ package org.obiba.onyx.spring.remoting;
 
 import java.io.IOException;
 
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.springframework.remoting.httpinvoker.CommonsHttpInvokerRequestExecutor;
+import org.apache.http.client.methods.HttpPost;
+import org.springframework.remoting.httpinvoker.HttpComponentsHttpInvokerRequestExecutor;
 import org.springframework.remoting.httpinvoker.HttpInvokerClientConfiguration;
 
 /**
@@ -20,7 +20,7 @@ import org.springframework.remoting.httpinvoker.HttpInvokerClientConfiguration;
  * @author Yannick Marcon
  *
  */
-public class CookieRequestExecutor extends CommonsHttpInvokerRequestExecutor {
+public class CookieRequestExecutor extends HttpComponentsHttpInvokerRequestExecutor {
 
   private String name;
 
@@ -35,10 +35,10 @@ public class CookieRequestExecutor extends CommonsHttpInvokerRequestExecutor {
   }
 
   @Override
-  protected PostMethod createPostMethod(HttpInvokerClientConfiguration config) throws IOException {
-    PostMethod method = super.createPostMethod(config);
-    method.setRequestHeader("Cookie", name + "=" + value);
-    return method;
+  protected HttpPost createHttpPost(HttpInvokerClientConfiguration config) throws IOException {
+    HttpPost post = super.createHttpPost(config);
+    post.setHeader("Cookie", name + "=" + value);
+    return post;
   }
 
 }

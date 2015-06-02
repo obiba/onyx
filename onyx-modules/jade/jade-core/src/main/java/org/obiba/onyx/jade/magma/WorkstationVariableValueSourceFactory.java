@@ -122,19 +122,33 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
   private VariableValueSource createWorkstationNameSource() {
     return new VariableValueSource() {
 
+      @Override
+      public String getName() {
+        return WORKSTATION + '.' + "name";
+      }
+
+      @Override
       public Variable getVariable() {
-        Variable.Builder builder = new Variable.Builder(WORKSTATION + '.' + "name", getValueType(), WORKSTATION);
+        Variable.Builder builder = new Variable.Builder(getName(), getValueType(), WORKSTATION);
         return builder.build();
       }
 
+      @Override
       public Value getValue(ValueSet valueSet) {
         return getValueType().valueOf(valueSet.getVariableEntity().getIdentifier());
       }
 
+      @Override
+      public boolean supportVectorSource() {
+        return false;
+      }
+
+      @Override
       public ValueType getValueType() {
         return TextType.get();
       }
 
+      @Override
       public VectorSource asVectorSource() {
         return null;
       }
@@ -144,19 +158,33 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
   private VariableValueSource createWorkstationCaptureStartDateSource() {
     return new VariableValueSource() {
 
+      @Override
+      public String getName() {
+        return WORKSTATION + '.' + "captureStartDate";
+      }
+
+      @Override
       public Variable getVariable() {
-        Variable.Builder builder = new Variable.Builder(WORKSTATION + '.' + "captureStartDate", getValueType(), WORKSTATION);
+        Variable.Builder builder = new Variable.Builder(getName(), getValueType(), WORKSTATION);
         return builder.build();
       }
 
+      @Override
       public Value getValue(ValueSet valueSet) {
         return getValueType().valueOf(workstationCaptureAndExportStrategy.getCaptureStartDate(valueSet.getVariableEntity().getIdentifier()));
       }
 
+      @Override
+      public boolean supportVectorSource() {
+        return false;
+      }
+
+      @Override
       public ValueType getValueType() {
         return DateTimeType.get();
       }
 
+      @Override
       public VectorSource asVectorSource() {
         return null;
       }
@@ -166,19 +194,33 @@ public class WorkstationVariableValueSourceFactory implements VariableValueSourc
   private VariableValueSource createWorkstationCaptureEndDateSource() {
     return new VariableValueSource() {
 
+      @Override
+      public String getName() {
+        return WORKSTATION + '.' + "captureEndDate";
+      }
+
+      @Override
       public Variable getVariable() {
-        Variable.Builder builder = new Variable.Builder(WORKSTATION + '.' + "captureEndDate", getValueType(), WORKSTATION);
+        Variable.Builder builder = new Variable.Builder(getName(), getValueType(), WORKSTATION);
         return builder.build();
       }
 
+      @Override
       public Value getValue(ValueSet valueSet) {
         return getValueType().valueOf(workstationCaptureAndExportStrategy.getCaptureEndDate(valueSet.getVariableEntity().getIdentifier()));
       }
 
+      @Override
+      public boolean supportVectorSource() {
+        return false;
+      }
+
+      @Override
       public ValueType getValueType() {
         return DateTimeType.get();
       }
 
+      @Override
       public VectorSource asVectorSource() {
         return null;
       }

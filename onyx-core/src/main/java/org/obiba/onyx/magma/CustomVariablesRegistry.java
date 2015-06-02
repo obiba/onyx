@@ -24,5 +24,5 @@ public interface CustomVariablesRegistry {
    * @param valueTableName value table name
    * @return custom variable in the specified value table (or an empty set if none)
    */
-  public Set<VariableValueSource> getVariables(String valueTableName);
+  Set<VariableValueSource> getVariables(String valueTableName);
 }

@@ -36,8 +36,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerAwareService implements
-    AppointmentManagementService, ResourceLoaderAware {
+public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerAwareService
+    implements AppointmentManagementService, ResourceLoaderAware {
 
   private JobExplorer jobExplorer;
 
@@ -65,8 +65,9 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
         getInputDir().mkdirs();
       }
       if(!getInputDir().isDirectory()) {
-        throw new IllegalArgumentException("DefaultAppointmentManagementServiceImpl: InputDirectory " + getInputDir()
-            .getAbsolutePath() + " is not a directory");
+        throw new IllegalArgumentException(
+            "DefaultAppointmentManagementServiceImpl: InputDirectory " + getInputDir().getAbsolutePath() +
+                " is not a directory");
       }
 
       if(outputDirectory != null && !outputDirectory.isEmpty()) {
@@ -76,8 +77,8 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
         }
         if(!getOutputDir().isDirectory()) {
           throw new IllegalArgumentException(
-              "DefaultAppointmentManagementServiceImpl: OutputDirectory " + getOutputDir()
-                  .getAbsolutePath() + " is not a directory");
+              "DefaultAppointmentManagementServiceImpl: OutputDirectory " + getOutputDir().getAbsolutePath() +
+                  " is not a directory");
         }
       }
     } catch(IOException ex) {
@@ -99,14 +100,17 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
 
   }
 
+  @Override
   public void saveAppointmentUpdateStats(AppointmentUpdateStats appointmentUpdateStats) {
     getPersistenceManager().save(appointmentUpdateStats);
   }
 
+  @Override
   public AppointmentUpdateStats getLastAppointmentUpdateStats() {
-    return (getPersistenceManager().list(AppointmentUpdateStats.class, new SortingClause("date", false))).get(0);
+    return getPersistenceManager().list(AppointmentUpdateStats.class, new SortingClause("date", false)).get(0);
   }
 
+  @Override
   public List<AppointmentUpdateLog> getLogListForDate(Date date) {
     List<AppointmentUpdateLog> logList = new ArrayList<AppointmentUpdateLog>();
     List<JobInstance> jobsList = jobExplorer.getJobInstances(job.getName(), 0, 10);
@@ -114,8 +118,14 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
     JobExecution jobExecution = null;
 
     for(JobInstance jobInstance : jobsList) {
-      if(jobInstance.getJobParameters().getDate("date").toString().equals(date.toString())) {
-        jobExecution = jobExplorer.getJobExecutions(jobInstance).get(0);
+      List<JobExecution> jobExecutions = jobExplorer.getJobExecutions(jobInstance);
+      for(JobExecution jobExec : jobExecutions) {
+        if(jobExec.getJobParameters().getDate("date").toString().equals(date.toString())) {
+          jobExecution = jobExec;
+          break;
+        }
+      }
+      if(jobExecution != null) {
         break;
       }
     }
@@ -140,6 +150,7 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
     this.outputDirectory = outputDirectory;
   }
 
+  @Override
   public void setResourceLoader(ResourceLoader resourceLoader) {
     this.resourceLoader = resourceLoader;
   }
