@@ -34,7 +34,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.obiba</groupId>
+      <groupId>org.obiba.commons</groupId>
       <artifactId>obiba-wicket</artifactId>
     </dependency>
 

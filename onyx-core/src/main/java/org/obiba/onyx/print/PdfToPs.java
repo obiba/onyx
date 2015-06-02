@@ -141,7 +141,7 @@ public abstract class PdfToPs {
       }
 
       try {
-        log.debug("Invoking {} {} {}", new String[] { executable.getAbsolutePath(), pdf.getAbsolutePath(), ps.getAbsolutePath() });
+        log.debug("Invoking {} {} {}", executable.getAbsolutePath(), pdf.getAbsolutePath(), ps.getAbsolutePath());
         int exitCode = Runtime.getRuntime().exec(new String[] { executable.getAbsolutePath(), pdf.getAbsolutePath(), ps.getAbsolutePath() }).waitFor();
         log.debug("pdftops exit code is {}", exitCode);
         return exitCode == 0;

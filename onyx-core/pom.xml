@@ -29,19 +29,18 @@
     </dependency>
 
     <dependency>
-      <groupId>org.obiba</groupId>
+      <groupId>org.obiba.commons</groupId>
       <artifactId>obiba-core</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.obiba</groupId>
+      <groupId>org.obiba.commons</groupId>
       <artifactId>obiba-wicket</artifactId>
     </dependency>
     
     <dependency>
       <groupId>org.obiba.opal</groupId>
       <artifactId>opal-rest-client</artifactId>
-      <version>1.10.8</version>
     </dependency>
 
     <dependency>
@@ -104,7 +103,7 @@
 
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate</artifactId>
+      <artifactId>hibernate-core</artifactId>
     </dependency>
 
     <dependency>
@@ -239,6 +238,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.obiba.magma</groupId>
+      <artifactId>magma-xstream</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.obiba.wicket</groupId>
       <artifactId>wicket-nanogong</artifactId>
     </dependency>
@@ -246,6 +250,16 @@
     <dependency>
       <groupId>net.sourceforge.findbugs</groupId>
       <artifactId>annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mozilla</groupId>
+      <artifactId>rhino</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
     </dependency>
 
   </dependencies>

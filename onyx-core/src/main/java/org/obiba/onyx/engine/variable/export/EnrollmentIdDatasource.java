@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.export;
 
-import java.io.IOException;
 import java.util.Set;
 
 import org.obiba.magma.Datasource;
@@ -94,7 +93,7 @@ public class EnrollmentIdDatasource extends AbstractDatasourceWrapper {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
       wrappedWriter.close();
     }
 
