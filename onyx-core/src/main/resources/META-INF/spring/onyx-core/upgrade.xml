@@ -30,9 +30,6 @@
         <bean class="org.obiba.runtime.upgrade.support.VersionTableInstallStep">
           <property name="dataSource" ref="dataSource" />
         </bean>
-        <bean class="org.obiba.runtime.upgrade.InstallStepAdapter">
-          <property name="upgradeStep" ref="batchSchema-1.6.0" />
-        </bean>
       </list>
     </property>
     <property name="upgradeSteps">
@@ -44,14 +41,6 @@
         <bean class="org.obiba.runtime.upgrade.support.LoggingUpgradeManagerListener" />
       </list>
     </property>
-  </bean>
-
-  <bean id="batchSchema-1.6.0" class="org.obiba.runtime.upgrade.support.jdbc.SqlScriptUpgradeStep">
-    <property name="dataSource" ref="dataSource" />
-    <property name="scriptPath" value="classpath:/META-INF/install-scripts/spring-batch/" />
-    <property name="scriptBasename" value="schema" />
-    <property name="description" value="Installs the Spring Batch Schema" />
-    <property name="appliesTo" value="1.6.0" />
   </bean>
 
 </beans>
