@@ -32,6 +32,7 @@ public class JobTriggerFactory {
       cronTrigger.setGroup(((JobDetailImpl)jobDetail).getGroup());
       cronTrigger.setName(jobDetail.getJobDataMap().getString(OnyxJobDetailDelegate.JOB_NAME));
       cronTrigger.setCronExpression(cronExpression);
+      cronTrigger.afterPropertiesSet();
       return cronTrigger.getObject();
     } else {
       return new NullTrigger();
