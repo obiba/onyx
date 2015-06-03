@@ -11,6 +11,7 @@ package org.obiba.onyx.core.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +39,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerAwareService
     implements AppointmentManagementService, ResourceLoaderAware {
+
+  private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
 
   private JobExplorer jobExplorer;
 
@@ -117,10 +120,14 @@ public class DefaultAppointmentManagementServiceImpl extends PersistenceManagerA
 
     JobExecution jobExecution = null;
 
+    // note: do not care about time zones as every thing is local
+    String dateStr = DATE_FORMAT.format(date);
     for(JobInstance jobInstance : jobsList) {
       List<JobExecution> jobExecutions = jobExplorer.getJobExecutions(jobInstance);
       for(JobExecution jobExec : jobExecutions) {
-        if(jobExec.getJobParameters().getDate("date").toString().equals(date.toString())) {
+        Date jobDate = jobExec.getJobParameters().getDate("date");
+        String jobDateStr = DATE_FORMAT.format(jobDate);
+        if(jobDateStr.equals(dateStr)) {
           jobExecution = jobExec;
           break;
         }
