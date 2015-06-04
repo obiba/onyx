@@ -14,7 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.matheclipse.parser.client.eval.BooleanVariable;
@@ -28,6 +28,8 @@ import org.obiba.onyx.util.data.DataBuilder;
  * 
  */
 public class MathEclipseEvaluatorTest {
+
+  public static final double DELTA = 0.01;
 
   @Test
   public void testEval001() {
@@ -79,7 +81,7 @@ public class MathEclipseEvaluatorTest {
   @Test
   public void testEval003() {
     try {
-      Assert.assertEquals(-1.0, MathEclipseEvaluator.getInstance().evaluateDouble("Sin[Pi/2*Cos[Pi]]", null));
+      Assert.assertEquals(-1.0, MathEclipseEvaluator.getInstance().evaluateDouble("Sin[Pi/2*Cos[Pi]]", null), DELTA);
     } catch(Exception e) {
       e.printStackTrace();
       Assert.assertEquals("", e.getMessage());
@@ -91,10 +93,10 @@ public class MathEclipseEvaluatorTest {
     try {
       String expression = "$1^2+3";
       List<Data> operands = Arrays.asList(new Data[] { DataBuilder.buildDecimal(3.0) });
-      Assert.assertEquals(12.0, MathEclipseEvaluator.getInstance().evaluateDouble(expression, operands));
+      Assert.assertEquals(12.0, MathEclipseEvaluator.getInstance().evaluateDouble(expression, operands), DELTA);
 
       operands = Arrays.asList(new Data[] { DataBuilder.buildDecimal(4.0) });
-      Assert.assertEquals(19.0, MathEclipseEvaluator.getInstance().evaluateDouble(expression, operands));
+      Assert.assertEquals(19.0, MathEclipseEvaluator.getInstance().evaluateDouble(expression, operands), DELTA);
 
     } catch(Exception e) {
       e.printStackTrace();
@@ -119,10 +121,10 @@ public class MathEclipseEvaluatorTest {
     try {
       String expression = "$1^2*$1^2-1";
       List<Data> operands = Arrays.asList(new Data[] { DataBuilder.buildDecimal(3.0) });
-      Assert.assertEquals(80.0, MathEclipseEvaluator.getInstance().evaluateDouble(expression, operands));
+      Assert.assertEquals(80.0, MathEclipseEvaluator.getInstance().evaluateDouble(expression, operands), DELTA);
 
       operands = Arrays.asList(new Data[] { DataBuilder.buildDecimal(4.0) });
-      Assert.assertEquals(255.0, MathEclipseEvaluator.getInstance().evaluateDouble(expression, operands));
+      Assert.assertEquals(255.0, MathEclipseEvaluator.getInstance().evaluateDouble(expression, operands), DELTA);
     } catch(Exception e) {
       e.printStackTrace();
       Assert.assertEquals("", e.getMessage());
@@ -230,13 +232,13 @@ public class MathEclipseEvaluatorTest {
 
       // as a data source
       List<IDataSource> operands = Arrays.asList(new IDataSource[] { new CurrentDateSource(Calendar.YEAR) });
-      Assert.assertEquals(0d, MathEclipseEvaluator.getInstance().evaluateDouble(expression, null, operands));
+      Assert.assertEquals(0d, MathEclipseEvaluator.getInstance().evaluateDouble(expression, null, operands), DELTA);
 
       // as a data
       Calendar cal = Calendar.getInstance();
       cal.setTime(new Date());
       List<Data> datas = Arrays.asList(new Data[] { DataBuilder.buildInteger(cal.get(Calendar.YEAR)) });
-      Assert.assertEquals(0d, MathEclipseEvaluator.getInstance().evaluateDouble(expression, datas));
+      Assert.assertEquals(0d, MathEclipseEvaluator.getInstance().evaluateDouble(expression, datas), DELTA);
 
     } catch(Exception e) {
       e.printStackTrace();
@@ -264,7 +266,7 @@ public class MathEclipseEvaluatorTest {
   private void check(String in, String compareWith) {
     try {
       double d = MathEclipseEvaluator.getInstance().evaluateDouble(in, null);
-      Assert.assertEquals(d, Double.parseDouble(compareWith));
+      Assert.assertEquals(d, Double.parseDouble(compareWith), DELTA);
     } catch(Exception e) {
       e.printStackTrace();
       Assert.assertEquals("", e.getMessage());

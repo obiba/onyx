@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.wicket.reusable;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.Model;

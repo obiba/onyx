@@ -11,11 +11,12 @@ package org.obiba.onyx.quartz.core.service;
 import java.util.List;
 import java.util.Locale;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;

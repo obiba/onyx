@@ -12,7 +12,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 import java.util.List;
 import java.util.Properties;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;

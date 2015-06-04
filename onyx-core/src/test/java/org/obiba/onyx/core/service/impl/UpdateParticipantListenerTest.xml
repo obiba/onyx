@@ -60,6 +60,8 @@
     an Integrity constraint violation.
   -->
   <action />
+  <stage_execution_memento/>
+  <stage_transition/>
   
   <participant_attribute_value />
   

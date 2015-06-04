@@ -12,7 +12,7 @@ package org.obiba.onyx.jade.core.service.impl.hibernate;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.hibernate.SessionFactory;
 import org.junit.Before;

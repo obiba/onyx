@@ -21,7 +21,7 @@ import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.Locale;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;

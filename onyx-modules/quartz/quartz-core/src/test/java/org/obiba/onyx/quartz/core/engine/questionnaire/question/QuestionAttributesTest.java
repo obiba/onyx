@@ -2,7 +2,6 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.util.Locale;
 
-import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +9,8 @@ import org.obiba.magma.Attribute;
 import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.js.MagmaJsExtension;
 import org.obiba.magma.xstream.MagmaXStreamExtension;
+
+import org.junit.Assert;
 
 public class QuestionAttributesTest {
 
@@ -64,8 +65,8 @@ public class QuestionAttributesTest {
   @Test
   public void testQuestionRemoveKeyAttributes() {
     Question q1 = new Question();
-    q1.addAttribute(null, "attrKey", "value", null);
-    q1.removeAttributes(null, "attrKey");
+    q1.addAttribute("", "attrKey", "value", null);
+    q1.removeAttributes("", "attrKey");
     Assert.assertEquals(0, q1.getAttributes().size());
   }
 

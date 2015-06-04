@@ -16,7 +16,7 @@ import static org.easymock.EasyMock.verify;
 
 import java.util.Locale;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.panel.Panel;
