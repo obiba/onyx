@@ -264,7 +264,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
   @Override
   public ExitStatus afterStep(StepExecution stepExecution) {
     for(AppointmentUpdateLog appointmentUpdateLog : log) {
-      AppointmentUpdateLog.addErrorLog(stepExecution.getExecutionContext(), appointmentUpdateLog);
+      AppointmentUpdateLog.addLog(stepExecution.getExecutionContext(), appointmentUpdateLog);
     }
     return null;
   }
