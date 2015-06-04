@@ -10,15 +10,11 @@
   <bean id="batchDefaultSerializer" class="org.springframework.batch.core.repository.dao.DefaultExecutionContextSerializer" />
 
   <!-- Spring batch database schema property -->
-  <jdbc:initialize-database data-source="dataSource" enabled="${batch.data.source.init}">
-    <jdbc:script location="${batch.schema.script}" />
-  </jdbc:initialize-database>
   <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean">
     <property name="dataSource" ref="dataSource" />
     <property name="transactionManager" ref="transactionManager" />
     <property name="serializer" ref="batchDefaultSerializer" />
   </bean>
-  <!--<batch:job-repository id="jobRepository"/>-->
 
   <!-- Spring batch In-memory property -->
   <!--<bean id="jobRepository"-->
