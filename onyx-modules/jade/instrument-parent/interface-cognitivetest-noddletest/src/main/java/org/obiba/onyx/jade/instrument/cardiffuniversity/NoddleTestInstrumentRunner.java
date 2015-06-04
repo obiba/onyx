@@ -125,7 +125,7 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
     } else {
       HashSet<String> resultTests = extractTestsFromResultFile(resultFiles.get(0), new LineCallback() {
         public String handleLine(String line) {
-          return (line.substring(0, 2));
+          return line.substring(0, 2);
         }
       });
 
@@ -341,9 +341,9 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
   /**
    * Initialise instrument runner after all properties are set. Prevents life cycle execution if values do not validate.
-   * @throws NoddleTestInsturmentRunnerException thrown when property validation fails.
+   * @throws NoddleTestInstrumentRunnerException thrown when property validation fails.
    */
-  public void initializeNoddleTestInstrumentRunner() throws NoddleTestInsturmentRunnerException {
+  public void initializeNoddleTestInstrumentRunner() throws NoddleTestInstrumentRunnerException {
     initializeResourceBundle();
     initializeEndDataCodeMap();
     validateSoftwareInstallPathExists();
@@ -361,21 +361,21 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
     }
   }
 
-  private void validateSoftwareInstallPathExists() throws NoddleTestInsturmentRunnerException {
+  private void validateSoftwareInstallPathExists() throws NoddleTestInstrumentRunnerException {
     File path = new File(this.softwareInstallPath);
     if(!path.exists()) {
       String errorMessage = warningPopup("noddleInstallationDirectoryMissing", new String[] { path.getAbsolutePath() });
       log.error(errorMessage);
-      throw new NoddleTestInsturmentRunnerException(errorMessage);
+      throw new NoddleTestInstrumentRunnerException(errorMessage);
     }
   }
 
-  private void validateResultPathExists() throws NoddleTestInsturmentRunnerException {
+  private void validateResultPathExists() throws NoddleTestInstrumentRunnerException {
     File path = new File(this.resultPath);
     if(!path.exists()) {
       String errorMessage = warningPopup("noddleResultsDirectoryMissing", new String[] { path.getAbsolutePath() });
       log.error(errorMessage);
-      throw new NoddleTestInsturmentRunnerException(errorMessage);
+      throw new NoddleTestInstrumentRunnerException(errorMessage);
     }
   }
 
@@ -405,7 +405,7 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
   void releaseConfigFileAndResultFileLock() {
     if(configAndResultFileLock == null) {
-      log.error("We do not own the Noddle config and result file lock, yet we are attempting to release it.");
+      log.warn("We do not own the Noddle config and result file lock, yet we are attempting to release it.");
     } else {
       try {
         configAndResultFileLock.release();
