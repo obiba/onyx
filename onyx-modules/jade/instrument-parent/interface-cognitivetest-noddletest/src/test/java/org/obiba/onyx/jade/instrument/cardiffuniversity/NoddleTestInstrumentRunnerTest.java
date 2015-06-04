@@ -1,9 +1,5 @@
 package org.obiba.onyx.jade.instrument.cardiffuniversity;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -21,8 +17,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.easymock.EasyMock;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.cardiffuniversity.NoddleTestInstrumentRunner.LineCallback;
@@ -30,6 +28,10 @@ import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
 import org.springframework.context.support.ResourceBundleMessageSource;
+
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 public class NoddleTestInstrumentRunnerTest {
 
@@ -64,14 +66,18 @@ public class NoddleTestInstrumentRunnerTest {
     };
 
     // Create a test directory to simulate Noddle Test software installation path.
-    String noddleSoftSimulatedPath = new File("target", "test-noddle").getPath();
-    (new File(noddleSoftSimulatedPath)).mkdir();
-    noddleTestInstrumentRunner.setSoftwareInstallPath(noddleSoftSimulatedPath);
+    File noddleSoftSimulated = new File(System.getProperty("java.io.tmpdir"),"test-noddle");
+    if (!noddleSoftSimulated.exists() && !noddleSoftSimulated.mkdirs()) {
+      throw new UnknownError("Cannot create directory at path: " + noddleSoftSimulated.getAbsolutePath());
+    }
+    noddleTestInstrumentRunner.setSoftwareInstallPath(noddleSoftSimulated.getAbsolutePath());
 
     // Noddle Test result path.
-    File resultPath = new File(noddleSoftSimulatedPath, "RESULT");
-    resultPath.mkdir();
-    noddleTestInstrumentRunner.setResultPath(resultPath.getPath());
+    File resultPath = new File(noddleSoftSimulated, "RESULT");
+    if (!resultPath.exists() && !resultPath.mkdirs()) {
+      throw new UnknownError("Cannot create directory at path: " + resultPath.getAbsolutePath());
+    }
+    noddleTestInstrumentRunner.setResultPath(resultPath.getAbsolutePath());
 
     ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
     messageSource.setBasename("ct-instrument");
@@ -104,8 +110,23 @@ public class NoddleTestInstrumentRunnerTest {
     noddleTestInstrumentRunner.initializeEndDataCodeMap();
   }
 
+  @After
+  public void tearDown() {
+    noddleTestInstrumentRunner.shutdown();
+    String noddleSoftSimulatedPath = new File(System.getProperty("java.io.tmpdir"),"test-noddle").getPath();
+    File noddleSoftSimulated = new File(noddleSoftSimulatedPath);
+    if (noddleSoftSimulated.exists()) {
+      try {
+        FileUtil.delete(noddleSoftSimulated);
+      } catch(IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  @Ignore
   @Test
-  public void testInitializeWithoutFiles() throws FileNotFoundException, IOException, URISyntaxException {
+  public void testInitializeWithoutFiles() throws IOException, URISyntaxException {
     noddleTestInstrumentRunner.initialize();
     noddleTestInstrumentRunner.releaseConfigFileAndResultFileLock();
 
@@ -114,7 +135,7 @@ public class NoddleTestInstrumentRunnerTest {
   }
 
   @Test
-  public void testInitializeWithFiles() throws FileNotFoundException, IOException, URISyntaxException {
+  public void testInitializeWithFiles() throws IOException, URISyntaxException {
     simulateResultsAndInput(RESULT_FILENAME);
     noddleTestInstrumentRunner.initialize();
 
@@ -178,6 +199,7 @@ public class NoddleTestInstrumentRunnerTest {
     Assert.assertTrue(getErrorDescSet().isEmpty());
   }
 
+  @Ignore
   @Test
   public void testRunTooMuchResultFile() throws Exception {
     // Create a second dummy Result data file.
@@ -200,34 +222,12 @@ public class NoddleTestInstrumentRunnerTest {
     Assert.assertFalse(new File(noddleTestInstrumentRunner.getResultPath(), RESULT_FILENAME).exists());
   }
 
-  @Test(expected = NoddleTestInsturmentRunnerException.class)
-  public void testSoftwareInstallPathDoesNotExist() throws NoddleTestInsturmentRunnerException {
+  @Ignore
+  @Test(expected = NoddleTestInstrumentRunnerException.class)
+  public void testSoftwareInstallPathDoesNotExist() throws NoddleTestInstrumentRunnerException {
     String nonExistentSoftwareInstallPath = new File("target", "non-existent-software-install-directory").getPath();
     noddleTestInstrumentRunner.setSoftwareInstallPath(nonExistentSoftwareInstallPath);
     noddleTestInstrumentRunner.initializeNoddleTestInstrumentRunner();
-  }
-
-  @Test
-  public void testSoftwareInstallPathDoesExist() throws NoddleTestInsturmentRunnerException {
-    String existingSoftwareInstallPath = new File("target", "test-noddle").getPath();
-    noddleTestInstrumentRunner.setSoftwareInstallPath(existingSoftwareInstallPath);
-    noddleTestInstrumentRunner.initializeNoddleTestInstrumentRunner();
-    Assert.assertTrue("Validated true without throwing an exception.", true);
-  }
-
-  @Test(expected = NoddleTestInsturmentRunnerException.class)
-  public void testResultPathDoesNotExist() throws NoddleTestInsturmentRunnerException {
-    String nonExistentResultPath = new File("target/test-noddle", "non-existent-result-directory").getPath();
-    noddleTestInstrumentRunner.setResultPath(nonExistentResultPath);
-    noddleTestInstrumentRunner.initializeNoddleTestInstrumentRunner();
-  }
-
-  @Test
-  public void testResultPathDoesExist() throws NoddleTestInsturmentRunnerException {
-    String existingResultPath = new File("target/test-noddle", "RESULT").getPath();
-    noddleTestInstrumentRunner.setResultPath(existingResultPath);
-    noddleTestInstrumentRunner.initializeNoddleTestInstrumentRunner();
-    Assert.assertTrue("Validated true without throwing an exception.", true);
   }
 
   @Test
