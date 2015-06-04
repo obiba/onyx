@@ -11,7 +11,7 @@ package org.obiba.onyx.core.data;
 
 import java.util.Calendar;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -24,6 +24,8 @@ import org.obiba.onyx.util.data.DataType;
  * 
  */
 public class ComputingDataSourceTest {
+
+  public static final double DELTA = 0.01;
 
   @Test
   public void testBooleanExpression() {
@@ -112,7 +114,7 @@ public class ComputingDataSourceTest {
     Data data = computing.getData(participant);
 
     Assert.assertEquals(DataType.DECIMAL, data.getType());
-    Assert.assertEquals(1.0d, (Double) data.getValue());
+    Assert.assertEquals(1.0d, ((Double) data.getValue()).doubleValue(), DELTA);
   }
 
   @Test
@@ -126,7 +128,7 @@ public class ComputingDataSourceTest {
     Data data = computing.getData(participant);
 
     Assert.assertEquals(DataType.DECIMAL, data.getType());
-    Assert.assertEquals(105.3d, (Double) data.getValue());
+    Assert.assertEquals(105.3d, ((Double) data.getValue()).doubleValue(), DELTA);
   }
 
   @Test

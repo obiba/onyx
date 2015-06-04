@@ -16,14 +16,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.wicket.model.IModel;
+import org.obiba.magma.Attribute;
+import org.obiba.onyx.quartz.editor.widget.attributes.FactorizedAttribute;
+
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import org.apache.wicket.model.IModel;
-import org.obiba.magma.Attribute;
-import org.obiba.onyx.quartz.editor.widget.attributes.FactorizedAttribute;
 
 public class Attributes {
 
@@ -48,7 +49,7 @@ public class Attributes {
    */
   private static Attribute buildAttribute(String namespace, String name, String value, Locale locale) {
     Attribute.Builder attributeBuilder = Attribute.Builder.newAttribute();
-    attributeBuilder.withNamespace(Strings.emptyToNull(namespace));
+    attributeBuilder.withNamespace(Strings.nullToEmpty(namespace));
     attributeBuilder.withName(name);
     attributeBuilder.withValue(Strings.nullToEmpty(value));
     attributeBuilder.withLocale(locale);
@@ -84,8 +85,7 @@ public class Attributes {
    * @param namespace
    * @param name
    */
-  public static void removeAttributes(List<Attribute> attributes, String namespace, final String name,
-      Locale locale) {
+  public static void removeAttributes(List<Attribute> attributes, String namespace, final String name, Locale locale) {
     Iterables.removeIf(attributes, predicate(namespace, name, locale));
   }
 
@@ -95,14 +95,12 @@ public class Attributes {
    * @return
    */
   public static Predicate<Attribute> predicate(final String namespace, final String name) {
-    final String nullIfEmptyNamespace = Strings.emptyToNull(namespace);
     return new Predicate<Attribute>() {
       @Override
       public boolean apply(Attribute input) {
-        return input.getName().equals(name)
-            && (input.getNamespace() == null
-            ? nullIfEmptyNamespace == null
-            : input.getNamespace().equals(nullIfEmptyNamespace));
+        return input.getName().equals(name) && (Strings.isNullOrEmpty(input.getNamespace())
+            ? Strings.isNullOrEmpty(namespace)
+            : input.getNamespace().equals(namespace));
       }
     };
   }
@@ -114,18 +112,13 @@ public class Attributes {
    * @return
    */
   public static Predicate<Attribute> predicate(final String namespace, final String name, final Locale locale) {
-    final String nullIfEmptyNamespace = Strings.emptyToNull(namespace);
     return new Predicate<Attribute>() {
       @Override
       public boolean apply(Attribute input) {
-        return input.getName().equals(name)
-            && (input.getNamespace() == null
-            ? nullIfEmptyNamespace == null
-            : input.getNamespace().equals(nullIfEmptyNamespace))
-
-            && (input.getLocale() == null
-            ? locale == null
-            : input.getLocale().equals(locale));
+        return input.getName().equals(name) && (Strings.isNullOrEmpty(input.getNamespace())
+            ? Strings.isNullOrEmpty(namespace)
+            : input.getNamespace().equals(namespace))
+            && (input.isLocalised() ? input.getLocale().equals(locale) : locale == null || locale.toString().isEmpty());
       }
     };
   }
@@ -176,11 +169,11 @@ public class Attributes {
         for(Attribute attribute : attributes) {
           String ns = attribute.getNamespace();
           String name = attribute.getName();
-          Locale locale = attribute.getLocale();
-          if(Attributes.containsAttribute(result, ns, name, locale)) {
-            Attributes.removeAttributes(result, ns, name, locale);
+          Locale locale = attribute.isLocalised() ? attribute.getLocale() : null;
+          if(containsAttribute(result, ns, name, locale)) {
+            removeAttributes(result, ns, name, locale);
           }
-          Attributes.addAttribute(result, ns, name, (String) attribute.getValue().getValue(), locale);
+          addAttribute(result, ns, name, (String) attribute.getValue().getValue(), locale);
         }
       }
     }

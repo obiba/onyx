@@ -12,7 +12,6 @@ package org.obiba.onyx.magma;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +24,8 @@ import org.obiba.magma.js.JavascriptVariableValueSource;
 import org.obiba.magma.xstream.MagmaXStreamExtension;
 import org.springframework.core.io.Resource;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
@@ -73,35 +74,33 @@ public class DefaultCustomVariablesRegistry implements CustomVariablesRegistry {
   }
 
   void initSourceMap() {
-    sourceMap = new HashMap<String, Set<VariableValueSource>>();
+    sourceMap = Maps.newHashMap();
 
-    if(resource.exists()) {
+    if(resource.exists()) try {
+      XStream xstream = getXStream();
+      xstream.processAnnotations(CustomVariablesGroup.class);
+
+      ObjectInputStream ois = xstream.createObjectInputStream(resource.getInputStream());
       try {
-        XStream xstream = getXStream();
-        xstream.processAnnotations(CustomVariablesGroup.class);
+        while(true) {
+          CustomVariablesGroup group = (CustomVariablesGroup) ois.readObject();
 
-        ObjectInputStream ois = xstream.createObjectInputStream(resource.getInputStream());
-        try {
-          while(true) {
-            CustomVariablesGroup group = (CustomVariablesGroup) ois.readObject();
-
-            Set<VariableValueSource> groupSources = new HashSet<VariableValueSource>();
-            for(Variable variable : group.getVariables()) {
-              groupSources.add(new JavascriptVariableValueSource(variable));
-            }
-
-            sourceMap.put(group.getName(), groupSources);
+          Set<VariableValueSource> groupSources = Sets.newHashSet();
+          for(Variable variable : group.getVariables()) {
+            groupSources.add(new JavascriptVariableValueSource(variable));
           }
-        } catch(EOFException e) {
-          // Reached the end of the file.
-        } finally {
-          ois.close();
+
+          sourceMap.put(group.getName(), groupSources);
         }
-      } catch(ClassNotFoundException e) {
-        throw new RuntimeException(e);
-      } catch(IOException e) {
-        throw new RuntimeException(e);
+      } catch(EOFException e) {
+        // Reached the end of the file.
+      } finally {
+        ois.close();
       }
+    } catch(ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    } catch(IOException e) {
+      throw new RuntimeException(e);
     }
   }
 

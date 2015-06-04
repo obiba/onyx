@@ -15,12 +15,14 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.service.SortingClause;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.test.spring.Dataset;
+import org.obiba.core.test.spring.DatasetOperationType;
 import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.Status;
 import org.obiba.onyx.core.domain.user.User;
@@ -106,8 +108,9 @@ public class UserServiceTest extends BaseDefaultSpringContextTestCase {
     Assert.assertEquals("newpasswordforuser", persistenceManager.get(User.class, Long.valueOf("2")).getPassword());
   }
 
+  //@Ignore
   @Test
-  @Dataset
+  @Dataset(afterOperation = DatasetOperationType.NONE)
   public void testCreateOrUpdateUser() {
     User modifUser = persistenceManager.get(User.class, Long.valueOf("3"));
     modifUser.setFirstName("Paul");

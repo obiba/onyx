@@ -17,7 +17,7 @@ import static org.easymock.EasyMock.verify;
 import java.util.Calendar;
 import java.util.Locale;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.obiba.onyx.core.domain.participant.Gender;

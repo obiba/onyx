@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -27,7 +28,6 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.CollectionOfElements;
 import org.obiba.core.domain.AbstractEntity;
 
 /**
@@ -46,7 +46,7 @@ public class RegisteredParticipantTube extends AbstractEntity {
   @Temporal(TemporalType.TIMESTAMP)
   private Date registrationTime;
 
-  @CollectionOfElements
+  @ElementCollection
   @Cascade(CascadeType.ALL)
   private Set<String> remarks;
 

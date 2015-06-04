@@ -11,7 +11,6 @@ package org.obiba.onyx.core.etl.participant.impl;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.easymock.EasyMock;
@@ -30,6 +29,8 @@ import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.ExecutionContext;
+
+import com.google.common.collect.Maps;
 
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
@@ -90,10 +91,10 @@ public class AppointmentListUpdateListenerTest {
 
   @Test
   public void testAfterUpdateCompleted() {
-    Map<String, JobParameter> jobParameterMap = new HashMap<String, JobParameter>();
+    Map<String, JobParameter> jobParameterMap = Maps.newHashMap();
     jobParameterMap.put("date", new JobParameter(new Date()));
-    JobInstance job = new JobInstance(1l, new JobParameters(jobParameterMap), "jobTest");
-    StepExecution stepExecution = new StepExecution("complétion", new JobExecution(job));
+        JobInstance job = new JobInstance(1l, "jobTest");
+    StepExecution stepExecution = new StepExecution("complétion", new JobExecution(job, new JobParameters(jobParameterMap)));
     stepExecution.setExitStatus(ExitStatus.COMPLETED);
     ExecutionContext context = new ExecutionContext();
     context.put("fileName", "fileName.xls");

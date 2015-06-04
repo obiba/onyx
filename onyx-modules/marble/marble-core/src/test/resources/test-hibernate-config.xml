@@ -1,5 +1,5 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd"
   default-autowire="no">
 
   <bean id="hibernateCacheConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
@@ -9,7 +9,7 @@
           hibernate.generate_statistics true
           hibernate.cache.use_structured_entries true
           hibernate.cache.use_query_cache=true
-          hibernate.cache.provider_class=org.hibernate.cache.EhCacheProvider
+          hibernate.cache.region.factory_class=org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
         ]]>
       </value>
     </property>
@@ -28,7 +28,7 @@
   <bean id="namingStrategy" class="org.hibernate.cfg.ImprovedNamingStrategy" />
 
   <!-- The Hibernate SessionFactory -->
-  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
     <property name="dataSource">
       <ref bean="dataSource" />
     </property>
@@ -56,12 +56,11 @@
         </property>
       </bean>
     </property>
-    <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration" />
     <property name="hibernateProperties" ref="hibernateConfig" />
   </bean>
 
   <!-- Hook the SessionFactory to a platform TransactionManager -->
-  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+  <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
     <property name="sessionFactory" ref="sessionFactory" />
   </bean>
 

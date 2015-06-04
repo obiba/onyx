@@ -114,7 +114,7 @@ public class InstrumentRunVariableValueSourceFactory implements VariableValueSou
   private Set<VariableValueSource> createTimeAndContraindication(String prefix, InstrumentType instrumentType) {
     BeanVariableValueSourceFactory<InstrumentRun> delegateFactory = new BeanVariableValueSourceFactory<InstrumentRun>("Participant", InstrumentRun.class);
     delegateFactory.setPrefix(prefix);
-    delegateFactory.setProperties(ImmutableSet.of("userName", "timeStart", "timeEnd", "otherContraindication"));
+    delegateFactory.setProperties(ImmutableSet.of("userName", "timeStart", "timeEnd", "otherContraindication", "skipComment"));
     delegateFactory.setPropertyNameToVariableName(new ImmutableMap.Builder<String, String>().put("userName", "user").build());
     delegateFactory.setVariableBuilderVisitors(ImmutableSet.of(new StageAttributeVisitor(instrumentType.getName())));
 

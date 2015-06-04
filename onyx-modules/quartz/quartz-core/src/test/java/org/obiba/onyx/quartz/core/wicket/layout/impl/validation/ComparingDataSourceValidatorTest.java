@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.validation;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;

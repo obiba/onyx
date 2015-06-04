@@ -10,6 +10,7 @@
 package org.obiba.onyx.jade.magma;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -49,6 +50,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 /**
  * VariableValueSourceFactory for creating VariableValueSources for Instruments.
@@ -170,48 +172,77 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
   private VariableValueSource createInstrumentCaptureStartDateSource() {
     return new VariableValueSource() {
 
+      @Override
+      public String getName() {
+        return INSTRUMENT + '.' + "captureStartDate";
+      }
+
+      @Override
       public Variable getVariable() {
-        Variable.Builder builder = new Variable.Builder(INSTRUMENT + '.' + "captureStartDate", getValueType(), INSTRUMENT);
+        Variable.Builder builder = new Variable.Builder(getName(), getValueType(), INSTRUMENT);
         return builder.build();
       }
 
+      @Override
       public Value getValue(ValueSet valueSet) {
         return getValueType().valueOf(instrumentCaptureAndExportStrategy.getCaptureStartDate(valueSet.getVariableEntity().getIdentifier()));
       }
 
+      @Override
+      public boolean supportVectorSource() {
+        return false;
+      }
+
+      @Override
       public ValueType getValueType() {
         return DateTimeType.get();
       }
 
+      @Override
       public VectorSource asVectorSource() {
         return null;
       }
+
     };
   }
 
   private VariableValueSource createInstrumentCaptureEndDateSource() {
     return new VariableValueSource() {
 
+      @Override
+      public String getName() {
+        return INSTRUMENT + '.' + "captureEndDate";
+      }
+
+      @Override
       public Variable getVariable() {
-        Variable.Builder builder = new Variable.Builder(INSTRUMENT + '.' + "captureEndDate", getValueType(), INSTRUMENT);
+        Variable.Builder builder = new Variable.Builder(getName(), getValueType(), INSTRUMENT);
         return builder.build();
       }
 
+      @Override
       public Value getValue(ValueSet valueSet) {
         return getValueType().valueOf(instrumentCaptureAndExportStrategy.getCaptureEndDate(valueSet.getVariableEntity().getIdentifier()));
       }
 
+      @Override
+      public boolean supportVectorSource() {
+        return false;
+      }
+
+      @Override
       public ValueType getValueType() {
         return DateTimeType.get();
       }
 
+      @Override
       public VectorSource asVectorSource() {
         return null;
       }
     };
   }
 
-  private Set<VariableValueSource> createInstrumentCalibrationSources() {
+  private Collection<VariableValueSource> createInstrumentCalibrationSources() {
     Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
 
     for(Map.Entry<String, InstrumentType> entry : instrumentService.getInstrumentTypes().entrySet()) {
@@ -241,36 +272,51 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
   private VariableValueSource createCalibratedInstrumentBarcodeSource(final String instrumentTypeName, final String instrumentCalibrationName) {
     return new VariableValueSource() {
 
+      @Override
+      public String getName() {
+        return instrumentCalibrationName + '.' + "instrument";
+      }
+
+      @Override
       public Variable getVariable() {
-        Variable.Builder builder = Variable.Builder.newVariable(instrumentCalibrationName + '.' + "instrument", getValueType(), "Instrument");
+        Variable.Builder builder = Variable.Builder.newVariable(getName(), getValueType(), "Instrument");
         attributeHelper.addLocalizedAttributes(builder, instrumentCalibrationName);
         OnyxAttributeHelper.addAttribute(builder, "instrumentType", instrumentTypeName);
 
         return builder.build();
       }
 
+      @Override
       public Value getValue(ValueSet valueSet) {
         String instrumentBarcode = valueSet.getVariableEntity().getIdentifier();
         Instrument instrument = instrumentService.getInstrumentByBarcode(instrumentBarcode);
         if(instrument != null) {
-          return (instrument.getTypes().contains(instrumentTypeName)) ? getValueType().valueOf(instrumentBarcode) : getValueType().nullValue();
+          return instrument.getTypes().contains(instrumentTypeName)
+              ? getValueType().valueOf(instrumentBarcode) : getValueType().nullValue();
         } else {
           return getValueType().nullValue();
         }
       }
 
+      @Override
+      public boolean supportVectorSource() {
+        return false;
+      }
+
+      @Override
       public ValueType getValueType() {
         return TextType.get();
       }
 
+      @Override
       public VectorSource asVectorSource() {
         return null;
       }
     };
   }
 
-  private Set<VariableValueSource> createInstrumentCalibrationAttributeSources(InstrumentType instrumentType, InstrumentCalibration instrumentCalibration) {
-    Set<VariableValueSource> sources = new HashSet<VariableValueSource>();
+  private Collection<VariableValueSource> createInstrumentCalibrationAttributeSources(InstrumentType instrumentType, InstrumentCalibration instrumentCalibration) {
+    Collection<VariableValueSource> sources = Sets.newHashSet();
 
     for(Attribute calibrationAttribute : instrumentCalibration.getAttributes()) {
       String propertyName = "data.value";
@@ -292,8 +338,8 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     return sources;
   }
 
-  private Set<VariableValueSource> createExportLogSources() {
-    BeanVariableValueSourceFactory<ExportLog> exportLogFactory = new BeanVariableValueSourceFactory<ExportLog>(INSTRUMENT, ExportLog.class);
+  private Collection<VariableValueSource> createExportLogSources() {
+    BeanVariableValueSourceFactory<ExportLog> exportLogFactory = new BeanVariableValueSourceFactory<>(INSTRUMENT, ExportLog.class);
     exportLogFactory.setPrefix(INSTRUMENT + '.' + EXPORT_LOG);
     exportLogFactory.setOccurrenceGroup(EXPORT_LOG);
     exportLogFactory.setProperties(ImmutableSet.of("type", "destination", "captureStartDate", "captureEndDate", "exportDate"));
@@ -306,21 +352,22 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
   //
 
   static class InstrumentCalibrationAttributeVisitor implements BuilderVisitor {
-    private OnyxAttributeHelper attributeHelper;
+    private final OnyxAttributeHelper attributeHelper;
 
-    private String instrumentTypeName;
+    private final String instrumentTypeName;
 
-    private String instrumentCalibrationName;
+    private final String instrumentCalibrationName;
 
-    private Attribute calibrationAttribute;
+    private final Attribute calibrationAttribute;
 
-    public InstrumentCalibrationAttributeVisitor(OnyxAttributeHelper attributeHelper, String instrumentTypeName, String instrumentCalibrationName, Attribute calibrationAttribute) {
+    InstrumentCalibrationAttributeVisitor(OnyxAttributeHelper attributeHelper, String instrumentTypeName, String instrumentCalibrationName, Attribute calibrationAttribute) {
       this.attributeHelper = attributeHelper;
       this.instrumentTypeName = instrumentTypeName;
       this.instrumentCalibrationName = instrumentCalibrationName;
       this.calibrationAttribute = calibrationAttribute;
     }
 
+    @Override
     public void visit(Builder builder) {
       // Add variable's localized attributes.
       attributeHelper.addLocalizedAttributes(builder, instrumentCalibrationName);

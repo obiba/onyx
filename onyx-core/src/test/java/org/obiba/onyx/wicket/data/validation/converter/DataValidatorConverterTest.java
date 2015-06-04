@@ -11,7 +11,7 @@ package org.obiba.onyx.wicket.data.validation.converter;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.MaximumValidator;

@@ -11,24 +11,29 @@ package org.obiba.onyx.core.batch;
 
 import org.quartz.JobDetail;
 import org.quartz.Trigger;
-import org.springframework.scheduling.quartz.CronTriggerBean;
+import org.quartz.impl.JobDetailImpl;
+import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 
 /**
  * Factory for creating a job triggers.
  */
 public class JobTriggerFactory {
+
+  private JobTriggerFactory() {}
+
   //
   // Static Methods
   //
 
   public static Trigger newTrigger(JobDetail jobDetail, String cronExpression) throws Exception {
     if(jobDetail != null && cronExpression != null && cronExpression.trim().length() != 0) {
-      CronTriggerBean cronTrigger = new CronTriggerBean();
+      CronTriggerFactoryBean cronTrigger = new CronTriggerFactoryBean();
       cronTrigger.setJobDetail(jobDetail);
-      cronTrigger.setJobGroup(jobDetail.getGroup());
-      cronTrigger.setJobName(jobDetail.getJobDataMap().getString(OnyxJobDetailDelegate.JOB_NAME));
+      cronTrigger.setGroup(((JobDetailImpl)jobDetail).getGroup());
+      cronTrigger.setName(jobDetail.getJobDataMap().getString(OnyxJobDetailDelegate.JOB_NAME));
       cronTrigger.setCronExpression(cronExpression);
-      return cronTrigger;
+      cronTrigger.afterPropertiesSet();
+      return cronTrigger.getObject();
     } else {
       return new NullTrigger();
     }
