@@ -969,7 +969,7 @@
     <jta.version>1.0.1B</jta.version>
     <junit.version>4.12</junit.version>
     <liquibase.version>1.9.4</liquibase.version>
-    <obiba.commons.version>1.7.1-SNAPSHOT</obiba.commons.version>
+    <obiba.commons.version>1.7.1</obiba.commons.version>
     <opal.version>2.3.7</opal.version>
     <opencsv.version>2.3</opencsv.version>
     <quartz-scheduler.version>2.2.1</quartz-scheduler.version>
