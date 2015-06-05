@@ -8,6 +8,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd">
 
   <import resource="version.xml" />
+  <import resource="cache.xml" />
   <import resource="batch.xml" />
   <import resource="magma.xml" />
   

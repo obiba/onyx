@@ -61,6 +61,9 @@
     <property name="sessionFactory" ref="sessionFactory" />
   </bean>
 
+  <!-- No-op post processor because Spring needs at least one in ParticipantWriter -->
+  <bean class="org.obiba.onyx.core.etl.participant.impl.NoOpParticipantPostProcessor"/>
+
   <batch:job id="purgeParticipantDataJob">
     <batch:step id="purgeParticipantDataStep">
       <batch:tasklet ref="purgeParticipantDataTasklet" />
