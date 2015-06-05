@@ -81,7 +81,7 @@ class EnrollmentIdValueTableWrapper extends AbstractTransformingValueTableWrappe
     private Participant fromTemplate(Participant template) {
       Participant one = participantService.getParticipant(template);
       if(one == null) {
-        throw new NoSuchValueSetException("", "");
+        throw new NoSuchValueSetException("", "Participant:" + template.getEnrollmentId());
       }
       return one;
     }

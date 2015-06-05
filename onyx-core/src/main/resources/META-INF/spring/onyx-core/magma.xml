@@ -22,6 +22,9 @@
           </property>
         </bean>
         <bean class="org.obiba.magma.xstream.MagmaXStreamExtension" />
+        <bean class="org.obiba.magma.MagmaCacheExtension">
+          <property name="cacheManager" ref="onyxCacheManager"/>
+        </bean>
       </set>
     </property>
   </bean>

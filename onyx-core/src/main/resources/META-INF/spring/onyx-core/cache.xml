@@ -1,0 +1,14 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+  default-autowire="no">
+
+  <bean id="onyxCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+    <property name="cacheManager" ref="ehcache"/>
+  </bean>
+
+  <bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+    <property name="cacheManagerName" value="onyx"/>
+    <property name="configLocation" value="${org.obiba.onyx.config.path}/ehcache-onyx.xml"/>
+  </bean>
+
+</beans>
