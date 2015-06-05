@@ -389,9 +389,9 @@
             <phase>process-resources</phase>
             <configuration>
               <tasks>
-                <!--signjar alias="jade" keystore="${basedir}/exampleKeystore.jks" lazy="true" storepass="onyxadmin">
-                  <fileset dir="${project.build.directory}/${project.build.finalName}/instruments" includes="**/*.jar" />
-                </signjar-->
+                <!--<signjar alias="jade" keystore="${basedir}/exampleKeystore.jks" lazy="true" storepass="onyxadmin">-->
+                  <!--<fileset dir="${project.build.directory}/${project.build.finalName}/instruments" includes="**/*.jar" />-->
+                <!--</signjar>-->
               </tasks>
             </configuration>
             <goals>
