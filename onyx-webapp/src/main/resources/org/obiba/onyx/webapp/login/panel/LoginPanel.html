@@ -1,36 +1,33 @@
 <html xmlns:wicket>
 <body>
-  <wicket:panel>
-        <span wicket:id="forgotPasswordDialog" />
-         
-		<form wicket:id="signInForm" autocomplete="off">
-			<table>
-				<tr>
-					<td><wicket:message key="login" /></td>
-					<td>
-						<input type="text" wicket:id="username" size="30"/>
-					</td>
-					<td />
-					<td />
-				</tr>
-				<tr>
-					<td><wicket:message key="password" /></td>
-					<td>
-						<input value="password" type="password" wicket:id="password" size="30"/>
-					</td>
-				</tr>
-				<tr wicket:id="rememberMeRow">
-					<td />
-					<td> <input type="checkbox" wicket:id="rememberMe"/> Remember Me </td>
-					<td />
-					<td />
-				</tr>
-			</table>
-			<div style="margin-top:10px;">
-			  <input type="submit" name="submit" class="obiba-button" wicket:message="value:signIn"/>
-		      <a wicket:id="forgotPassword" class="obiba-button"><wicket:message key="ForgotPassword" /></a>
-			</div>
-		</form>
-  </wicket:panel>
+<wicket:panel>
+
+  <span wicket:id="forgotPasswordDialog"/>
+
+      <div class="well">
+        <form class="form" role="form" wicket:id="signInForm" autocomplete="off">
+          <div class="form-group">
+            <label for="username">
+              <wicket:message key="login"/>
+            </label>
+            <input type="text" class="form-control" wicket:id="username" id="username" size="30"/>
+          </div>
+          <div class="form-group">
+            <label for="password">
+              <wicket:message key="password"/>
+            </label>
+            <input value="password" type="password" class="form-control" wicket:id="password" id="password" size="30"/>
+          </div>
+          <input type="submit" name="submit" class="btn btn-primary" wicket:message="value:signIn"/>
+          <a wicket:id="forgotPassword" class="obiba-button">
+            <wicket:message key="ForgotPassword"/>
+          </a>
+          <div wicket:id="rememberMeRow">
+            <input type="checkbox" wicket:id="rememberMe"/> Remember Me
+          </div>
+        </form>
+      </div>
+
+</wicket:panel>
 </body>
 </html>

@@ -1,4 +1,10 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wicket="http://wicket.apache.org/"
+    xml:lang="en"
+    lang="en">
   <body>
     <wicket:extend>
       <div id="participantSearchPageContent" class="obiba-box-content">
@@ -18,12 +24,12 @@
                       <input wicket:id="inputField" type="text" size="20" />
                     </td>
                     <td style="padding-right: 1.6667em">
-                      <input type="submit" class="obiba-button" value="" wicket:id="searchByInputField" />
+                      <input type="submit" class="btn btn-sm btn-primary" value="" wicket:id="searchByInputField" />
                     </td>
                     <td>
-                      <button class="obiba-button" wicket:id="submit"><wicket:message key="Search"/></button>
-                      <button class="obiba-button" wicket:id="appointments"><wicket:message key="AppointmentsOfTheDay"/></button>
-                      <button class="obiba-button" wicket:id="interviews"><wicket:message key="CurrentInterviews"/></button>
+                      <button class="btn btn-sm btn-primary" wicket:id="submit"><wicket:message key="Search"/></button>
+                      <button class="btn btn-sm btn-primary" wicket:id="appointments"><wicket:message key="AppointmentsOfTheDay"/></button>
+                      <button class="btn btn-sm btn-primary" wicket:id="interviews"><wicket:message key="CurrentInterviews"/></button>
                     </td>
                   </tr>
                 </table>
@@ -49,7 +55,7 @@
         <div wicket:id="participant-registry-dialog" />
         <div id="participantPageActions" class="obiba-content-region">
           <h1><wicket:message key="Action" /></h1>
-          <button wicket:id="link" class="obiba-button"><span wicket:id="label"/></button>
+          <button wicket:id="link" class="btn btn-sm btn-primary"><span wicket:id="label"/></button>
         </div>
       </wicket:fragment>
 

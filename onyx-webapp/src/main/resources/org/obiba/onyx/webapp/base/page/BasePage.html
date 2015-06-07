@@ -1,45 +1,78 @@
-<!DOCTYPE html> 
- <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <title>Onyx</title>
-    <link href="css/style.css" type="text/css" rel="stylesheet" />
-    <link href="css/ui.theme.css" type="text/css" rel="stylesheet" />
-    <link href="css/layout.css" type="text/css" rel="stylesheet" />
-    <link href="css/adxmenu.css" type="text/css" rel="stylesheet" />
-    <link href="css/modal.css" type="text/css" rel="stylesheet" />    
-    <link href="css/modal-feedback.css" type="text/css" rel="stylesheet" /> 
-    <link rel="shortcut icon" href="images/favicon.ico" /> 
-  </head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wicket="http://wicket.apache.org/"
+    xml:lang="en"
+    lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+  <title>Onyx</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.4/flatly/bootstrap.min.css" rel="stylesheet">
+  <link href="css/modal.css" type="text/css" rel="stylesheet"/>
+  <link href="css/modal-feedback.css" type="text/css" rel="stylesheet"/>
+  <link rel="shortcut icon" href="images/favicon.ico"/>
+</head>
 
-  <body>
-  
-      <div wicket:id="reusable-confirmation-dialog"></div>
-      <div wicket:id="reusable-print-dialog"></div>
-  
-      <img wicket:id="logo"/>
-      
-      <div class="ui-layout-north">      
-      	<div id="pageHeader">          
-      		<div id="pageHeader1" wicket:id="header"></div>
-      		<div wicket:id="menuBar"></div>
-      	</div>
-      </div>
-      
-      <div class="ui-layout-center">
-      	<div id="contentWrapper" class="obiba-box ui-corner-all" style="overflow: auto;">
-        	<span style="display: none;" class="base-ajax-indicator" id="base-ajax-indicator" wicket:id="baseAjaxIndicator" />
-        	<div id="feedback">
-          		<span wicket:id="feedback" />
-        	</div>
-        	<wicket:child/>
-      	</div>
-      	<div id="pageFooter">
-            <div id="currentUser"><span wicket:id="userFullName" />&nbsp;|&nbsp;<span wicket:id="currentTime" /></div>
-            <div wicket:id="battery" style="float:left"></div>
-        	<div id="currentVersion">OBiBa / <span wicket:id="version" />&copy;</div>
-      	</div>
-      </div> 
-  </body>
+<body>
+
+<div wicket:id="reusable-confirmation-dialog"></div>
+<div wicket:id="reusable-print-dialog"></div>
+
+
+<div class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <a href="#" class="navbar-brand">
+        <div id="loginHeader">
+          <img wicket:id="logo"/>
+        </div>
+      </a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="/main/HomePage">Home</a></li>
+        <li><a href="/participants/ParticipantSearchPage">Participants</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#">Profile</a></li>
+        <li class="divider"></li>
+        <li><a href="#">Administration</a></li>
+        <li class="divider"></li>
+        <li><a href="http://wiki.obiba.org/display/ONYXDOC/Onyx+User+Guide">Help</a></li>
+        <li class="divider"></li>
+        <li><a href="#">Quit</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="page-header">
+  </div>
+
+  <div class="ui-layout-north">
+    <div id="pageHeader">
+      <div id="pageHeader1" wicket:id="header"></div>
+      <div wicket:id="menuBar"></div>
+    </div>
+  </div>
+
+  <div id="contentWrapper">
+    <span style="display: none;" class="base-ajax-indicator" id="base-ajax-indicator" wicket:id="baseAjaxIndicator"/>
+    <div id="feedback">
+      <span wicket:id="feedback"/>
+    </div>
+    <wicket:child/>
+  </div>
+
+  <div id="pageFooter">
+    <div id="currentUser"><span wicket:id="userFullName"/>&nbsp;|&nbsp;<span wicket:id="currentTime"/></div>
+    <div wicket:id="battery" style="float:left"></div>
+    <div id="currentVersion">OBiBa / <span wicket:id="version"/>&copy;</div>
+  </div>
+</div>
+</body>
 
 </html>

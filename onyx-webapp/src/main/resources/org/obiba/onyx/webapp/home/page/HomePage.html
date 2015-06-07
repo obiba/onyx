@@ -1,19 +1,33 @@
-<html>
-  <body>
-    <wicket:extend>
-      <div class="obiba-box-content">
-        <div wicket:id="unlockInterview">Hidden unlock popup</div>
-        
-        <div class="obiba-content-region">
-          <h1><wicket:message key="ParticipantExactSearchMsg" /></h1>
-        
-          <form wicket:id="searchForm" autocomplete="off">
-            <label for="participantIdentifier"><wicket:message key="ParticipantCode" /></label>
-            <input wicket:id="participantIdentifier" id="barCode" type="text" size="20" />
-            <button wicket:id="submit" class="obiba-button"><wicket:message key="GoToInterview" /></button>
-          </form>
-        </div>
-      </div>
-    </wicket:extend>
-  </body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wicket="http://wicket.apache.org/"
+    xml:lang="en"
+    lang="en">
+<body>
+<wicket:extend>
+  <div wicket:id="unlockInterview">Hidden unlock popup</div>
+
+  <div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+      <form wicket:id="searchForm" autocomplete="off">
+        <label for="barCode">
+          <wicket:message key="ParticipantCode"/>
+        </label>
+        <input wicket:id="participantIdentifier" id="barCode" type="text" size="20" class="form-control"/>
+        <p class="help-block">
+          <wicket:message key="ParticipantExactSearchMsg"/>
+        </p>
+        <button wicket:id="submit" class="btn btn-primary">
+          <wicket:message key="GoToInterview"/>
+        </button>
+      </form>
+      <div class="col-md-3"></div>
+    </div>
+  </div>
+  
+</wicket:extend>
+</body>
 </html>
