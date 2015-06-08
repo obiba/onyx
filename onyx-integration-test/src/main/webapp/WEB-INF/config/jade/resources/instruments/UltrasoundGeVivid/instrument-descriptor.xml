@@ -3,6 +3,10 @@
 
   <name>UltrasoundGeVivid</name>
 
+  <expectedMeasureCount class="fixedDataSource">
+    <data type="INTEGER">2</data>
+  </expectedMeasureCount>
+
   <instrumentParameters>
     <output>
       <code>STRUCTURED_REPORTING</code>
@@ -11,13 +15,13 @@
       <mimeType>application/dicom</mimeType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
-    <output>
-      <code>ULTRASOUND_IMAGE</code>
-      <vendorName>US</vendorName>
-      <dataType>DATA</dataType>
-      <mimeType>application/dicom</mimeType>
-      <captureMethod>AUTOMATIC</captureMethod>
-    </output>
+    <!--<output>-->
+      <!--<code>ULTRASOUND_IMAGE</code>-->
+      <!--<vendorName>US</vendorName>-->
+      <!--<dataType>DATA</dataType>-->
+      <!--<mimeType>application/dicom</mimeType>-->
+      <!--<captureMethod>AUTOMATIC</captureMethod>-->
+    <!--</output>-->
   </instrumentParameters>
 
 </instrumentType>
