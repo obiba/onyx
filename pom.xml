@@ -1044,7 +1044,7 @@
     <quartz-scheduler.version>2.2.1</quartz-scheduler.version>
     <poi.version>3.7</poi.version>
     <rhino-js.version>1.7R5</rhino-js.version>
-    <magma.version>1.11-SNAPSHOT</magma.version>
+    <magma.version>1.12-SNAPSHOT</magma.version>
     <meparser.version>0.0.6</meparser.version>
     <mysql-connector-java.version>5.1.6</mysql-connector-java.version>
     <pmd.ruleset.dir>${basedir}</pmd.ruleset.dir>
