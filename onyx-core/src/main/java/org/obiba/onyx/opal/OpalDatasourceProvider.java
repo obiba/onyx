@@ -13,9 +13,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cache.Cache;
 
+import com.google.common.base.Strings;
+
 public class OpalDatasourceProvider implements InitializingBean {
 
   private static final Logger log = LoggerFactory.getLogger(OpalDatasourceProvider.class);
+
+  private static final String DATASOURCE_CACHE_PREFIX = "datasource-";
 
   private ParticipantService participantService;
 
@@ -55,14 +59,14 @@ public class OpalDatasourceProvider implements InitializingBean {
 
   @Override
   public void afterPropertiesSet() throws Exception {
-    if(opalDatasourceName != null && opalDatasourceName.isEmpty() == false) {
-      String localDatasourceName = onyxDatasourceName != null ? onyxDatasourceName : opalDatasourceName;
+    if(!Strings.isNullOrEmpty(opalDatasourceName)) {
+      String localDatasourceName = Strings.isNullOrEmpty(onyxDatasourceName) ? opalDatasourceName : onyxDatasourceName;
       log.info("Adding datasource: {} -> {}", localDatasourceName, opalDatasourceName);
       Datasource ds = new RestDatasource(localDatasourceName, opalJavaClient, opalDatasourceName);
       if (withCaching && MagmaEngine.get().hasExtension(MagmaCacheExtension.class)) {
         MagmaCacheExtension cacheExtension = MagmaEngine.get().getExtension(MagmaCacheExtension.class);
         log.info("Using datasource cache: {}", localDatasourceName);
-        Cache cache = cacheExtension.getCacheManager().getCache("datasource-" + localDatasourceName);
+        Cache cache = cacheExtension.getCacheManager().getCache(DATASOURCE_CACHE_PREFIX + localDatasourceName);
         if (cache != null) ds = new CachedDatasource(ds, cache);
       }
       magmaEngine.addDatasource(new EnrollmentIdDatasource(participantService, ds));
