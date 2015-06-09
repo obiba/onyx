@@ -17,6 +17,7 @@ import org.obiba.magma.type.BinaryType;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
 import org.obiba.onyx.core.etl.participant.IParticipantPostProcessor;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ExecutionContext;
@@ -24,8 +25,6 @@ import org.springframework.batch.item.ExecutionContext;
 public class CachedDatasourceProcessor implements IParticipantPostProcessor {
 
   private static final Logger log = LoggerFactory.getLogger(CachedDatasourceProcessor.class);
-
-  private static final String PARTICIPANT_ENTITY_TYPE = "Participant";
 
   private MagmaEngine magmaEngine;
 
@@ -76,7 +75,7 @@ public class CachedDatasourceProcessor implements IParticipantPostProcessor {
   }
 
   private void doCache(ExecutionContext context, ValueTable table, List<Participant> participants) {
-    if(!table.isForEntityType(PARTICIPANT_ENTITY_TYPE)) return;
+    if(!table.isForEntityType(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE)) return;
     Iterable<Variable> variables = table.getVariables();
 
     for(Participant participant : participants) {
@@ -86,7 +85,7 @@ public class CachedDatasourceProcessor implements IParticipantPostProcessor {
 
   private void doCache(ExecutionContext context, ValueTable table, Iterable<Variable> variables,
       Participant participant) {
-    VariableEntity entity = new VariableEntityBean(PARTICIPANT_ENTITY_TYPE, participant.getEnrollmentId());
+    VariableEntity entity = new VariableEntityBean(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE, participant.getEnrollmentId());
     if(table.hasValueSet(entity)) {
       try {
         ValueSet valueSet = table.getValueSet(entity);
@@ -96,7 +95,7 @@ public class CachedDatasourceProcessor implements IParticipantPostProcessor {
           }
         }
       } catch(Exception e) {
-        String msg = "Unable to cache data of " + PARTICIPANT_ENTITY_TYPE + ": " + participant.getEnrollmentId();
+        String msg = "Unable to cache data of " + MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE + ": " + participant.getEnrollmentId();
         log(context, AppointmentUpdateLog.Level.ERROR, e, msg);
       }
     }
