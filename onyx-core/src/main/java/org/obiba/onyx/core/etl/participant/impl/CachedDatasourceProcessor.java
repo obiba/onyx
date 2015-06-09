@@ -12,6 +12,7 @@ import org.obiba.magma.Variable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.support.AbstractDatasourceWrapper;
 import org.obiba.magma.support.CachedDatasource;
+import org.obiba.magma.support.CachedValueTable;
 import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.magma.type.BinaryType;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -66,7 +67,7 @@ public class CachedDatasourceProcessor implements IParticipantPostProcessor {
   private void doCache(ExecutionContext context, CachedDatasource datasource, List<Participant> participants) {
     try {
       for(ValueTable table : datasource.getValueTables()) {
-        doCache(context, table, participants);
+        doCache(context, (CachedValueTable) table, participants);
       }
     } catch (Exception e) {
       String msg = "Unable to get tables of datasource: " + datasource.getName();
@@ -74,8 +75,11 @@ public class CachedDatasourceProcessor implements IParticipantPostProcessor {
     }
   }
 
-  private void doCache(ExecutionContext context, ValueTable table, List<Participant> participants) {
+  private void doCache(ExecutionContext context, CachedValueTable table, List<Participant> participants) {
+    table.getEntityType(); //cache warm-up
+
     if(!table.isForEntityType(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE)) return;
+
     Iterable<Variable> variables = table.getVariables();
 
     for(Participant participant : participants) {
@@ -83,14 +87,20 @@ public class CachedDatasourceProcessor implements IParticipantPostProcessor {
     }
   }
 
-  private void doCache(ExecutionContext context, ValueTable table, Iterable<Variable> variables,
+  private void doCache(ExecutionContext context, CachedValueTable table, Iterable<Variable> variables,
       Participant participant) {
     VariableEntity entity = new VariableEntityBean(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE, participant.getEnrollmentId());
+
+    table.evictValues(entity);
+
     if(table.hasValueSet(entity)) {
       try {
         ValueSet valueSet = table.getValueSet(entity);
         for(Variable variable : variables) {
-          if(isApplicable(table, variable)) {
+          if(isApplicable(table, variable)) { //cache warm-up
+            table.getVariable(variable.getName());
+            table.getVariableValueSource(variable.getName()).getVariable();
+            table.getVariableValueSource(variable.getName()).getValue(valueSet);
             table.getValue(variable, valueSet);
           }
         }
