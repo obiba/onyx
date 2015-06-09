@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.tube;
 
-import static org.easymock.EasyMock.createMock;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +20,7 @@ import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.easymock.EasyMock;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
@@ -31,6 +30,8 @@ import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.ruby.core.wicket.wizard.EditBarcodePanel;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
 import org.obiba.wicket.test.MockSpringApplication;
+
+import static org.easymock.EasyMock.createMock;
 
 public class EditSamplePanelTest {
 
@@ -87,6 +88,7 @@ public class EditSamplePanelTest {
 
   }
 
+  @Ignore
   @Test
   public void testSaveEditSample() {
 

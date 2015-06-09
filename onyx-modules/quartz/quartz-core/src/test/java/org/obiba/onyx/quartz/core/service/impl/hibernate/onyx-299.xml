@@ -42,4 +42,8 @@
 
   <category_answer id="2" category_name="c2" active="true" question_answer_id="2" />
 
+  <appointment/>
+
+  <interview/>
+
 </dataset>
