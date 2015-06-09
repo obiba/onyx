@@ -75,7 +75,10 @@ public class CachedDatasourceProcessor implements IParticipantPostProcessor {
   }
 
   private void doCache(ExecutionContext context, ValueTable table, List<Participant> participants) {
+    table.getEntityType();
+
     if(!table.isForEntityType(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE)) return;
+
     Iterable<Variable> variables = table.getVariables();
 
     for(Participant participant : participants) {
@@ -91,6 +94,9 @@ public class CachedDatasourceProcessor implements IParticipantPostProcessor {
         ValueSet valueSet = table.getValueSet(entity);
         for(Variable variable : variables) {
           if(isApplicable(table, variable)) {
+            table.getVariable(variable.getName());
+            table.getVariableValueSource(variable.getName()).getVariable();
+            table.getVariableValueSource(variable.getName()).getValue(valueSet);
             table.getValue(variable, valueSet);
           }
         }
