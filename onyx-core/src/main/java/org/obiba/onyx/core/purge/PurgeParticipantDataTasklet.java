@@ -11,13 +11,11 @@ package org.obiba.onyx.core.purge;
 
 import java.util.List;
 
-import org.hibernate.FlushMode;
-import org.hibernate.SessionFactory;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.PurgeParticipantDataService;
 import org.obiba.onyx.engine.variable.export.OnyxDataPurge;
-import org.quartz.JobExecutionContext;
+import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
@@ -46,29 +44,38 @@ public class PurgeParticipantDataTasklet implements Tasklet {
 
   private OnyxDataPurge onyxDataPurge;
 
+  private MagmaInstanceProvider magmaInstanceProvider;
+
   public RepeatStatus execute(StepContribution stepContribution, ChunkContext context) {
 
     ExecutionContext execCtx = context.getStepContext().getStepExecution().getJobExecution().getExecutionContext();
+
     if(execCtx.containsKey(TOTAL_DELETED) == false) {
       log.info("**** STARTING PARTICIPANT DATA PURGE ****");
       log.info("Current purge configuration is [{}] days", purgeParticipantDataService.getPurgeDataOlderThanInDays());
     }
+
     long start = System.currentTimeMillis();
 
     List<Participant> participantsToBePurged = onyxDataPurge.getParticipantsToPurge();
 
     if(participantsToBePurged.isEmpty() == false) {
       Participant participant = participantsToBePurged.iterator().next();
+
       participantService.deleteParticipant(participant);
+      magmaInstanceProvider.evictCachedValues(participant);
+
       long duration = System.currentTimeMillis() - start;
       log.info("Participant [{}] was deleted in [{}] ms (remains {}).",
           new Object[] {participant.getBarcode(), duration, participantsToBePurged.size() - 1});
       int totalDeleted = 1;
       long totalTime = duration;
+
       if(execCtx.containsKey(TOTAL_DELETED)) {
         totalDeleted = totalDeleted + execCtx.getInt(TOTAL_DELETED);
         totalTime = totalTime + execCtx.getLong(TOTAL_TIME);
       }
+
       execCtx.put(TOTAL_DELETED, totalDeleted);
       execCtx.put(TOTAL_TIME, totalTime);
     }
@@ -95,4 +102,7 @@ public class PurgeParticipantDataTasklet implements Tasklet {
     this.onyxDataPurge = onyxDataPurge;
   }
 
+  public void setMagmaInstanceProvider(MagmaInstanceProvider magmaInstanceProvider) {
+    this.magmaInstanceProvider = magmaInstanceProvider;
+  }
 }
