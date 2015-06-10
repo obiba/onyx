@@ -20,7 +20,6 @@ import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
-import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,7 +143,7 @@ public class QuestionnaireStringResourceModel extends QuestionnaireResourceModel
   }
 
   private String getValueAsLabel(Variable variable, Value value, Locale locale) {
-    if(value == null || value.getValue() == null) return "";
+    if(value == null || value.getValue() == null || value.isNull()) return "";
 
     String valueStr = value.getValue().toString();
     if(variable.hasCategories()) {
