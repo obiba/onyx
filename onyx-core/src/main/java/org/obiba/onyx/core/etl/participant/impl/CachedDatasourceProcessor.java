@@ -19,6 +19,7 @@ import org.obiba.magma.support.CachedValueTable;
 import org.obiba.magma.support.MagmaEngineTableResolver;
 import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.magma.type.BinaryType;
+import org.obiba.onyx.core.data.DatasourceUtils;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
 import org.obiba.onyx.core.etl.participant.IParticipantPostProcessor;
@@ -61,7 +62,7 @@ public class CachedDatasourceProcessor implements IParticipantPostProcessor {
     if(participants == null || participants.isEmpty() || !magmaEngine.hasExtension(MagmaCacheExtension.class)) return;
 
     for(Datasource datasource : MagmaEngine.get().getDatasources()) {
-      CachedDatasource ds = asCachedDatasource(datasource);
+      CachedDatasource ds = DatasourceUtils.asCachedDatasource(datasource);
       if(ds != null && isApplicable(datasource)) {
         doCache(context, ds, participants);
       }
@@ -84,13 +85,6 @@ public class CachedDatasourceProcessor implements IParticipantPostProcessor {
   //
   // Private methods
   //
-
-  private CachedDatasource asCachedDatasource(Datasource datasource) {
-    if(datasource instanceof CachedDatasource) return (CachedDatasource) datasource;
-    if(datasource instanceof AbstractDatasourceWrapper)
-      return asCachedDatasource(((AbstractDatasourceWrapper) datasource).getWrappedDatasource());
-    return null;
-  }
 
   private void doCache(ExecutionContext context, CachedDatasource datasource, List<Participant> participants) {
     try {
