@@ -71,6 +71,13 @@ public interface ParticipantService {
   public List<Participant> getParticipants(Date from, Date to, PagingClause paging, SortingClause... clauses);
 
   /**
+   * DB access layer specific implementation for getting {@link Participant} that have not been received (null
+   * barcode).
+   * @return
+   */
+  public List<Participant> getNotReceivedParticipants();
+
+  /**
    * Count the participants having an appointment between the given dates.
    * 
    * @param from

@@ -41,6 +41,7 @@
       class="org.obiba.onyx.core.etl.participant.impl.DeleteUnreceivedParticipantsTasklet">
     <property name="participantService" ref="participantService" />
     <property name="participantReader" ref="participantReader" />
+    <property name="magmaInstanceProvider" ref="magmaInstanceProvider" />
   </bean>
 
   <bean id="archiveAppointmentFileTasklet"
@@ -74,6 +75,7 @@
     <property name="participantService" ref="participantService" />
     <property name="purgeParticipantDataService" ref="purgeParticipantDataService" />
     <property name="onyxDataPurge" ref="onyxDataPurge" />
+    <property name="magmaInstanceProvider" ref="magmaInstanceProvider" />
   </bean>
 
 </beans>
