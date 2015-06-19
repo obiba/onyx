@@ -1049,7 +1049,7 @@
     <opal.version>2.4-SNAPSHOT</opal.version>
     <opencsv.version>2.3</opencsv.version>
     <quartz-scheduler.version>2.2.1</quartz-scheduler.version>
-    <poi.version>3.7</poi.version>
+    <poi.version>3.9</poi.version>
     <rhino-js.version>1.7R5</rhino-js.version>
     <magma.version>1.12-SNAPSHOT</magma.version>
     <meparser.version>0.0.6</meparser.version>

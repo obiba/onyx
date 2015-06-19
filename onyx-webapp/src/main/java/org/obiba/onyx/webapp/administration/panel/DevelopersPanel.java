@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.apache.wicket.IClusterable;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -24,23 +22,15 @@ import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.target.resource.ResourceStreamRequestTarget;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.resource.FileResourceStream;
-import org.hibernate.SessionFactory;
-import org.hibernate.stat.Statistics;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaEngine;
-import org.obiba.magma.ValueSet;
-import org.obiba.magma.Variable;
 import org.obiba.magma.datasource.excel.ExcelDatasource;
 import org.obiba.magma.datasource.fs.FsDatasource;
 import org.obiba.magma.support.DatasourceCopier;
-import org.obiba.magma.support.DatasourceCopier.DatasourceCopyEventListener;
 import org.obiba.onyx.webapp.OnyxApplication;
-import org.obiba.wicket.hibernate.HibernateStatisticsPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,9 +42,6 @@ import org.slf4j.LoggerFactory;
 public class DevelopersPanel extends Panel {
 
   private static final Logger log = LoggerFactory.getLogger(DevelopersPanel.class);
-
-  @SpringBean
-  private SessionFactory factory;
 
   /**
    * 
@@ -97,34 +84,6 @@ public class DevelopersPanel extends Panel {
 
     };
     dumpForm.add(dumpLink);
-
-    @SuppressWarnings("rawtypes")
-    AjaxLink<?> refreshStatsLink = new AjaxLink("refreshStatsLink") {
-
-      private static final long serialVersionUID = 109761762415267865L;
-
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        target.addComponent(DevelopersPanel.this.get("hibernateStats"));
-      }
-
-    };
-    add(refreshStatsLink);
-
-    @SuppressWarnings("rawtypes")
-    AjaxLink<?> clearCacheLink = new AjaxLink("clearCacheLink") {
-
-      private static final long serialVersionUID = 109761762415267865L;
-
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        factory.evictQueries();
-        target.addComponent(DevelopersPanel.this.get("hibernateStats"));
-      }
-
-    };
-    add(clearCacheLink);
-    add(new HibernateStatisticsPanel("hibernateStats", new PropertyModel<Statistics>(factory, "statistics")).setOutputMarkupId(true));
   }
 
   @Override
@@ -150,7 +109,7 @@ public class DevelopersPanel extends Panel {
 
     MagmaEngine.get().addDatasource(target);
     try {
-      DatasourceCopier.Builder builder = DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withThroughtputListener().withListener(new SessionClearingListener());
+      DatasourceCopier.Builder builder = DatasourceCopier.Builder.newCopier().dontCopyNullValues().withLoggingListener().withThroughtputListener();
       if(!dumpInput.values) {
         builder.dontCopyValues();
       }
@@ -177,23 +136,6 @@ public class DevelopersPanel extends Panel {
 
   public File getDumpExcelFile() {
     return new File(System.getProperty("java.io.tmpdir"), "onyx.xlsx");
-  }
-
-  private class SessionClearingListener implements DatasourceCopyEventListener {
-
-    public void onValueSetCopied(ValueSet valueSet) {
-      factory.getCurrentSession().clear();
-    }
-
-    public void onValueSetCopy(ValueSet valueSet) {
-    }
-
-    public void onVariableCopied(Variable variable) {
-    }
-
-    public void onVariableCopy(Variable variable) {
-    }
-
   }
 
   private static class DumpInput implements IClusterable {
