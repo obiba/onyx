@@ -114,7 +114,7 @@ public class QuestionnaireStringResourceModel extends QuestionnaireResourceModel
   //
 
   private String getValueAsString(VariableDataSource varDs, Value value, Locale locale) {
-    if(value == null || value.getValue() == null) return "";
+    if(value == null || value.isNull() || value.getValue() == null) return "";
 
     String dataStr = value.toString();
     if(value.getValueType().equals(TextType.get())) {
