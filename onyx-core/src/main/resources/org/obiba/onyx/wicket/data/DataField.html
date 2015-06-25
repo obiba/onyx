@@ -25,3 +25,14 @@
 <wicket:fragment wicket:id="audioRecorderFragment">
 	<object wicket:id="nanoGong">[nanoGong]</object>
 </wicket:fragment>
+
+<wicket:fragment wicket:id="soundRecorderFragment">
+	<div wicket:id="field">
+		<script wicket:id="recorder"></script>
+		<script wicket:id="recorderWorker"></script>
+		<script wicket:id="soundRecorder"></script>
+		<a onclick="startRecording(this);">record</a>
+		<a onclick="stopRecording(this);" disabled>stop</a>
+		<ul id="recordingslist"></ul>
+	</div>
+</wicket:fragment>

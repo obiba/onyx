@@ -35,6 +35,9 @@ import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteSe
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.feedback.FeedbackMessage;
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.MarkupStream;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.AbstractTextComponent.ITextFormatProvider;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -46,6 +49,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.html.resources.JavascriptResourceReference;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -196,8 +200,11 @@ public class DataField extends Panel {
    */
   public DataField(String id, IModel<Data> model, DataType dataType, Rate samplingRate, int maxDuration) {
     super(id);
-    add(input = new AudioRecorderFragment("input", model, samplingRate, maxDuration));
+    add(input = new SoundRecorderFragment("input", model, samplingRate, maxDuration));
     addUnitLabel(null);
+//    add(JavascriptPackageResource.getHeaderContribution(DataField.class, "recorder.js"));
+//    add(JavascriptPackageResource.getHeaderContribution(DataField.class, "recorderWorker.js"));
+//    add(JavascriptPackageResource.getHeaderContribution(DataField.class, "soundRecorder.js"));
   }
 
   public DataField(String id, IModel<Data> model, DataType dataType, IAutoCompleteDataProvider provider, IAutoCompleteDataConverter converter, AutoCompleteSettings settings) {
@@ -675,6 +682,34 @@ public class DataField extends Panel {
         };
       }
       add(field);
+    }
+  }
+
+  private class SoundRecorderFragment extends FieldFragment {
+
+    public SoundRecorderFragment(String id, final IModel<Data> model, Rate samplingRate, int maxDuration) {
+      super(id, "soundRecorderFragment", DataField.this);
+
+      field = new FormComponent<Data>("field", model) {
+
+        @Override
+        protected void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
+          super.onComponentTagBody(markupStream, openTag);
+        }
+
+      };
+      add(field);
+      field.add(newScriptContainer("recorder", "recorder.js"));
+      field.add(newScriptContainer("recorderWorker", "recorderWorker.js"));
+      field.add(newScriptContainer("soundRecorder", "soundRecorder.js"));
+    }
+
+    private WebMarkupContainer newScriptContainer(String id, String script) {
+      WebMarkupContainer scriptContainer = new WebMarkupContainer(id);
+      scriptContainer .add(new AttributeAppender("type", Model.of("text/javascript"), ""));
+      scriptContainer .add(new AttributeAppender("src",
+          Model.of(urlFor(new JavascriptResourceReference(DataField.class, script)).toString()), ""));
+      return scriptContainer;
     }
   }
 
