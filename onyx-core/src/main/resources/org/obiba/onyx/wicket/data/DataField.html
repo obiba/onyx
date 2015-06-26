@@ -31,8 +31,8 @@
 		<script wicket:id="recorder"></script>
 		<script wicket:id="recorderWorker"></script>
 		<script wicket:id="soundRecorder"></script>
-		<a onclick="startRecording(this);">record</a>
-		<a onclick="stopRecording(this);" disabled>stop</a>
+		<a onclick="startRecording(event, this);">record</a>
+		<a onclick="stopRecording(event, this);" disabled>stop</a>
 		<ul id="recordingslist"></ul>
 	</div>
 </wicket:fragment>

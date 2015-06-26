@@ -8,26 +8,28 @@ function startUserMedia(stream) {
   console.log('Recorder initialised.');
 }
 
-function startRecording(button) {
+function startRecording(event, button) {
   recorder || initRecording();
   recorder && recorder.record();
   //button.disabled = true;
   //button.nextElementSibling.disabled = false;
   console.log('Recording...');
+  event.stopPropagation();
 }
 
-function stopRecording(button) {
+function stopRecording(event, button) {
   recorder && recorder.stop();
   //button.disabled = true;
   //button.previousElementSibling.disabled = false;
   console.log('Stopped recording.');
+  event.stopPropagation();
 
   // create WAV download link using audio data blob
   createDownloadLink();
 
   recorder.clear();
   recorder = undefined;
-  window.AudioContext.close();
+  //window.AudioContext.close();
   audio_context = undefined;
 }
 
