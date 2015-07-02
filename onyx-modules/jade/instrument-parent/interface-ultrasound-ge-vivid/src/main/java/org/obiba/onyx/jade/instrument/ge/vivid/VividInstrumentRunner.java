@@ -1,6 +1,6 @@
 package org.obiba.onyx.jade.instrument.ge.vivid;
 
-import java.awt.EventQueue;
+import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.zip.GZIPOutputStream;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import org.dcm4che2.data.DicomObject;
 import org.dcm4che2.data.Tag;
@@ -32,6 +32,12 @@ import org.springframework.util.StringUtils;
 public class VividInstrumentRunner implements InstrumentRunner {
 
   protected Logger log = LoggerFactory.getLogger(VividInstrumentRunner.class);
+
+  private static final String STILL_IMAGE_KEY = "STILL_IMAGE";
+
+  private static final String CINELOOP_KEY = "CINELOOP";
+
+  private static final String SR_KEY = "SR";
 
   private InstrumentExecutionService instrumentExecutionService;
 
@@ -100,6 +106,8 @@ public class VividInstrumentRunner implements InstrumentRunner {
         Map<String, Data> values = new HashMap<String, Data>();
         String suid = (String) row.get(DicomStorageScp.columns.indexOf(DicomStorageScp.STUDYINSTANCEUID));
         int cineLoopIdx = 1;
+        int stillImageIdx = 1;
+        int srIdx = 1;
         boolean added = false;
 
         for(StoredDicomFile dcm : listDicomFiles) {
@@ -113,28 +121,40 @@ public class VividInstrumentRunner implements InstrumentRunner {
             dicomObject = null;
 
             if(studyInstanceUid.equals(suid)) {
-              String key = null;
+              StringBuilder key = new StringBuilder();
 
-              if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundImageStorage)) {
-                key = "STILL_IMAGE";
-              } else if(mediaStorageSOPClassUID != null &&
-                  mediaStorageSOPClassUID.equals(UID.UltrasoundMultiframeImageStorage)) {
-                key = "CINELOOP_" + cineLoopIdx;
+              if(UID.UltrasoundImageStorage.equals(mediaStorageSOPClassUID)) {
+                key.append(STILL_IMAGE_KEY);
+                if(stillImageIdx > 1 || stillImageIdx == 1 && output.contains(STILL_IMAGE_KEY + "_1")) {
+                  key.append("_").append(stillImageIdx);
+                }
+                stillImageIdx++;
+              } else if(UID.UltrasoundMultiframeImageStorage.equals(mediaStorageSOPClassUID)) {
+                key.append(CINELOOP_KEY);
+                if(cineLoopIdx > 1 || cineLoopIdx == 1 && output.contains(CINELOOP_KEY + "_1")) {
+                  key.append("_").append(cineLoopIdx);
+                }
                 cineLoopIdx++;
-              } else if("SR".equals(modality)) {
-                key = "SR";
+              } else if(SR_KEY.equals(modality)) {
+                key.append(SR_KEY);
+                if(srIdx > 1 || srIdx == 1 && output.contains(SR_KEY + "_1")) {
+                  key.append("_").append(srIdx);
+                }
+                srIdx++;
               } else {
                 // don't know what this file is.
                 log.warn("Received unknown DICOM file. Ignoring.");
               }
 
-              if(key != null && output.contains(key)) {
+              String keyStr = key.toString();
+              if(output.contains(keyStr)) {
                 // This will contain a large byte-array
                 Data dicomData = DataBuilder.buildBinary(compress(dcm.getFile()));
-                log.info(String.format("[%s] dicom file: %d bytes -- compressed file: %d bytes", key, dcm.getFile().length(),
-                    ((byte[]) dicomData.getValue()).length));
+                log.info(String
+                    .format("[%s] dicom file: %d bytes -- compressed file: %d bytes", keyStr, dcm.getFile().length(),
+                        ((byte[]) dicomData.getValue()).length));
 
-                values.put(key, dicomData);
+                values.put(keyStr, dicomData);
                 added = true;
               }
             }
@@ -179,7 +199,7 @@ public class VividInstrumentRunner implements InstrumentRunner {
 
     @Override
     public boolean apply(String siuid, DicomObject dicomObject) {
-      if (!cineLoopIdsMap.containsKey(siuid)) {
+      if(!cineLoopIdsMap.containsKey(siuid)) {
         cineLoopIdsMap.put(siuid, 0);
       }
       int cineLoopIdx = cineLoopIdsMap.get(siuid);
