@@ -3,12 +3,14 @@ package org.obiba.onyx.jade.instrument.topcon;
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Map;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
+import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,7 +34,9 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
   @Override
   public void initialize() {
     if(externalAppHelper.isSotfwareAlreadyStarted()) {
-      JOptionPane.showMessageDialog(null, externalAppHelper.getExecutable() + " already lock for execution.  Please make sure that another instance is not running.", "Cannot start application!", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null, externalAppHelper.getExecutable() +
+          " already lock for execution.  Please make sure that another instance is not running.",
+          "Cannot start application!", JOptionPane.ERROR_MESSAGE);
       throw new RuntimeException("already lock for execution");
     }
     cleanData();
@@ -50,12 +54,13 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
 
   @Override
   public void shutdown() {
-    log.info("shutdown");
+    log.info("Shutdown");
     cleanData();
   }
 
   private void initializeParticipantData() {
-    log.info("initializing participant Data");
+    final String participantId = instrumentExecutionService.getParticipantID();
+    log.info("Initializing Participant {} Data", participantId);
     jdbc.update("insert into dbo.Persons (PersonUid, SurName, ForeName) values(?,?,?)", new PreparedStatementSetter() {
       @Override
       public void setValues(PreparedStatement ps) throws SQLException {
@@ -65,20 +70,29 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
       }
     });
 
-    jdbc.update("insert into dbo.Patients (PatientUid, PatientIdentifier, PersonUid) values(?,?,?)", new PreparedStatementSetter() {
-      public void setValues(PreparedStatement ps) throws SQLException {
-        ps.setString(1, patientUUID);
-        ps.setString(2, instrumentExecutionService.getParticipantID());
-        ps.setString(3, personUUID);
-      }
-    });
+    jdbc.update("insert into dbo.Patients (PatientUid, PatientIdentifier, PersonUid) values(?,?,?)",
+        new PreparedStatementSetter() {
+          public void setValues(PreparedStatement ps) throws SQLException {
+            ps.setString(1, patientUUID);
+            ps.setString(2, participantId);
+            ps.setString(3, personUUID);
+          }
+        });
   }
 
   public void processData() {
     log.info("Processing Data");
+    Map<String, Data> leftData = new LeftEyeExtractor().extractData(jdbc, patientUUID);
+    if(leftData.get(EyeExtractor.EYE_PICT_VENDOR) != null) {
+      log.info("Left Data found");
+      instrumentExecutionService.addOutputParameterValues(leftData);
+    }
 
-    instrumentExecutionService.addOutputParameterValues((new LeftEyeExtractor()).extractData(jdbc, patientUUID));
-    instrumentExecutionService.addOutputParameterValues((new RightEyeExtractor()).extractData(jdbc, patientUUID));
+    Map<String, Data> rightData = new RightEyeExtractor().extractData(jdbc, patientUUID);
+    if(rightData.get(EyeExtractor.EYE_PICT_VENDOR) != null) {
+      log.info("Right Data found");
+      instrumentExecutionService.addOutputParameterValues(rightData);
+    }
   }
 
   /**
@@ -96,7 +110,9 @@ public class Imagenetr4liteInstrumentRunner implements InstrumentRunner {
   }
 
   private void deletePictureFiles() {
-    SqlRowSet mediaRowSet = jdbc.queryForRowSet("SELECT FileName, FileExt, StoragePathUid FROM dbo.Media WHERE PatientUid = ?", new Object[] { patientUUID });
+    SqlRowSet mediaRowSet = jdbc
+        .queryForRowSet("SELECT FileName, FileExt, StoragePathUid FROM dbo.Media WHERE PatientUid = ?",
+            new Object[] { patientUUID });
     while(mediaRowSet.next()) {
       String storagePathUid = mediaRowSet.getString("StoragePathUid");
       String fileName = mediaRowSet.getString("FileName").trim();
