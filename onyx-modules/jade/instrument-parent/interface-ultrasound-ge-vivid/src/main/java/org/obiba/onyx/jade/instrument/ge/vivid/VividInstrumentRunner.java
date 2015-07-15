@@ -191,7 +191,11 @@ public class VividInstrumentRunner implements InstrumentRunner {
 
     private final Set<String> output;
 
-    private Map<String, Integer> cineLoopIdsMap = new HashMap<String, Integer>();
+    private final Map<String, Integer> stillIdsMap = new HashMap<String, Integer>();
+
+    private final Map<String, Integer> cineLoopIdsMap = new HashMap<String, Integer>();
+
+    private final Map<String, Integer> srIdsMap = new HashMap<String, Integer>();
 
     private VividDicomStoragePredicate(Set<String> output) {
       this.output = output;
@@ -209,28 +213,46 @@ public class VividInstrumentRunner implements InstrumentRunner {
       String modality = dicomObject.getString(Tag.Modality);
       log.info("StudyInstanceUID={}", siuid);
       log.info("  Expected outputs: {}", StringUtils.collectionToCommaDelimitedString(output));
-      if(mediaStorageSOPClassUID != null && mediaStorageSOPClassUID.equals(UID.UltrasoundImageStorage)) {
-        log.info("  STILL_IMAGE found");
-        if(output.contains("STILL_IMAGE")) {
-          return true;
-        }
-      } else if(mediaStorageSOPClassUID != null &&
-          mediaStorageSOPClassUID.equals(UID.UltrasoundMultiframeImageStorage)) {
-        cineLoopIdx++;
-        cineLoopIdsMap.put(siuid, cineLoopIdx);
-        log.info("  CINELOOP_{} found", cineLoopIdx);
-        if(output.contains("CINELOOP_" + cineLoopIdx)) {
-          return true;
-        }
-      } else if("SR".equals(modality)) {
-        log.info("  SR found");
-        if(output.contains("SR")) {
-          return true;
-        }
+
+      if(UID.UltrasoundImageStorage.equals(mediaStorageSOPClassUID)) {
+        return checkOutput(STILL_IMAGE_KEY, getIndex(stillIdsMap, siuid));
       }
+
+      if(UID.UltrasoundMultiframeImageStorage.equals(mediaStorageSOPClassUID)) {
+        return checkOutput(CINELOOP_KEY, getIndex(cineLoopIdsMap, siuid));
+      }
+
+      if(SR_KEY.equals(modality)) {
+        return checkOutput(SR_KEY, getIndex(srIdsMap, siuid));
+      }
+
       log.info("  File type does not apply");
       // else ignore
       return false;
+    }
+
+    private boolean checkOutput(String key, int idx) {
+      log.info("  {} ({}) found", key, idx);
+      if(output.contains(key + "_" + idx) || idx == 1 && output.contains(key)) {
+        log.info("  {} ({}) applies", key, idx);
+        return true;
+      }
+      log.info("  {} ({}) does not apply", key, idx);
+      return false;
+    }
+
+    /**
+     * Get index of the dicom ID, add it if not found.
+     *
+     * @param idsMap
+     * @param siuid
+     * @return
+     */
+    private Integer getIndex(Map<String, Integer> idsMap, String siuid) {
+      if(idsMap.containsKey(siuid)) return idsMap.get(siuid);
+      int idx = idsMap.size() + 1;
+      idsMap.put(siuid, idx);
+      return idx;
     }
 
   }
