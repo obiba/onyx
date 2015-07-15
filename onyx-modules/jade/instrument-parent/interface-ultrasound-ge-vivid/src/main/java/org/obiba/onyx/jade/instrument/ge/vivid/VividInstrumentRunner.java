@@ -203,11 +203,6 @@ public class VividInstrumentRunner implements InstrumentRunner {
 
     @Override
     public boolean apply(String siuid, DicomObject dicomObject) {
-      if(!cineLoopIdsMap.containsKey(siuid)) {
-        cineLoopIdsMap.put(siuid, 0);
-      }
-      int cineLoopIdx = cineLoopIdsMap.get(siuid);
-
       String mediaStorageSOPClassUID = dicomObject.contains(Tag.MediaStorageSOPClassUID) ? dicomObject
           .getString(Tag.MediaStorageSOPClassUID) : null;
       String modality = dicomObject.getString(Tag.Modality);
