@@ -174,15 +174,15 @@ public class Tracker5InstrumentRunner implements InstrumentRunner, InitializingB
   private ParadoxDb getTracker5DB(String name) {
     File gripTestDb = new File(getTrackerDatabaseFolder(), name);
     if(gripTestDb.exists() == false) {
-      throw new RuntimeException(name + " file cannot be found.");
+      throw new RuntimeException(name + " file cannot be found: " + gripTestDb.getAbsolutePath());
     }
     if(gripTestDb.canRead() == false) {
-      throw new RuntimeException(name + " file cannot be read.");
+      throw new RuntimeException(name + " file cannot be read: " + gripTestDb.getAbsolutePath());
     }
     try {
       return new ParadoxDb(gripTestDb);
     } catch(IOException e) {
-      throw new RuntimeException("Error reading DB " + name, e);
+      throw new RuntimeException("Error reading DB " + name + " from file: " + gripTestDb.getAbsolutePath() , e);
     }
   }
 
