@@ -1,8 +1,6 @@
 package org.obiba.onyx.jade.instrument.ge.vivid;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -14,29 +12,20 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 
-import javax.swing.DefaultCellEditor;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import org.dcm4che2.data.DicomObject;
 import org.dcm4che2.data.Tag;
-import org.dcm4che2.data.UID;
 import org.dcm4che2.tool.dcmrcv.DicomServer;
 import org.dcm4che2.tool.dcmrcv.DicomServer.State;
 import org.dcm4che2.tool.dcmrcv.DicomServer.StateListener;
@@ -313,19 +302,28 @@ public class DicomStorageScp {
     File f = File.createTempFile("dcm", "");
     f.delete();
     f.mkdir();
-    DicomStorageScp scp = new DicomStorageScp(new DicomServer(f, new DicomSettings()));
+
+    Set<String> output = new LinkedHashSet<>();
+    Collections.addAll(output, "CINELOOP_1", "CINELOOP_2", "CINELOOP_3", "STILL_IMAGE", "SR");
+    DicomStorageScp scp = new DicomStorageScp(new DicomServer(f, new DicomSettings()), new VividInstrumentRunner.VividDicomStoragePredicate(output));
     scp.show();
     scp.waitForExit();
   }
 
   private class DicomStorageListener implements StorageListener {
 
+    List<String> storedFileNames = new ArrayList<>();
+
     @Override
     public void onStored(File file, DicomObject dicomObject) {
+      if (storedFileNames.contains(file.getName())) return;
+
+      storedFileNames.add(file.getName());
+
       String siuid = dicomObject.getString(Tag.StudyInstanceUID);
 
       if (dicomStoragePredicate == null) addRow(siuid, dicomObject);
-      else if (dicomStoragePredicate.apply(siuid, dicomObject)) addRow(siuid, dicomObject);
+      else if (dicomStoragePredicate.apply(siuid, file, dicomObject)) addRow(siuid, dicomObject);
       // else ignore that file
     }
 
@@ -362,7 +360,7 @@ public class DicomStorageScp {
 
   public interface DicomStoragePredicate {
 
-    boolean apply(String siuid, DicomObject dicomObject);
+    boolean apply(String siuid, File file, DicomObject dicomObject);
 
   }
 }

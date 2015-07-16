@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.FileSystemUtils;
-import org.springframework.util.StringUtils;
 
 public class VividInstrumentRunner implements InstrumentRunner {
 
@@ -185,40 +185,42 @@ public class VividInstrumentRunner implements InstrumentRunner {
     return baos.toByteArray();
   }
 
-  private static class VividDicomStoragePredicate implements DicomStorageScp.DicomStoragePredicate {
+  public static class VividDicomStoragePredicate implements DicomStorageScp.DicomStoragePredicate {
 
     private final static Logger log = LoggerFactory.getLogger(VividDicomStoragePredicate.class);
 
     private final Set<String> output;
 
-    private final Map<String, Integer> stillIdsMap = new HashMap<String, Integer>();
+    private final Map<String, List<String>> stillIdsMap = new HashMap<>();
 
-    private final Map<String, Integer> cineLoopIdsMap = new HashMap<String, Integer>();
+    private final Map<String, List<String>> cineLoopIdsMap = new HashMap<>();
 
-    private final Map<String, Integer> srIdsMap = new HashMap<String, Integer>();
+    private final Map<String, List<String>> srIdsMap = new HashMap<>();
 
-    private VividDicomStoragePredicate(Set<String> output) {
+    public VividDicomStoragePredicate(Set<String> output) {
       this.output = output;
     }
 
     @Override
-    public boolean apply(String siuid, DicomObject dicomObject) {
+    public boolean apply(String siuid, File file, DicomObject dicomObject) {
       String mediaStorageSOPClassUID = dicomObject.contains(Tag.MediaStorageSOPClassUID) ? dicomObject
           .getString(Tag.MediaStorageSOPClassUID) : null;
       String modality = dicomObject.getString(Tag.Modality);
       log.info("StudyInstanceUID={}", siuid);
-      log.info("  Expected outputs: {}", StringUtils.collectionToCommaDelimitedString(output));
+      StringBuffer outputs = new StringBuffer();
+      for (String s : output) outputs.append(s).append(" ");
+      log.info("  Expected outputs: {}", outputs);
 
       if(UID.UltrasoundImageStorage.equals(mediaStorageSOPClassUID)) {
-        return checkOutput(STILL_IMAGE_KEY, getIndex(stillIdsMap, siuid));
+        return checkOutput(STILL_IMAGE_KEY, getIndex(stillIdsMap, siuid, file.getName()));
       }
 
       if(UID.UltrasoundMultiframeImageStorage.equals(mediaStorageSOPClassUID)) {
-        return checkOutput(CINELOOP_KEY, getIndex(cineLoopIdsMap, siuid));
+        return checkOutput(CINELOOP_KEY, getIndex(cineLoopIdsMap, siuid, file.getName()));
       }
 
       if(SR_KEY.equals(modality)) {
-        return checkOutput(SR_KEY, getIndex(srIdsMap, siuid));
+        return checkOutput(SR_KEY, getIndex(srIdsMap, siuid, file.getName()));
       }
 
       log.info("  File type does not apply");
@@ -243,12 +245,16 @@ public class VividInstrumentRunner implements InstrumentRunner {
      * @param siuid
      * @return
      */
-    private Integer getIndex(Map<String, Integer> idsMap, String siuid) {
-      if(idsMap.containsKey(siuid)) return idsMap.get(siuid);
-      int idx = idsMap.size() + 1;
-      idsMap.put(siuid, idx);
-      return idx;
+    private Integer getIndex(Map<String, List<String>> idsMap, String siuid, String fileName) {
+      if(!idsMap.containsKey(siuid)) {
+        idsMap.put(siuid, new ArrayList<String>());
+      }
+      if (!idsMap.get(siuid).contains(fileName))  {
+        idsMap.get(siuid).add(fileName);
+      }
+      return idsMap.get(siuid).indexOf(fileName) + 1;
     }
 
   }
+
 }
