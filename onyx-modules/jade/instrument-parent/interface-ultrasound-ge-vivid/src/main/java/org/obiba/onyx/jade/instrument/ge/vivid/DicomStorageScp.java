@@ -305,7 +305,12 @@ public class DicomStorageScp {
 
     Set<String> output = new LinkedHashSet<>();
     Collections.addAll(output, "CINELOOP_1", "CINELOOP_2", "CINELOOP_3", "STILL_IMAGE", "SR");
-    DicomStorageScp scp = new DicomStorageScp(new DicomServer(f, new DicomSettings()), new VividInstrumentRunner.VividDicomStoragePredicate(output));
+
+    DicomSettings settings = new DicomSettings();
+    settings.setPort(1100);
+    settings.setAeTitle("DICOMSTORAGESCP");
+
+    DicomStorageScp scp = new DicomStorageScp(new DicomServer(f, settings), new VividInstrumentRunner.VividDicomStoragePredicate(output));
     scp.show();
     scp.waitForExit();
   }
