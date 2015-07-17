@@ -16,7 +16,7 @@
   </security>
 #end
   <resources>
-    <j2se version="$j2seVersion" java-vm-args="-Xmx2G"/>
+    <j2se version="$j2seVersion" java-vm-args="-Xmx1G"/>
     <extension href="../bootstrap/launch.jnlp"/>
      $dependencies.replaceAll("<jar .* main=\"true\"/>", "").replaceAll("<jar href=\"(.*-win32.jar)\"", "<nativelib href=\"$1\"")
   </resources>
