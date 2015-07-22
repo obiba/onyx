@@ -2,83 +2,97 @@ package org.obiba.onyx.core.etl.participant.impl;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
-import org.obiba.magma.Datasource;
-import org.obiba.magma.MagmaCacheExtension;
-import org.obiba.magma.MagmaEngine;
-import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.Variable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.support.CachedDatasource;
 import org.obiba.magma.support.CachedValueTable;
-import org.obiba.magma.support.MagmaEngineTableResolver;
 import org.obiba.magma.support.VariableEntityBean;
-import org.obiba.magma.type.BinaryType;
-import org.obiba.onyx.core.data.DatasourceUtils;
+import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
+import org.obiba.onyx.core.etl.participant.IInterviewPostProcessor;
 import org.obiba.onyx.core.etl.participant.IParticipantPostProcessor;
 import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ExecutionContext;
+import org.springframework.scheduling.annotation.Async;
 
-import com.google.common.collect.Maps;
-
-public class CachedDatasourceProcessor implements IParticipantPostProcessor {
+public class CachedDatasourceProcessor extends AbstractCachedDatasourceProcessor implements IParticipantPostProcessor,
+    IInterviewPostProcessor {
 
   private static final Logger log = LoggerFactory.getLogger(CachedDatasourceProcessor.class);
 
-  private MagmaEngine magmaEngine;
+  private boolean proccessOnAppointment = true;
+
+  private boolean proccessOnReception = false;
+
+  private boolean proccessOnInterview = false;
+
+  //
+  // Settings
+  //
 
   /**
-   * Restrict caching warm up to the specified tables (no restriction if nothing is specified).
+   * Participant processing on appointment list update.
+   *
+   * @param proccessOnAppointment
    */
-  private Map<String, Set<String>> datasourceTables = Maps.newHashMap();
-
-  public void setMagmaEngine(MagmaEngine magmaEngine) {
-    this.magmaEngine = magmaEngine;
+  public void setProccessOnAppointment(boolean proccessOnAppointment) {
+    this.proccessOnAppointment = proccessOnAppointment;
   }
 
-  public void setTableNames(String[] tableNames) {
-    if(tableNames == null || tableNames.length == 0) return;
+  /**
+   * Participant processing on participant reception.
+   *
+   * @param proccessOnReception
+   */
+  public void setProccessOnReception(boolean proccessOnReception) {
+    this.proccessOnReception = proccessOnReception;
+  }
 
-    for(String tableName : tableNames) {
-      MagmaEngineTableResolver resolver = MagmaEngineTableResolver.valueOf(tableName.trim());
-      if(!datasourceTables.containsKey(resolver.getDatasourceName())) {
-        datasourceTables.put(resolver.getDatasourceName(), new TreeSet<String>());
-      }
-      datasourceTables.get(resolver.getDatasourceName()).add(resolver.getTableName());
+  /**
+   * Participant processing on participant interview starts.
+   *
+   * @param proccessOnInterview
+   */
+  public void setProccessOnInterview(boolean proccessOnInterview) {
+    this.proccessOnInterview = proccessOnInterview;
+  }
+
+  //
+  // Interface processor methods
+  //
+
+  @Override
+  public void process(ExecutionContext context, List<Participant> participants) {
+    if(!proccessOnAppointment || participants == null || participants.isEmpty()) return;
+
+    for (CachedDatasource datasource : getCachedDatasources()) {
+      doCache(context, datasource, participants);
     }
   }
 
   @Override
-  public void process(ExecutionContext context, List<Participant> participants) {
-    if(participants == null || participants.isEmpty() || !magmaEngine.hasExtension(MagmaCacheExtension.class)) return;
+  @Async
+  public void onCreation(Interview interview) {
+    if (!proccessOnReception) return;
 
-    for(Datasource datasource : MagmaEngine.get().getDatasources()) {
-      CachedDatasource ds = DatasourceUtils.asCachedDatasource(datasource);
-      if(ds != null && isApplicable(datasource)) {
-        doCache(context, ds, participants);
-      }
+    for (CachedDatasource datasource : getCachedDatasources()) {
+      doCache(datasource, interview.getParticipant());
     }
   }
 
-  protected boolean isApplicable(Datasource datasource) {
-    return datasourceTables.isEmpty() || datasourceTables.containsKey(datasource.getName());
-  }
+  @Override
+  @Async
+  public void onProgress(Interview interview) {
+    if (!proccessOnInterview) return;
 
-  protected boolean isApplicable(Datasource datasource, ValueTable table) {
-    return datasourceTables.isEmpty() || datasourceTables.containsKey(datasource.getName()) &&
-        datasourceTables.get(datasource.getName()).contains(table.getName());
-  }
-
-  protected boolean isApplicable(ValueTable table, Variable variable) {
-    return !variable.getValueType().equals(BinaryType.get());
+    for (CachedDatasource datasource : getCachedDatasources()) {
+      doCache(datasource, interview.getParticipant());
+    }
   }
 
   //
@@ -119,15 +133,7 @@ public class CachedDatasourceProcessor implements IParticipantPostProcessor {
 
     if(table.hasValueSet(entity)) {
       try {
-        ValueSet valueSet = table.getValueSet(entity);
-        for(Variable variable : variables) {
-          if(isApplicable(table, variable)) { //cache warm-up
-            table.getVariable(variable.getName());
-            table.getVariableValueSource(variable.getName()).getVariable();
-            table.getVariableValueSource(variable.getName()).getValue(valueSet);
-            table.getValue(variable, valueSet);
-          }
-        }
+        doCache(table, variables, entity);
       } catch(Exception e) {
         String msg = "Unable to cache data of " + MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE + ": " +
             participant.getEnrollmentId();
