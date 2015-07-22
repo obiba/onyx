@@ -67,6 +67,9 @@
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="moduleRegistry" ref="moduleRegistry" />
     <property name="userSessionService" ref="userSessionService" />
-  </bean>  
+  </bean>
+
+  <!-- No-op post processor because Spring needs at least one -->
+  <bean class="org.obiba.onyx.core.etl.participant.impl.NoOpInterviewPostProcessor"/>
     
 </beans>

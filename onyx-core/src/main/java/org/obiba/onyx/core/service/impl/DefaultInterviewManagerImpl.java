@@ -10,6 +10,7 @@
 package org.obiba.onyx.core.service.impl;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,11 +23,13 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.etl.participant.IInterviewPostProcessor;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -41,6 +44,9 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
   private final Map<Serializable, Map<String, StageExecutionContext>> interviewStageContextsMap = new HashMap<Serializable, Map<String, StageExecutionContext>>();
 
   private UserSessionService userSessionService;
+
+  @Autowired
+  private Collection<IInterviewPostProcessor> interviewPostProcessors;
 
   public DefaultInterviewManagerImpl() {
     interviewStageContextsMap.size();
@@ -103,7 +109,9 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
         getPersistenceManager().refresh(participant);
       }
 
-      return participant.getInterview();
+      interview = participant.getInterview();
+      postProcessInterview(interview);
+      return interview;
     }
     throw new IllegalStateException("Cannot obtain interview. Interview is locked.");
   }
@@ -172,6 +180,14 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
 
     interview.incrementDuration(timeLockedSeconds);
     getPersistenceManager().save(interview);
+  }
+
+  private void postProcessInterview(Interview interview) {
+    if (interviewPostProcessors != null) {
+      for (IInterviewPostProcessor processor : interviewPostProcessors) {
+        processor.onProgress(interview);
+      }
+    }
   }
 
   public class InterviewLock {

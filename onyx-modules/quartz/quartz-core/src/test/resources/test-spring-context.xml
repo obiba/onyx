@@ -16,6 +16,9 @@
     <property name="userSessionService" ref="userSessionService" />
   </bean>
 
+  <!-- No-op post processor because Spring needs at least one -->
+  <bean class="org.obiba.onyx.core.etl.participant.impl.NoOpInterviewPostProcessor"/>
+
   <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="userSessionService" ref="userSessionService" />

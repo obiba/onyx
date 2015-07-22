@@ -20,6 +20,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttributeValue;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.core.domain.statistics.InterviewDeletionLog;
+import org.obiba.onyx.core.etl.participant.IInterviewPostProcessor;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
@@ -29,6 +30,7 @@ import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -47,6 +49,9 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
   private UserSessionService userSessionService;
 
   private static final String START_ACTION_DEFINITION_CODE = "action.START";
+
+  @Autowired
+  private Collection<IInterviewPostProcessor> interviewPostProcessors;
 
   @Override
   public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment, String userName) {
@@ -75,6 +80,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     receptionAction.setInterview(interview);
     getPersistenceManager().save(receptionAction);
 
+    postProcessInterview(interview);
   }
 
   @Override
@@ -187,5 +193,13 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
   public void setUserSessionService(UserSessionService userSessionService) {
     this.userSessionService = userSessionService;
+  }
+
+  private void postProcessInterview(Interview interview) {
+    if (interviewPostProcessors != null) {
+      for (IInterviewPostProcessor processor : interviewPostProcessors) {
+        processor.onCreation(interview);
+      }
+    }
   }
 }

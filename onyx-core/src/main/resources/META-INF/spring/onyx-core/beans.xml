@@ -33,6 +33,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 
+  <!-- No-op post processor because Spring needs at least one -->
+  <bean class="org.obiba.onyx.core.etl.participant.impl.NoOpInterviewPostProcessor"/>
+
   <bean id="jobExecutionService" class="org.obiba.onyx.core.service.impl.DefaultJobExecutionServiceImpl">
     <property name="jobLauncher" ref="jobLauncher" />
   </bean>
