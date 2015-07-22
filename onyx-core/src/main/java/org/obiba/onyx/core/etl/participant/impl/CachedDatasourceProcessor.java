@@ -13,7 +13,6 @@ import org.obiba.magma.ValueSet;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.Variable;
 import org.obiba.magma.VariableEntity;
-import org.obiba.magma.support.AbstractDatasourceWrapper;
 import org.obiba.magma.support.CachedDatasource;
 import org.obiba.magma.support.CachedValueTable;
 import org.obiba.magma.support.MagmaEngineTableResolver;
@@ -49,7 +48,7 @@ public class CachedDatasourceProcessor implements IParticipantPostProcessor {
     if(tableNames == null || tableNames.length == 0) return;
 
     for(String tableName : tableNames) {
-      MagmaEngineTableResolver resolver = MagmaEngineTableResolver.valueOf(tableName);
+      MagmaEngineTableResolver resolver = MagmaEngineTableResolver.valueOf(tableName.trim());
       if(!datasourceTables.containsKey(resolver.getDatasourceName())) {
         datasourceTables.put(resolver.getDatasourceName(), new TreeSet<String>());
       }
