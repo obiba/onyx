@@ -172,7 +172,7 @@ public class APEXInstrumentRunner implements InstrumentRunner {
 
   /**
    * Called by initApexReceiverStatus(). Return true if all required variables were sent, false otherwise.
-   * 
+   *
    * @return
    */
   private boolean isCompleteVariable() {
@@ -209,13 +209,14 @@ public class APEXInstrumentRunner implements InstrumentRunner {
 
     participantData.clear();
 
-    String sql = "SELECT PATIENT_KEY, BIRTHDATE, SEX FROM PATIENT WHERE IDENTIFIER1 = ?";
+    String sql = "SELECT PATIENT_KEY, BIRTHDATE, SEX, ETHNICITY FROM PATIENT WHERE IDENTIFIER1 = ?";
     try {
       Map<String, Object> results = patScanDb.queryForMap(sql, new Object[] { participantID });
       if(results != null) {
         participantData.put("participantKey", results.get("PATIENT_KEY").toString());
         participantData.put("participantDOB", results.get("BIRTHDATE").toString());
         participantData.put("participantGender", results.get("SEX").toString());
+        participantData.put("participantEthnicity", results.get("ETHNICITY").toString());
       }
     } catch(DataAccessException e) {
       log.info("Cannot find the requested participant in Apex: " + sql );
@@ -290,7 +291,7 @@ public class APEXInstrumentRunner implements InstrumentRunner {
 
   /**
    * Called by retrieveMeasurements().
-   * 
+   *
    * @param data
    */
   public void sendDataToServer(Map<String, Data> data) {
@@ -300,7 +301,7 @@ public class APEXInstrumentRunner implements InstrumentRunner {
   /**
    * Called by retrieveDeviceData(). Generic calling interface to extract Apex data. Passes abstract data extractor:
    * child classes unique to scan type (ie., forearm, spine etc.).
-   * 
+   *
    * @param dataList
    * @param extractor
    */
@@ -324,7 +325,7 @@ public class APEXInstrumentRunner implements InstrumentRunner {
 
   /**
    * Called by retrieveDeviceData(). Calling interface to extract Apex right hip data.
-   * 
+   *
    * @param dataList
    */
   private void extractRightHip(List<Map<String, Data>> dataList) {
@@ -338,7 +339,7 @@ public class APEXInstrumentRunner implements InstrumentRunner {
 
   /**
    * Called by retrieveDeviceData(). Calling interface to extract Apex left hip data.
-   * 
+   *
    * @param dataList
    */
   private void extractLeftHip(List<Map<String, Data>> dataList) {

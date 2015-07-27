@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2011 OBiBa. All rights reserved.
- *  
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- *  
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -86,9 +86,9 @@ public abstract class APEXScanDataExtractor {
 
   /*
    * private String pFileName;
-   * 
+   *
    * private String rFileName;
-   * 
+   *
    * private List<String> fileNames;
    */
   private Map<String, String> participantData;
@@ -165,14 +165,14 @@ public abstract class APEXScanDataExtractor {
 
   /**
    * Called by extractData().
-   * 
+   *
    * @param data
    */
   protected abstract void extractDataImpl(Map<String, Data> data);
 
   /**
    * Called by extractData(). Computes T- and Z-score and adds to data collection.
-   * 
+   *
    * @param data
    */
   protected void computeTZScore(Map<String, Data> data) throws DataAccessException, IllegalArgumentException {
@@ -282,7 +282,7 @@ public abstract class APEXScanDataExtractor {
         bmdValues.add(new Double(mapResult.get("L_VALUE").toString()));
         bmdValues.add(new Double(mapResult.get("STD").toString()));
       }
-      
+
       DecimalFormat df = new DecimalFormat("#.0");
       Double X_value = bmdValue;
       Double M_value = bmdValues.get(6);
@@ -302,10 +302,83 @@ public abstract class APEXScanDataExtractor {
 
       Double Z_score = null;
 
+      String gender = getParticipantGender().toUpperCase();
+      if(0 == gender.length() || gender.startsWith("F")) gender = " AND SEX = 'F'";
+      else if(gender.startsWith( "M")) gender = " AND SEX = 'M'";
+
+      String ethnicity = getParticipantEthnicity().toUpperCase();
+      if(0 == ethnicity.length()) ethnicity = " AND ETHNICITY IS NULL";
+      else if(ethnicity.startsWith("B")) ethnicity = " AND ETHNICITY = 'B'";
+      else if(ethnicity.startsWith("H")) ethnicity = " AND ETHNICITY = 'H'";
+      else if(ethnicity.startsWith("O")) ethnicity = " AND ETHNICITY = 'O'";
+      else ethnicity = " AND ETHNICITY IS NULL";
+
+      sql = "SELECT UNIQUE_ID, AGE_YOUNG FROM ReferenceCurve";
+      sql += " WHERE REFTYPE = '" + getRefType() + "'";
+      sql += " AND IF_CURRENT = 1";
+      sql += gender;
+      sql += ethnicity;
+      sql += " AND METHOD IS NULL";
+      sql += " AND SOURCE LIKE '%" + getRefSource() + "%'";
+      sql += " AND BONERANGE ";
+      sql += (ranges.get(bmdBoneRangeKey).equals("NULL") ? ("IS NULL") : ("= '" + ranges.get(bmdBoneRangeKey) + "'"));
+
+      log.info("first query (Z score): " + sql);
+
+      try {
+        mapResult = refCurveDb.queryForMap(sql);
+      } catch(DataAccessException e) {
+        throw e;
+      }
+      curveId = mapResult.get("UNIQUE_ID").toString();
+      ageYoung = new Double(mapResult.get("AGE_YOUNG").toString());
+
+      // Determine the age values (X axis variable) of the curve
+      //
+      sql = "SELECT X_VALUE FROM Points WHERE UNIQUE_ID = " + curveId;
+
+      log.info("second query (Z score): " + sql);
+
+      try {
+        listResult = refCurveDb.queryForList(sql);
+      } catch(DataAccessException e) {
+        throw e;
+      }
+      ageTable.clear();
+      for(Map<String, Object> row : listResult) {
+        ageTable.add(new Double(row.get("X_VALUE").toString()));
+      }
+
+      bracket.compute(age, ageTable);
       if(bracket.ageSpan != 0.) {
+
+        // Determine the bmd, skewness factor and standard deviation
+        // at the bracketing and peak bmd age values.
+        //
+        sql = "SELECT Y_VALUE, L_VALUE, STD FROM Points WHERE UNIQUE_ID = " + curveId;
+        sql += " AND X_VALUE = ";
+
+        x_value_array = new Double[]{ bracket.ageMin, bracket.ageMax, ageYoung };
+        bmdValues.clear();
+        for(int i = 0; i < x_value_array.length; i++) {
+          mapResult.clear();
+          log.info("third query iter (Z score) " + ((Integer) i).toString() + " : " + sql + x_value_array[i].toString());
+
+          try {
+            mapResult = refCurveDb.queryForMap(sql + x_value_array[i].toString());
+          } catch(DataAccessException e) {
+            throw e;
+          }
+
+          bmdValues.add(new Double(mapResult.get("Y_VALUE").toString()));
+          bmdValues.add(new Double(mapResult.get("L_VALUE").toString()));
+          bmdValues.add(new Double(mapResult.get("STD").toString()));
+        }
+
         Double u = (age - bracket.ageMin) / bracket.ageSpan;
 
         List<Double> interpValues = new ArrayList<Double>();
+        interpValues.clear();
         for(int i = 0; i < bmdValues.size() / 3; i++)
           interpValues.add((1. - u) * bmdValues.get(i) + u * bmdValues.get(i + 3));
 
@@ -329,7 +402,7 @@ public abstract class APEXScanDataExtractor {
       }
       else {
         log.info( varName + " = null" );
-      }  
+      }
 
       log.info("finished current key: " + bmdBoneRangeKey);
     }
@@ -444,7 +517,7 @@ public abstract class APEXScanDataExtractor {
 
   /**
    * Called by ScanAnalysisResultSetExtractor extractData(). Adds Hip scan dicom files to data collection.
-   * 
+   *
    * @param side
    * @param files
    * @param data
@@ -463,7 +536,7 @@ public abstract class APEXScanDataExtractor {
 
   /**
    * Called by ScanAnalysisResultSetExtractor extractData(). Adds Whole Body scan dicom files to data collection.
-   * 
+   *
    * @param files
    * @param data
    */
@@ -476,7 +549,7 @@ public abstract class APEXScanDataExtractor {
 
   /**
    * Called by ScanAnalysisResultSetExtractor extractData(). Adds Forearm scan dicom files to data collection.
-   * 
+   *
    * @param side
    * @param files
    * @param data
@@ -495,7 +568,7 @@ public abstract class APEXScanDataExtractor {
 
   /**
    * Called by ScanAnalysisResultSetExtractor extractData(). Adds Spine scan dicom files to data collection.
-   * 
+   *
    * @param files
    * @param data
    */
@@ -520,7 +593,7 @@ public abstract class APEXScanDataExtractor {
   /**
    * Called by processFilesExtraction* methods. Add a dicom file exported from Apex via DICOM send transfer to the data
    * collection.
-   * 
+   *
    * @param data
    * @param name
    * @param storedDicomFile
@@ -534,7 +607,7 @@ public abstract class APEXScanDataExtractor {
 
   /**
    * Called by putDicom(). Return true if dicom contains raw P & R data, false otherwise.
-   * 
+   *
    * @return
    */
   private boolean isCompleteDicom(StoredDicomFile storedDicomFile) {
@@ -555,7 +628,7 @@ public abstract class APEXScanDataExtractor {
   /**
    * Called by extractDataImpl(). Implementation is specific to child classes which define Apex PatScan db table names
    * corresponding to the type of scan. Adds all analysis variables to data collection.
-   * 
+   *
    * @param table
    * @param data
    * @param rsExtractor
@@ -635,7 +708,7 @@ public abstract class APEXScanDataExtractor {
 
   /**
    * Called by computeTZScore().
-   * 
+   *
    * @param s1
    * @param s2
    * @return
@@ -703,7 +776,7 @@ public abstract class APEXScanDataExtractor {
    * Hologic embeds P and R data files in the DICOM data exported from APEX.
    *
    * protected String getPFileName() { return pFileName; }
-   * 
+   *
    * protected String getRFileName() { return rFileName; }
    */
   /*
@@ -725,6 +798,10 @@ public abstract class APEXScanDataExtractor {
 
   protected String getParticipantGender() {
     return participantData.get("participantGender");
+  }
+
+  protected String getParticipantEthnicity() {
+    return participantData.get("participantEthnicity");
   }
 
   protected String getResultPrefix() {
