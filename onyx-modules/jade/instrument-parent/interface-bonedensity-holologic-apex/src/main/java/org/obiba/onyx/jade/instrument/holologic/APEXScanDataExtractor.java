@@ -207,7 +207,7 @@ public abstract class APEXScanDataExtractor {
       // A curve depends on the type of scan, gender, ethnicity, and
       // the coded anatomic region that bmd was measured in.
       // Determine the unique curve ID along with the age at which
-      // peak bmd occurs. Implementation assumes ethnicity is always Caucasian
+      // peak bmd occurs. Implementation of T-score assumes ethnicity is always Caucasian
       // and gender is always female in accordance with WHO and
       // Osteoporosis Canada guidelines.
       //
@@ -307,11 +307,11 @@ public abstract class APEXScanDataExtractor {
       else if(gender.startsWith( "M")) gender = " AND SEX = 'M'";
 
       String ethnicity = getParticipantEthnicity().toUpperCase();
-      if(0 == ethnicity.length()) ethnicity = " AND ETHNICITY IS NULL";
-      else if(ethnicity.startsWith("B")) ethnicity = " AND ETHNICITY = 'B'";
-      else if(ethnicity.startsWith("H")) ethnicity = " AND ETHNICITY = 'H'";
-      else if(ethnicity.startsWith("O")) ethnicity = " AND ETHNICITY = 'O'";
-      else ethnicity = " AND ETHNICITY IS NULL";
+      if(0 == ethnicity.length()) ethnicity = " AND ETHNIC IS NULL";
+      else if(ethnicity.startsWith("B")) ethnicity = " AND ETHNIC = 'B'";
+      else if(ethnicity.startsWith("H")) ethnicity = " AND ETHNIC = 'H'";
+      else if(ethnicity.startsWith("O")) ethnicity = " AND ETHNIC = 'O'";
+      else ethnicity = " AND ETHNIC IS NULL";
 
       sql = "SELECT UNIQUE_ID, AGE_YOUNG FROM ReferenceCurve";
       sql += " WHERE REFTYPE = '" + getRefType() + "'";
