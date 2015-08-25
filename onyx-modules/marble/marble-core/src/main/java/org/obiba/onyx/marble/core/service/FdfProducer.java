@@ -18,9 +18,11 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
+import org.obiba.onyx.core.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanWrapper;
@@ -49,6 +51,8 @@ public class FdfProducer {
 
   private ActiveInterviewService activeInterviewService;
 
+  private UserService userService;
+
   private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
   private Map<String, Object> replaceContext;
@@ -67,6 +71,10 @@ public class FdfProducer {
 
   public void setAppConfigService(ApplicationConfigurationService appConfigService) {
     this.appConfigService = appConfigService;
+  }
+
+  public void setUserService(UserService userService) {
+    this.userService = userService;
   }
 
   public void setDateFormat(String format) {
@@ -136,9 +144,16 @@ public class FdfProducer {
    * @param refuseUrl the URL to submit the PDF when the consent is refused
    */
   protected void buildReplaceContext(String acceptUrl, String refuseUrl) {
+    User operator = userService.getUserWithLogin(activeInterviewService.getOperator());
+
+    if(operator == null) {
+      operator = new User();
+      operator.setLogin(activeInterviewService.getOperator());
+    }
+
     replaceContext = new HashMap<String, Object>();
     replaceContext.put("Participant", activeInterviewService.getParticipant());
-    replaceContext.put("User", activeInterviewService.getOperator());
+    replaceContext.put("User", operator);
     replaceContext.put("Date", dateFormatter.format(new Date()));
     replaceContext.put("Application", appConfigService.getApplicationConfiguration());
     replaceContext.put("AcceptURL", acceptUrl);
@@ -225,5 +240,4 @@ public class FdfProducer {
     // PDF doesn't allow dots in field names. If you use one, it is substituted by "\.", so we undo this also
     return longName.replaceFirst(pattern, "").replaceFirst("\\[[0-9]+\\]", "").replaceAll("\\\\", "");
   }
-
 }
