@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.editor.questionnaire.tree;
 
-import static org.apache.commons.lang.StringUtils.trimToNull;
-
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -40,9 +38,6 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.target.basic.StringRequestTarget;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.obiba.magma.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
@@ -88,6 +83,12 @@ import org.obiba.onyx.wicket.reusable.ConfirmationDialog.OnYesCallback;
 import org.obiba.onyx.wicket.reusable.FeedbackWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static org.apache.commons.lang.StringUtils.trimToNull;
 
 /**
  * Model is reloaded only on cancel. <br>

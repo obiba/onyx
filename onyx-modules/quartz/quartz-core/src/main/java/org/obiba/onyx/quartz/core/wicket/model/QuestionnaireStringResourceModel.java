@@ -18,6 +18,7 @@ import org.obiba.magma.Value;
 import org.obiba.magma.Variable;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.data.VariableDataSource;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.magma.OnyxAttributeHelper;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.slf4j.Logger;
@@ -95,7 +96,8 @@ public class QuestionnaireStringResourceModel extends QuestionnaireResourceModel
           path = tableContext + ":" + path;
         }
         VariableDataSource varDs = new VariableDataSource(path);
-        Value value = varDs.getValue(activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant());
+        Participant p = activeQuestionnaireAdministrationService.getParticipant();
+        Value value = varDs.getValue(p);
 
         String dataStr = getValueAsString(varDs, value, locale);
         msg = msg.substring(0, refIndex) + dataStr + msg.substring(refEndIndex + 2, msg.length());
@@ -112,7 +114,7 @@ public class QuestionnaireStringResourceModel extends QuestionnaireResourceModel
   //
 
   private String getValueAsString(VariableDataSource varDs, Value value, Locale locale) {
-    if(value == null || value.getValue() == null) return "";
+    if(value == null || value.isNull() || value.getValue() == null) return "";
 
     String dataStr = value.toString();
     if(value.getValueType().equals(TextType.get())) {
@@ -141,7 +143,7 @@ public class QuestionnaireStringResourceModel extends QuestionnaireResourceModel
   }
 
   private String getValueAsLabel(Variable variable, Value value, Locale locale) {
-    if(value == null || value.getValue() == null) return "";
+    if(value == null || value.getValue() == null || value.isNull()) return "";
 
     String valueStr = value.getValue().toString();
     if(variable.hasCategories()) {

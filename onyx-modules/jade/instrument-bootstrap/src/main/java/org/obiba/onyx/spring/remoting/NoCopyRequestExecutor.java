@@ -10,9 +10,10 @@ import java.nio.channels.Pipe;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.springframework.remoting.httpinvoker.CommonsHttpInvokerRequestExecutor;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.InputStreamEntity;
+import org.springframework.remoting.httpinvoker.HttpComponentsHttpInvokerRequestExecutor;
 import org.springframework.remoting.httpinvoker.HttpInvokerClientConfiguration;
 import org.springframework.remoting.support.RemoteInvocation;
 
@@ -26,7 +27,7 @@ import org.springframework.remoting.support.RemoteInvocation;
  * Note: currently, this class is NOT used. It was created to solve an issue but was not put into production (an
  * alternative fix was done). This class lacks testing. It should be thoroughly tested before putting in production.
  */
-public class NoCopyRequestExecutor extends CommonsHttpInvokerRequestExecutor {
+public class NoCopyRequestExecutor extends HttpComponentsHttpInvokerRequestExecutor {
 
   private final ExecutorService executor = Executors.newCachedThreadPool();
 
@@ -38,10 +39,10 @@ public class NoCopyRequestExecutor extends CommonsHttpInvokerRequestExecutor {
   @Override
   protected
       void
-      setRequestBody(HttpInvokerClientConfiguration config, PostMethod postMethod, ByteArrayOutputStream baos) throws IOException {
+      setRequestBody(HttpInvokerClientConfiguration config, HttpPost postMethod, ByteArrayOutputStream baos) throws IOException {
     if(baos instanceof NoCopyByteArrayOutputStream) {
       NoCopyByteArrayOutputStream stream = (NoCopyByteArrayOutputStream) baos;
-      postMethod.setRequestEntity(new InputStreamRequestEntity(stream.asInputStream(), stream.length(), getContentType()));
+      postMethod.setEntity(new InputStreamEntity(stream.asInputStream(), stream.length(), ContentType.create(getContentType())));
     } else {
       super.setRequestBody(config, postMethod, baos);
     }

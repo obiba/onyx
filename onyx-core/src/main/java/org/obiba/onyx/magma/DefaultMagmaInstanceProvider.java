@@ -16,9 +16,12 @@ import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.ValueTable;
 import org.obiba.magma.VariableEntity;
 import org.obiba.magma.VariableValueSource;
+import org.obiba.magma.support.AbstractDatasourceWrapper;
+import org.obiba.magma.support.CachedDatasource;
 import org.obiba.magma.support.MagmaEngineTableResolver;
 import org.obiba.magma.support.MagmaEngineVariableResolver;
 import org.obiba.magma.support.VariableEntityBean;
+import org.obiba.onyx.core.data.DatasourceUtils;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -82,5 +85,17 @@ public class DefaultMagmaInstanceProvider implements MagmaInstanceProvider {
   @Override
   public VariableEntity newParticipantEntity(String identifier) {
     return new VariableEntityBean(PARTICIPANT_ENTITY_TYPE, identifier);
+  }
+
+  @Override
+  public void evictCachedValues(Participant participant) {
+    for(Datasource ds : magmaEngine.getDatasources()) {
+      CachedDatasource cachedDataSource = DatasourceUtils.asCachedDatasource(ds);
+
+      if (cachedDataSource != null) {
+        VariableEntity entity = new VariableEntityBean(MagmaInstanceProvider.PARTICIPANT_ENTITY_TYPE, participant.getEnrollmentId());
+        cachedDataSource.evictValues(entity);
+      }
+    }
   }
 }

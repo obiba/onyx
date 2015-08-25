@@ -11,7 +11,7 @@ package org.obiba.onyx.core.data;
 
 import java.util.Calendar;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.obiba.onyx.core.domain.participant.Gender;

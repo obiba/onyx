@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.localization;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;

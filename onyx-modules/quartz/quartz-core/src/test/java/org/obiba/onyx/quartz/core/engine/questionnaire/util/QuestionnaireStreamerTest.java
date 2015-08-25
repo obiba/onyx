@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;

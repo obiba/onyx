@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.obiba.magma.type.BooleanType;

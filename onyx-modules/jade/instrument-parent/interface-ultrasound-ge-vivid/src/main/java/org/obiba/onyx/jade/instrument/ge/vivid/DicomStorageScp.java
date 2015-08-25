@@ -1,8 +1,6 @@
 package org.obiba.onyx.jade.instrument.ge.vivid;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -14,23 +12,15 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 
-import javax.swing.DefaultCellEditor;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -40,12 +30,18 @@ import org.dcm4che2.tool.dcmrcv.DicomServer;
 import org.dcm4che2.tool.dcmrcv.DicomServer.State;
 import org.dcm4che2.tool.dcmrcv.DicomServer.StateListener;
 import org.dcm4che2.tool.dcmrcv.DicomServer.StorageListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DicomStorageScp {
+
+  protected Logger log = LoggerFactory.getLogger(DicomStorageScp.class);
 
   private final CountDownLatch exitLatch = new CountDownLatch(1);
 
   private final DicomServer server;
+
+  private final DicomStoragePredicate dicomStoragePredicate;
 
   private JFrame frmDicomServer;
 
@@ -70,6 +66,7 @@ public class DicomStorageScp {
   public static final String LATERALITY = "Laterality";
 
   public static final List<String> columns = new ArrayList<String>();
+
   static {
     columns.add("#");
     columns.add(PATIENT_ID);
@@ -82,32 +79,15 @@ public class DicomStorageScp {
    * Create the application.
    */
   public DicomStorageScp(DicomServer server) {
+    this(server, null);
+  }
+
+  public DicomStorageScp(DicomServer server, DicomStoragePredicate dicomStoragePredicate) {
     if(server == null) throw new IllegalArgumentException();
     this.server = server;
+    this.dicomStoragePredicate = dicomStoragePredicate;
 
-    this.server.addStorageListener(new StorageListener() {
-
-      @Override
-      public void onStored(File file, DicomObject dicomObject) {
-        model = (DefaultTableModel) table.getModel();
-        int rows = model.getRowCount();
-
-        String siuid = dicomObject.getString(Tag.StudyInstanceUID);
-
-        int row = getRowBySIUID(siuid);
-        if(row == -1) {
-          model.addRow(new Object[] { "" + (rows + 1), //
-          dicomObject.getString(Tag.PatientID),//
-          siuid, //
-          1,//
-          "" });
-        } else {
-          int columnIndex = columns.indexOf(NUMBER);
-          int value = (Integer) getData().get(row).get(columnIndex);
-          model.setValueAt(value + 1, row, columnIndex);
-        }
-      }
-    });
+    this.server.addStorageListener(new DicomStorageListener());
 
     this.server.addStateListener(new StateListener() {
 
@@ -129,15 +109,6 @@ public class DicomStorageScp {
     bind();
   }
 
-  private int getRowBySIUID(String siuid) {
-    Vector<Vector<Object>> data = getData();
-    for(int i = 0; i < data.size(); i++) {
-      Vector<Object> row = data.get(i);
-      String currentSiuid = (String) row.get(columns.indexOf(STUDYINSTANCEUID));
-      if(currentSiuid.equals(siuid)) return i;
-    }
-    return -1;
-  }
 
   public void show() {
     EventQueue.invokeLater(new Runnable() {
@@ -239,7 +210,8 @@ public class DicomStorageScp {
     table.getColumnModel().getColumn(0).setPreferredWidth(15);
     table.getColumnModel().getColumn(0).setMaxWidth(15);
 
-    table.getColumnModel().getColumn(columns.indexOf(LATERALITY)).setCellEditor(new DefaultCellEditor(new JComboBox(new Object[] { "Left", "Right" })));
+    table.getColumnModel().getColumn(columns.indexOf(LATERALITY))
+        .setCellEditor(new DefaultCellEditor(new JComboBox(new Object[] { "Left", "Right" })));
     panel_3.add(table, BorderLayout.CENTER);
     panel_3.add(table.getTableHeader(), BorderLayout.NORTH);
 
@@ -330,8 +302,70 @@ public class DicomStorageScp {
     File f = File.createTempFile("dcm", "");
     f.delete();
     f.mkdir();
-    DicomStorageScp scp = new DicomStorageScp(new DicomServer(f, new DicomSettings()));
+
+    Set<String> output = new LinkedHashSet<>();
+    Collections.addAll(output, "CINELOOP_1", "CINELOOP_2", "CINELOOP_3", "STILL_IMAGE", "SR");
+
+    DicomSettings settings = new DicomSettings();
+    settings.setPort(1100);
+    settings.setAeTitle("DICOMSTORAGESCP");
+
+    DicomStorageScp scp = new DicomStorageScp(new DicomServer(f, settings), new VividInstrumentRunner.VividDicomStoragePredicate(output));
     scp.show();
     scp.waitForExit();
+  }
+
+  private class DicomStorageListener implements StorageListener {
+
+    List<String> storedFileNames = new ArrayList<>();
+
+    @Override
+    public void onStored(File file, DicomObject dicomObject) {
+      if (storedFileNames.contains(file.getName())) return;
+
+      storedFileNames.add(file.getName());
+
+      String siuid = dicomObject.getString(Tag.StudyInstanceUID);
+
+      if (dicomStoragePredicate == null) addRow(siuid, dicomObject);
+      else if (dicomStoragePredicate.apply(siuid, file, dicomObject)) addRow(siuid, dicomObject);
+      // else ignore that file
+    }
+
+    private void addRow(String siuid, DicomObject dicomObject) {
+      model = (DefaultTableModel) table.getModel();
+      int rows = model.getRowCount();
+
+
+      int row = getRowBySIUID(siuid);
+      log.info("Adding Dicom object with StudyInstanceUID {} at row {}", siuid, row);
+      if(row == -1) {
+        model.addRow(new Object[] { "" + (rows + 1), //
+            dicomObject.getString(Tag.PatientID),//
+            siuid, //
+            1,//
+            "" });
+      } else {
+        int columnIndex = columns.indexOf(NUMBER);
+        int value = (Integer) getData().get(row).get(columnIndex);
+        model.setValueAt(value + 1, row, columnIndex);
+      }
+    }
+
+    private int getRowBySIUID(String siuid) {
+      Vector<Vector<Object>> data = getData();
+      for(int i = 0; i < data.size(); i++) {
+        Vector<Object> row = data.get(i);
+        String currentSiuid = (String) row.get(columns.indexOf(STUDYINSTANCEUID));
+        if(currentSiuid.equals(siuid)) return i;
+      }
+      return -1;
+    }
+  }
+
+  public interface DicomStoragePredicate {
+
+    boolean apply(String siuid, File file, DicomObject dicomObject);
+
   }
 }

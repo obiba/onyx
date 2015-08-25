@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;

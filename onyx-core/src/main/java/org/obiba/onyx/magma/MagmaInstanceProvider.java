@@ -107,5 +107,7 @@ public interface MagmaInstanceProvider {
    */
   public VariableEntity newParticipantEntity(Participant participant);
 
+  public void evictCachedValues(Participant participant);
+
   Datasource getDatasource(String name);
 }

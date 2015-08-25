@@ -18,7 +18,7 @@ public class Data implements Serializable, Comparable<Data> {
 
   private static final long serialVersionUID = -2470483891384378865L;
 
-  public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+  public final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
   private Serializable value;
 
@@ -46,33 +46,46 @@ public class Data implements Serializable, Comparable<Data> {
     return (T) value;
   }
 
+  @SuppressWarnings("OverlyLongMethod")
   public void setValue(Serializable value) {
     if(value != null) {
       Class<?> valueClass = value.getClass();
 
       switch(type) {
       case BOOLEAN:
-        if(!valueClass.isAssignableFrom(Boolean.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
+        if(!valueClass.isAssignableFrom(Boolean.class)) {
+          throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
+        }
         break;
 
       case DATE:
-        if(!(value instanceof Date)) throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
+        if(!(value instanceof Date)) {
+          throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
+        }
         break;
 
       case DECIMAL:
-        if(!valueClass.isAssignableFrom(Double.class) && !valueClass.isAssignableFrom(Float.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
+        if(!valueClass.isAssignableFrom(Double.class) && !valueClass.isAssignableFrom(Float.class)) {
+          throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
+        }
         break;
 
       case INTEGER:
-        if(!valueClass.isAssignableFrom(Long.class) && !valueClass.isAssignableFrom(Integer.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
+        if(!valueClass.isAssignableFrom(Long.class) && !valueClass.isAssignableFrom(Integer.class)) {
+          throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
+        }
         break;
 
       case TEXT:
-        if(!valueClass.isAssignableFrom(String.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
+        if(!valueClass.isAssignableFrom(String.class)) {
+          throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
+        }
         break;
 
       case DATA:
-        if(!valueClass.isAssignableFrom(byte[].class)) throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
+        if(!valueClass.isAssignableFrom(byte[].class)) {
+          throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
+        }
         break;
 
       default:
@@ -103,12 +116,12 @@ public class Data implements Serializable, Comparable<Data> {
     int hashCode = 0;
 
     if(value != null) {
-      if(type != DataType.DATA) {
-        hashCode = value.hashCode();
-      } else {
+      if(type == DataType.DATA) {
         byte[] bytes = (byte[]) value;
         int byteCount = bytes.length;
-        hashCode = byteCount != 0 ? (byteCount + bytes[0] + bytes[byteCount - 1]) % 17 : Integer.MAX_VALUE;
+        hashCode = byteCount == 0 ? Integer.MAX_VALUE : (byteCount + bytes[0] + bytes[byteCount - 1]) % 17;
+      } else {
+        hashCode = value.hashCode();
       }
     }
 
@@ -122,7 +135,7 @@ public class Data implements Serializable, Comparable<Data> {
     if(otherObj instanceof Data) {
       Data otherData = (Data) otherObj;
 
-      if(otherData.getType().equals(type)) {
+      if(otherData.getType() == type) {
         if(value != null) {
           switch(type) {
           case BOOLEAN:
@@ -137,7 +150,7 @@ public class Data implements Serializable, Comparable<Data> {
             break;
           }
         } else {
-          isEqual = (otherData.getValue() == null);
+          isEqual = otherData.getValue() == null;
         }
       }
     }
@@ -145,7 +158,7 @@ public class Data implements Serializable, Comparable<Data> {
     return isEqual;
   }
 
-  @SuppressWarnings("incomplete-switch")
+  @SuppressWarnings({ "incomplete-switch", "OverlyLongMethod" })
   @Override
   public int compareTo(Data data) {
     int result = -1;
@@ -157,7 +170,7 @@ public class Data implements Serializable, Comparable<Data> {
           Number numberValue = (Number) value;
           Number dataValue = data.getValue();
           result = Double.compare(numberValue.doubleValue(), dataValue.doubleValue());
-        } else if(data.getType().equals(type)) {
+        } else if(data.getType() == type) {
           switch(type) {
           case BOOLEAN:
             result = ((Boolean) value).compareTo((Boolean) data.getValue());
@@ -169,11 +182,7 @@ public class Data implements Serializable, Comparable<Data> {
             result = ((String) value).compareTo((String) data.getValue());
             break;
           case DATA:
-            if(Arrays.equals((byte[]) value, (byte[]) data.getValue())) {
-              result = 0;
-            } else {
-              result = 1;
-            }
+            result = Arrays.equals((byte[]) value, (byte[]) data.getValue()) ? 0 : 1;
             break;
           }
         }

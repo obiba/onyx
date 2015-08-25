@@ -23,7 +23,7 @@ public abstract class ParticipantAttributeGroupFragment extends Fragment {
 
     Participant participant = participantModel.getObject();
 
-    for(final ParticipantAttribute attribute : group.getParticipantAttributes()) {
+    for(ParticipantAttribute attribute : group.getParticipantAttributes()) {
       if(attributesToDisplay.contains(attribute)) {
         addParticipantAttribute(attribute, repeat, participant);
       }

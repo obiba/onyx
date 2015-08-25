@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.service;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
@@ -20,6 +21,7 @@ public interface QuestionnaireParticipantService {
 
   /**
    * Get the last questionnaire for participant and questionnaire name.
+   *
    * @param participant
    * @param questionnaireName
    * @return
@@ -28,31 +30,35 @@ public interface QuestionnaireParticipantService {
 
   /**
    * Delete specified questionnaire participant.
+   *
    * @param questionnaireParticipantId
    */
   public void deleteQuestionnaireParticipant(QuestionnaireParticipant questionnaireParticipant);
 
   /**
    * Deletes all the QuestionnaireParticipant associated to a Participant.
-   * 
+   *
    * @param participant
    */
   public void deleteAllQuestionnairesParticipant(Participant participant);
 
   /**
    * Set the answers of given questionnaire participant as being inactive.
+   *
    * @param questionnaireParticipant
    */
   public void inactivateQuestionnaireParticipant(QuestionnaireParticipant questionnaireParticipant);
 
   /**
    * End the questionnaire participant by setting the end date.
+   *
    * @param questionnaireParticipant
    */
   public void endQuestionnaireParticipant(Participant participant, String questionnaireName);
 
   /**
    * Get the comment on the question.
+   *
    * @param participant
    * @param questionnaireName
    * @param questionName
@@ -62,25 +68,30 @@ public interface QuestionnaireParticipantService {
 
   /**
    * Get the active category answers for the question.
+   *
    * @param participant
    * @param questionnaireName
    * @param questionName
    * @return
    */
-  public List<CategoryAnswer> getCategoryAnswers(Participant participant, String questionnaireName, String questionName);
+  public List<CategoryAnswer> getCategoryAnswers(Participant participant, String questionnaireName,
+      String questionName);
 
   /**
    * Get the category answer.
+   *
    * @param participant
    * @param questionnaireName
    * @param questionName
    * @param categoryName
    * @return null if category was not selected
    */
-  public CategoryAnswer getCategoryAnswer(Participant participant, String questionnaireName, String questionName, String categoryName);
+  public CategoryAnswer getCategoryAnswer(Participant participant, String questionnaireName, String questionName,
+      String categoryName);
 
   /**
    * Get the active open answer for the question open answer definition.
+   *
    * @param participant
    * @param questionnaireName
    * @param questionName
@@ -88,10 +99,12 @@ public interface QuestionnaireParticipantService {
    * @param openAnswerName
    * @return
    */
-  public OpenAnswer getOpenAnswer(Participant participant, String questionnaireName, String questionName, String categoryName, String openAnswerName);
+  public OpenAnswer getOpenAnswer(Participant participant, String questionnaireName, String questionName,
+      String categoryName, String openAnswerName);
 
   /**
    * Get whether the question is flagged to be active.
+   *
    * @param participant
    * @param questionnaireName
    * @param questionName
@@ -99,4 +112,11 @@ public interface QuestionnaireParticipantService {
    */
   public Boolean isQuestionActive(Participant participant, String questionnaireName, String questionName);
 
+  /**
+   * If any questionnaires were answered by the participant get the previously selected language as the prefered language.
+   *
+   * @param participant
+   * @return
+   */
+  Locale getPreferedLanguage(Participant participant);
 }

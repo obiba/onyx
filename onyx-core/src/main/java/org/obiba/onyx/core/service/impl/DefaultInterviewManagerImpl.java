@@ -10,6 +10,7 @@
 package org.obiba.onyx.core.service.impl;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,11 +23,13 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.etl.participant.IInterviewPostProcessor;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -36,11 +39,14 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
 
   private static final Logger log = LoggerFactory.getLogger(DefaultInterviewManagerImpl.class);
 
-  private List<InterviewLock> interviewLocks = Collections.synchronizedList(new LinkedList<InterviewLock>());
+  private final List<InterviewLock> interviewLocks = Collections.synchronizedList(new LinkedList<InterviewLock>());
 
-  private Map<Serializable, Map<String, StageExecutionContext>> interviewStageContextsMap = new HashMap<Serializable, Map<String, StageExecutionContext>>();
+  private final Map<Serializable, Map<String, StageExecutionContext>> interviewStageContextsMap = new HashMap<Serializable, Map<String, StageExecutionContext>>();
 
   private UserSessionService userSessionService;
+
+  @Autowired
+  private Collection<IInterviewPostProcessor> interviewPostProcessors;
 
   public DefaultInterviewManagerImpl() {
     interviewStageContextsMap.size();
@@ -50,6 +56,7 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
     this.userSessionService = userSessionService;
   }
 
+  @Override
   synchronized public Participant getInterviewedParticipant() {
     InterviewLock lock = findLock(userSessionService.getSessionId());
     if(lock != null) {
@@ -58,6 +65,7 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
     throw new NoSuchInterviewException("No current interview");
   }
 
+  @Override
   synchronized public Map<String, StageExecutionContext> getStageContexts() {
     Participant participant = getInterviewedParticipant();
     if(participant != null) {
@@ -71,6 +79,7 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
     throw new NoSuchInterviewException("No current interview");
   }
 
+  @Override
   synchronized public String getInterviewer(Participant participant) {
     InterviewLock lock = findLock(participant);
     if(lock != null) {
@@ -79,10 +88,12 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
     return null;
   }
 
+  @Override
   synchronized public boolean isInterviewAvailable(Participant participant) {
     return findLock(participant) == null;
   }
 
+  @Override
   synchronized public Interview obtainInterview(Participant participant) {
     if(isInterviewAvailable(participant)) {
 
@@ -98,23 +109,28 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
         getPersistenceManager().refresh(participant);
       }
 
-      return participant.getInterview();
+      interview = participant.getInterview();
+      postProcessInterview(interview);
+      return interview;
     }
     throw new IllegalStateException("Cannot obtain interview. Interview is locked.");
   }
 
+  @Override
   synchronized public Interview overrideInterview(Participant participant) {
     unlockInterview(findLock(participant));
     lockInterview(participant);
     return participant.getInterview();
   }
 
+  @Override
   synchronized public void releaseInterview() {
     releaseInterview(userSessionService.getSessionId());
   }
 
   // Ensures an active transaction when invoked outside request cycle
   // ONYX-1622
+  @Override
   @Transactional
   synchronized public void releaseInterview(String sessionId) {
     unlockInterview(findLock(sessionId));
@@ -122,11 +138,13 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
 
   protected void unlockInterview(InterviewLock lock) {
     if(lock != null) {
-      log.info("User {} has locked interview during {}s for participant id={}.", new Object[] { lock.getOperatorId(), Math.round((((System.currentTimeMillis() - lock.getTimeLock()) / 1000))), lock.getParticipant().getId() });
+      log.info("User {} has locked interview during {}s for participant id={}.", lock.getOperatorId(), Math.round(
+          (System.currentTimeMillis() - lock.getTimeLock()) / 1000),
+          lock.getParticipant().getId());
       this.interviewLocks.remove(lock);
 
       Interview interview = lock.getParticipant().getInterview();
-      if(interview.getStatus().equals(InterviewStatus.IN_PROGRESS)) {
+      if(interview.getStatus() == InterviewStatus.IN_PROGRESS) {
         updateInterviewDuration(interview, System.currentTimeMillis() - lock.getTimeLock());
       }
     }
@@ -164,15 +182,23 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
     getPersistenceManager().save(interview);
   }
 
+  private void postProcessInterview(Interview interview) {
+    if (interviewPostProcessors != null) {
+      for (IInterviewPostProcessor processor : interviewPostProcessors) {
+        processor.onProgress(interview);
+      }
+    }
+  }
+
   public class InterviewLock {
 
-    private Serializable participantId;
+    private final Serializable participantId;
 
-    private String operatorSessionId;
+    private final String operatorSessionId;
 
-    private String operatorId;
+    private final String operatorId;
 
-    private long timeLock;
+    private final long timeLock;
 
     InterviewLock(Participant participant) {
       this.participantId = participant.getId();
@@ -210,7 +236,7 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
     }
 
     public String toString() {
-      return new StringBuilder().append(getOperatorId()).append("(").append(getSessionId()).append(")->").append(getParticipant().getBarcode()).toString();
+      return getOperatorId() + "(" + getSessionId() + ")->" + getParticipant().getBarcode();
     }
 
   }

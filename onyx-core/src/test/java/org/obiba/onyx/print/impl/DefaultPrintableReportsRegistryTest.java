@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.junit.Before;

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -146,6 +146,7 @@ public class OpenAnswer extends AbstractEntity {
     return data;
   }
 
+  @SuppressWarnings("OverlyLongMethod")
   public void setData(Data data) {
 
     if(data != null) {
@@ -161,7 +162,12 @@ public class OpenAnswer extends AbstractEntity {
           break;
 
         case INTEGER:
-          integerValue = data.getValue();
+          Object value = data.getValue();
+          if(value == null || value.getClass().isAssignableFrom(Long.class)) {
+            integerValue = (Long) value;
+          } else if(value.getClass().isAssignableFrom(Integer.class)) {
+            integerValue = ((Integer) data.getValue()).longValue();
+          }
           break;
 
         case TEXT:

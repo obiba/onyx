@@ -27,6 +27,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.IResourceListener;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.Response;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
@@ -698,6 +699,7 @@ public class DataField extends Panel {
         protected void onAudioData(FileUpload fileUpload) {
           model.setObject(new Data(DataType.DATA, fileUpload.getBytes()));
           options.put(Option.SoundFileURL, getFileAudioUrl());
+          options.put(Option.Cookies, "JSESSIONID=" + Session.get().getId());
           for(AudioDataListener listener : listeners) {
             listener.onDataUploaded();
           }
@@ -726,6 +728,7 @@ public class DataField extends Panel {
       super.onInitialize();
       if(getDefaultModelObject() != null) {
         options.put(Option.SoundFileURL, getFileAudioUrl());
+        options.put(Option.Cookies, "JSESSIONID=" + Session.get().getId());
       }
     }
 

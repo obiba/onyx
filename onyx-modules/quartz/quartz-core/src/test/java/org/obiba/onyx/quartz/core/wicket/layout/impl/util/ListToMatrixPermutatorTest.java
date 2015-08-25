@@ -12,7 +12,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.util;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.slf4j.Logger;

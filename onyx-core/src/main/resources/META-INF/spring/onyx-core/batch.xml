@@ -1,12 +1,25 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:batch="http://www.springframework.org/schema/batch"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-  http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.0.xsd">
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+      http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+      http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
 
   <import resource="classpath*:/META-INF/onyx-job.xml" />
 
+  <bean id="batchDefaultSerializer" class="org.springframework.batch.core.repository.dao.DefaultExecutionContextSerializer" />
+
   <!-- Spring batch database schema property -->
-  <batch:job-repository id="jobRepository" data-source="dataSource" isolation-level-for-create="DEFAULT" />
+  <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean">
+    <property name="dataSource" ref="dataSource" />
+    <property name="transactionManager" ref="transactionManager" />
+    <property name="serializer" ref="batchDefaultSerializer" />
+  </bean>
+
+  <!-- Spring batch In-memory property -->
+  <!--<bean id="jobRepository"-->
+      <!--class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">-->
+  <!--</bean>-->
 
   <bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry" />
 
@@ -14,13 +27,9 @@
     <property name="jobRegistry" ref="jobRegistry" />
   </bean>
 
-  <!-- Spring batch In-memory property -->
-  <!-- <bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
-      <property name="transactionManager" ref="transactionManager"/>
-  </bean> -->
-
   <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.JobExplorerFactoryBean">
     <property name="dataSource" ref="dataSource" />
+    <property name="serializer" ref="batchDefaultSerializer"/>
   </bean>
 
   <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
@@ -35,7 +44,7 @@
   </bean>
 
   <!-- JobDetail for appointmentListUpdateJob -->
-  <bean id="appointmentListUpdateJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+  <bean id="appointmentListUpdateJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
     <property name="jobClass" value="org.obiba.onyx.core.batch.OnyxJobDetailDelegate" />
     <property name="group" value="quartz-batch" />
     <property name="jobDataAsMap">

@@ -16,7 +16,7 @@ import static org.easymock.EasyMock.verify;
 
 import java.util.Calendar;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.easymock.EasyMock;
 import org.junit.Test;

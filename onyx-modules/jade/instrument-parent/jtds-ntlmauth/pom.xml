@@ -29,6 +29,25 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+            <manifestEntries>
+              <Implementation-Build>${buildNumber}</Implementation-Build>
+              <Built-By>OBiBa</Built-By>
+              <Permissions>all-permissions</Permissions>
+              <Trusted-Library>true</Trusted-Library>
+              <Codebase>*</Codebase>
+              <Application-Library-Allowable-Codebase>*</Application-Library-Allowable-Codebase>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
         <extensions>false</extensions>
         <inherited>true</inherited>
         <configuration>

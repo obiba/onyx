@@ -53,7 +53,7 @@ public class PdfVariableReport extends PdfReport {
       }
 
     } catch(NoSuchVariableException e) {
-      log.error("Cannot resolve variable '{}' for PDF report '{}'. No such variable {}.", new String[] { pdfVariablePath, this.getName(), e.getName() });
+      log.error("Cannot resolve variable '{}' for PDF report '{}'. No such variable {}.", pdfVariablePath, this.getName(), e.getName());
     } catch(NoSuchValueTableException e) {
       log.error("Cannot resolve variable '{}' for PDF report '{}'. No such Value Table.", pdfVariablePath, this.getName());
     }

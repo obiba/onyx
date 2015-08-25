@@ -1,13 +1,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
 
   <bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
-    <property name="customEditors">
-      <map>
-        <entry key="org.obiba.runtime.Version">
-          <bean id="versionEditor" class="org.obiba.runtime.upgrade.support.VersionPropertyEditor" />
-        </entry>
-      </map>
+    <property name="propertyEditorRegistrars">
+      <list>
+        <bean class="org.obiba.runtime.upgrade.support.VersionPropertyEditorRegistrar"/>
+      </list>
     </property>
   </bean>
 
@@ -23,7 +21,7 @@
       </bean>
     </property>
     <property name="newInstallationDetectionStrategy">
-      <bean class="org.obiba.runtime.upgrade.support.EmptyDataSourceDetectionStrategy">
+      <bean class="org.obiba.runtime.upgrade.support.VersionTableDetectionStrategy">
         <property name="dataSource" ref="dataSource" />
       </bean>
     </property>
@@ -33,59 +31,15 @@
           <property name="dataSource" ref="dataSource" />
         </bean>
         <bean class="org.obiba.runtime.upgrade.InstallStepAdapter">
-          <property name="upgradeStep" ref="batchSchema-1.6.0" />
+          <property name="upgradeStep" ref="batchSchema-drop-3.0.4" />
         </bean>
-        <ref bean="createOnyxSchema" />
+        <bean class="org.obiba.runtime.upgrade.InstallStepAdapter">
+          <property name="upgradeStep" ref="batchSchema-install-3.0.4" />
+        </bean>
       </list>
     </property>
     <property name="upgradeSteps">
       <list>
-        <ref bean="upgrade-to-1.3.0" />
-        <ref bean="ruby-schemaUpgrade-1.4.0" />
-        <ref bean="ruby-dataUpgrade-1.4.0" />
-        <ref bean="jade-dataUpgrade-1.4.0" />
-        <ref bean="schemaUpgrade-1.4.0" />
-        <ref bean="jade-schemaUpgrade-1.5.0" />
-        <ref bean="schemaUpgrade-1.5.1" />
-        <ref bean="onyx-dataUpgrade-1.5.2" />
-        <ref bean="onyx-schemaUpgrade-1.5.2" />
-        <ref bean="onyx-postDataUpgrade-1.5.2" />
-        <ref bean="batchSchema-1.6.0" />
-        <bean parent="updateOnyxSchema">
-          <property name="appliesTo" value="1.6.0" />
-        </bean>
-        <ref bean="onyx-dataUpgrade-1.6.0" />
-        <ref bean="onyx-dataUpgrade2-1.6.0" />
-        <ref bean="onyx-schemaUpgrade2-1.6.0" />
-        <ref bean="onyx-constraints-1.6.0" />
-        <bean parent="updateOnyxSchema">
-          <property name="appliesTo" value="1.6.1" />
-        </bean>
-        <ref bean="onyx-dataUpgrade-1.6.1" />
-        <bean parent="updateOnyxSchema">
-          <property name="appliesTo" value="1.7.0" />
-        </bean>
-        <bean class="org.obiba.onyx.runtime.upgrade.Upgrade_1_8_0">
-          <property name="description" value="Onyx role update for questionnaire editor" />
-          <property name="appliesTo" value="1.8.0" />
-          <property name="dataSource" ref="dataSource" />
-        </bean>
-        <bean parent="updateOnyxSchema">
-          <property name="appliesTo" value="1.8.5" />
-        </bean>
-        <bean parent="updateOnyxSchema">
-          <property name="appliesTo" value="1.9.0" />
-        </bean>
-        <bean class="org.obiba.onyx.runtime.upgrade.Upgrade_1_9_0">
-          <property name="description" value="Replace user foreign keys by user name." />
-          <property name="appliesTo" value="1.9.0" />
-          <property name="dataSource" ref="dataSource" />
-        </bean>
-        <bean class="org.obiba.onyx.runtime.upgrade.SchemaUpgrade_1_9_0">
-          <property name="description" value="Remove user foreign keys." />
-          <property name="appliesTo" value="1.9.0" />
-          <property name="dataSource" ref="dataSource" />
-        </bean>
       </list>
     </property>
     <property name="stepListeners">
@@ -95,131 +49,20 @@
     </property>
   </bean>
 
-  <bean id="createOnyxSchema" class="org.obiba.runtime.upgrade.InstallStepAdapter">
-    <property name="upgradeStep">
-      <bean class="org.obiba.runtime.upgrade.support.MethodInvokingUpgradeStep">
-        <property name="description" value="Install Onyx Schema." />
-        <property name="methodOwner" ref="&amp;sessionFactory" />
-        <property name="methodName" value="createDatabaseSchema" />
-      </bean>
-    </property>
-  </bean>
-
-  <bean id="updateOnyxSchema" class="org.obiba.runtime.upgrade.support.MethodInvokingUpgradeStep" abstract="true">
-    <property name="description" value="Update Onyx Schema." />
-    <property name="methodOwner" ref="&amp;sessionFactory" />
-    <property name="methodName" value="updateDatabaseSchema" />
-  </bean>
-
-  <bean id="upgrade-to-1.3.0" class="org.obiba.runtime.upgrade.support.jdbc.SqlScriptUpgradeStep">
+  <bean id="batchSchema-drop-3.0.4" class="org.obiba.runtime.upgrade.support.jdbc.SqlScriptUpgradeStep">
     <property name="dataSource" ref="dataSource" />
-    <property name="scriptPath" value="classpath:/upgrade-script/" />
-    <property name="scriptBasename" value="upgrade-1.3.0" />
-    <property name="description" value="Upgrade Onyx to 1.3.0" />
-    <property name="appliesTo" value="1.3.0" />
+    <property name="scriptPath" value="classpath:/META-INF/install-scripts/spring-batch/" />
+    <property name="scriptBasename" value="schema-drop" />
+    <property name="description" value="Drop the Spring Batch Schema 3.0.4" />
+    <property name="appliesTo" value="1.10.0" />
   </bean>
 
-  <bean id="ruby-schemaUpgrade-1.4.0" class="org.obiba.onyx.ruby.runtime.upgrade.SchemaUpgrade_1_4_0">
-    <property name="description" value="Ruby Schema Upgrade 1.4.0" />
-    <property name="appliesTo" value="1.4.0" />
-
-    <property name="dataSource" ref="dataSource" />
-  </bean>
-
-  <bean id="ruby-dataUpgrade-1.4.0" class="org.obiba.onyx.ruby.runtime.upgrade.DataUpgrade_1_4_0">
-    <property name="description" value="Ruby Data Upgrade 1.4.0" />
-    <property name="appliesTo" value="1.4.0" />
-
-    <property name="dataSource" ref="dataSource" />
-    <property name="dataUpgradeResource" value="/WEB-INF/config/ruby/upgrade/dataUpgrade_1.4.0.properties" />
-  </bean>
-
-  <bean id="jade-dataUpgrade-1.4.0" class="org.obiba.onyx.jade.runtime.upgrade.DataUpgrade_1_4_0">
-    <property name="description" value="Retain only a single InstrumentRun per participant per instrument." />
-    <property name="appliesTo" value="1.4.0" />
-
-    <property name="dataSource" ref="dataSource" />
-  </bean>
-
-  <bean id="schemaUpgrade-1.4.0" class="org.obiba.runtime.upgrade.support.jdbc.SqlScriptUpgradeStep">
-    <property name="dataSource" ref="dataSource" />
-    <property name="scriptPath" value="classpath:/upgrade-script/" />
-    <property name="scriptBasename" value="schemaUpgrade-1.4.0" />
-    <property name="description" value="Add uniqueness constraints to Onyx 1.4.0 schema." />
-    <property name="appliesTo" value="1.4.0" />
-  </bean>
-
-  <bean id="jade-schemaUpgrade-1.5.0" class="org.obiba.onyx.jade.runtime.upgrade.SchemaUpgrade_1_5_0">
-    <property name="description" value="Jade and Mica Schema Upgrade 1.5.0" />
-    <property name="appliesTo" value="1.5.0" />
-    <property name="dataSource" ref="dataSource" />
-  </bean>
-
-  <bean id="schemaUpgrade-1.5.1" class="org.obiba.runtime.upgrade.support.jdbc.SqlScriptUpgradeStep">
-    <property name="dataSource" ref="dataSource" />
-    <property name="scriptPath" value="classpath:/upgrade-script/" />
-    <property name="scriptBasename" value="schemaUpgrade-1.5.1" />
-    <property name="description" value="Add indexes to various tables." />
-    <property name="appliesTo" value="1.5.1" />
-  </bean>
-
-  <bean id="onyx-dataUpgrade-1.5.2" class="org.obiba.onyx.runtime.upgrade.DataUpgrade_1_5_2">
-    <property name="description" value="Update action table 'type' field." />
-    <property name="appliesTo" value="1.5.2" />
-    <property name="dataSource" ref="dataSource" />
-  </bean>
-
-  <bean id="onyx-schemaUpgrade-1.5.2" class="org.obiba.onyx.runtime.upgrade.SchemaUpgrade_1_5_2">
-    <property name="description" value="Onyx Core Schema Upgrade 1.5.2" />
-    <property name="appliesTo" value="1.5.2" />
-    <property name="dataSource" ref="dataSource" />
-  </bean>
-
-  <bean id="onyx-postDataUpgrade-1.5.2" class="org.obiba.onyx.runtime.upgrade.PostDataUpgrade_1_5_2">
-    <property name="description" value="Update action table by setting action_definition_code" />
-    <property name="appliesTo" value="1.5.2" />
-    <property name="dataSource" ref="dataSource" />
-  </bean>
-
-  <bean id="batchSchema-1.6.0" class="org.obiba.runtime.upgrade.support.jdbc.SqlScriptUpgradeStep">
+  <bean id="batchSchema-install-3.0.4" class="org.obiba.runtime.upgrade.support.jdbc.SqlScriptUpgradeStep">
     <property name="dataSource" ref="dataSource" />
     <property name="scriptPath" value="classpath:/META-INF/install-scripts/spring-batch/" />
     <property name="scriptBasename" value="schema" />
-    <property name="description" value="Installs the Spring Batch Schema" />
-    <property name="appliesTo" value="1.6.0" />
+    <property name="description" value="Installs the Spring Batch Schema 3.0.4" />
+    <property name="appliesTo" value="1.10.0" />
   </bean>
 
-  <bean id="onyx-constraints-1.6.0" class="org.obiba.onyx.runtime.upgrade.Constraints_1_6_0">
-    <property name="description" value="Onyx Constraints Upgrade 1.6.0" />
-    <property name="appliesTo" value="1.6.0" />
-    <property name="dataSource" ref="dataSource" />
-  </bean>
-
-  <bean id="onyx-dataUpgrade-1.6.0" class="org.obiba.runtime.upgrade.support.jdbc.SqlScriptUpgradeStep">
-    <property name="dataSource" ref="dataSource" />
-    <property name="scriptPath" value="classpath:/upgrade-script/" />
-    <property name="scriptBasename" value="onyx-dataUpgrade-1.6.0" />
-    <property name="description" value="Onyx Core Data Upgrade 1.6.0" />
-    <property name="appliesTo" value="1.6.0" />
-  </bean>
-
-  <bean id="onyx-dataUpgrade2-1.6.0" class="org.obiba.onyx.runtime.upgrade.DataUpgrade2_1_6_0">
-    <property name="description" value="Onyx Core Data Upgrade Part 2 1.6.0" />
-    <property name="appliesTo" value="1.6.0" />
-    <property name="dataSource" ref="dataSource" />
-  </bean>
-
-  <bean id="onyx-schemaUpgrade2-1.6.0" class="org.obiba.onyx.runtime.upgrade.SchemaUpgrade2_1_6_0">
-    <property name="description" value="Onyx Schema Upgrade Part 2 1.6.0" />
-    <property name="appliesTo" value="1.6.0" />
-    <property name="dataSource" ref="dataSource" />
-  </bean>
-
-  <bean id="onyx-dataUpgrade-1.6.1" class="org.obiba.runtime.upgrade.support.jdbc.SqlScriptUpgradeStep">
-    <property name="dataSource" ref="dataSource" />
-    <property name="scriptPath" value="classpath:/upgrade-script/" />
-    <property name="scriptBasename" value="onyx-dataUpgrade-1.6.1" />
-    <property name="description" value="Onyx Core Data Upgrade 1.6.1" />
-    <property name="appliesTo" value="1.6.1" />
-  </bean>
 </beans>

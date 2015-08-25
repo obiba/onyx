@@ -17,7 +17,7 @@ import static org.easymock.EasyMock.verify;
 import java.text.MessageFormat;
 import java.util.Locale;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.test.ApplicationContextMock;

@@ -1,5 +1,5 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd" default-autowire="no">
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd" default-autowire="no">
 
   <bean id="questionnaireParticipantService" class="org.obiba.onyx.quartz.core.service.impl.hibernate.QuestionnaireParticipantServiceHibernateImpl" scope="singleton">
     <property name="sessionFactory" ref="sessionFactory" />
@@ -15,6 +15,9 @@
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="userSessionService" ref="userSessionService" />
   </bean>
+
+  <!-- No-op post processor because Spring needs at least one -->
+  <bean class="org.obiba.onyx.core.etl.participant.impl.NoOpInterviewPostProcessor"/>
 
   <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl">
     <property name="persistenceManager" ref="persistenceManager" />

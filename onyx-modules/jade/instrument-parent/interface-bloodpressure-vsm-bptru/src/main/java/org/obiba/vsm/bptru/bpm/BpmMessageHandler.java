@@ -32,13 +32,13 @@ public interface BpmMessageHandler {
     }
 
     public BpmCommand onBpmMessage(BpmMessage msg) {
-      log.debug("received: {}", msg);
+      log.info("received: {}", msg);
       BpmCommand cmd = null;
       switch(msg.getType()) {
       case ACK:
         Acks.Type ack = Acks.forMessage(msg);
         if(ack == null) return null;
-        log.debug("=>Ack: {}", ack);
+        log.info("=>Ack: {}", ack);
         cmd = onAck(ack, ack.getAck(msg));
         break;
       case NACK:
@@ -47,19 +47,19 @@ public interface BpmMessageHandler {
       case BUTTON:
         Buttons.Type button = Buttons.forMessage(msg);
         if(button == null) return null;
-        log.debug("=>Button: {}", button);
+        log.info("=>Button: {}", button);
         cmd = onButton(button, button.getButton(msg));
         break;
       case DATA:
         Data.Type data = Data.forMessage(msg);
         if(data == null) return null;
-        log.debug("=>Data: {}", data);
+        log.info("=>Data: {}", data);
         cmd = onData(data, data.getDatum(msg));
         break;
       case NOTIFICATION:
         Notifications.Type notification = Notifications.forMessage(msg);
         if(notification == null) return null;
-        log.debug("=>Notification: {}", notification);
+        log.info("=>Notification: {}", notification);
         cmd = onNotification(notification, notification.getNotification(msg));
         break;
       }

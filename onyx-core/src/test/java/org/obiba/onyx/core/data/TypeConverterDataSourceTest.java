@@ -17,7 +17,7 @@ import static org.junit.Assert.fail;
 
 import java.util.Calendar;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.obiba.onyx.core.domain.participant.Gender;

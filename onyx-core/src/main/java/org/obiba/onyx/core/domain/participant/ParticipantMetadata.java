@@ -111,9 +111,10 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
     // Add a validator for the participant id.
     // This validator has to be declared as regular expression in the application configuration.
     ParticipantAttribute attribute = getEssentialAttribute("Participant ID");
-    DataValidator participantIdValidator = new DataValidator(new PatternValidator(participantIdPattern), attribute.getType());
-    attribute.addValidators(participantIdValidator);
-
+    if (attribute != null) {
+      DataValidator participantIdValidator = new DataValidator(new PatternValidator(participantIdPattern), attribute.getType());
+      attribute.addValidators(participantIdValidator);
+    }
   }
 
   //
@@ -218,7 +219,7 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
       // Load from a user/admin configured file, if it exists...
       resources = resolver.getResources(onyxConfigPath + "/" + ESSENTIAL_PARTICIPANT_ATTRIBUTES_FILENAME);
     }
-    if(!resources[0].exists()) {
+    if(resources != null && !resources[0].exists()) {
       // ...if not load from within the onyx-core.jar file.
       resources = resolver.getResources(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "META-INF/" + ESSENTIAL_PARTICIPANT_ATTRIBUTES_FILENAME);
     }

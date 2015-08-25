@@ -29,13 +29,14 @@ public class ParticipantFactory {
         }
       }
     }
-//    for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
-//      if(attribute.hasDefaultValues()) {
-//        for(AttributeValue defaultValue : attribute.getDefaultValues()) {
-//          participant.getConfiguredAttributeValues().add(defaultValue);
-//        }
-//      }
-//    }
+    for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
+      if(attribute.hasDefaultValues()) {
+        //TODO support default value that are collection
+        for(AttributeValue defaultValue : attribute.getDefaultValues()) {
+          participant.setConfiguredAttributeValue(attribute.getName(), defaultValue.getData());
+        }
+      }
+    }
     return participant;
   }
 

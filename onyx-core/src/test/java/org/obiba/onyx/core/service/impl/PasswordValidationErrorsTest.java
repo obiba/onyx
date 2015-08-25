@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.core.service.impl;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 

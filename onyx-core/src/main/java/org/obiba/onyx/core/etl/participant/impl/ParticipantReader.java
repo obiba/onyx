@@ -82,7 +82,8 @@ public class ParticipantReader extends AbstractFileBasedParticipantReader {
       skipToFirstDataRow();
 
     } catch(IOException e) {
-      AppointmentUpdateLog.addErrorLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Abort updating appointments: Reading file error: " + e.getMessage()));
+      AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR,
+          "Abort updating appointments: Reading file error: " + e.getMessage()));
 
       ValidationRuntimeException vex = new ValidationRuntimeException();
       vex.reject("ParticipantsListFileReadingError", new String[] { e.getMessage() }, "Reading file error: " + e.getMessage());
@@ -121,7 +122,8 @@ public class ParticipantReader extends AbstractFileBasedParticipantReader {
   @SuppressWarnings("unchecked")
   private void initAttributeNameToColumnIndexMap(ExecutionContext context, Row headerRow) {
     if(headerRow == null) {
-      AppointmentUpdateLog.addErrorLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Abort updating appointments: Reading file error: Null headerRow"));
+      AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR,
+          "Abort updating appointments: Reading file error: Null headerRow"));
       throw new IllegalArgumentException("Null headerRow");
     }
 
@@ -134,7 +136,8 @@ public class ParticipantReader extends AbstractFileBasedParticipantReader {
 
       if(cell != null) {
         if(cell.getCellType() != Cell.CELL_TYPE_STRING) {
-          AppointmentUpdateLog.addErrorLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Abort updating appointments: Reading file error: Header row contains unexpected cell type"));
+          AppointmentUpdateLog.addLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR,
+              "Abort updating appointments: Reading file error: Header row contains unexpected cell type"));
           throw new IllegalArgumentException("Header row contains unexpected cell type");
         }
 
@@ -147,7 +150,9 @@ public class ParticipantReader extends AbstractFileBasedParticipantReader {
             if(!attributeNameToColumnIndexMap.containsKey(attributeName)) {
               attributeNameToColumnIndexMap.put(attributeName, cell.getColumnIndex());
             } else {
-              AppointmentUpdateLog.addErrorLog(context, new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, "Abort updating appointments: Reading file error: Duplicate column for field: " + attributeName));
+              AppointmentUpdateLog.addLog(context,
+                  new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR,
+                      "Abort updating appointments: Reading file error: Duplicate column for field: " + attributeName));
               throw new IllegalArgumentException("Duplicate column for field: " + attributeName);
             }
           }
