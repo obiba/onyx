@@ -23,11 +23,14 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
+import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.springframework.core.io.ClassPathResource;
 
 import com.lowagie.text.pdf.AcroFields.Item;
 import com.lowagie.text.pdf.FdfReader;
+
+import static org.easymock.EasyMock.isA;
 
 /**
  * 
@@ -46,6 +49,8 @@ public class FdfProducerTest {
 
   ApplicationConfigurationService applicationConfigurationService = EasyMock.createMock(ApplicationConfigurationService.class);
 
+  UserService userService = EasyMock.createMock(UserService.class);
+
   Consent consent = new Consent();
 
   Interview interview = new Interview();
@@ -59,26 +64,35 @@ public class FdfProducerTest {
     producer.setActiveConsentService(consentService);
     producer.setActiveInterviewService(interviewService);
     producer.setAppConfigService(applicationConfigurationService);
+    producer.setUserService(userService);
     consent.setLocale(Locale.ENGLISH);
     participant.setFirstName("Philippe");
+    user.setLogin("user");
+    user.setFirstName("User");
   }
 
   @Test
-  public void something() throws IOException {
+  public void testElectronicConsentFieldsFilledUp() throws IOException {
     EasyMock.expect(consentService.getConsent()).andReturn(consent);
     EasyMock.expect(interviewService.getInterview()).andReturn(interview);
     EasyMock.expect(interviewService.getOperator()).andReturn(user.getLogin());
     EasyMock.expect(interviewService.getParticipant()).andReturn(participant);
-    EasyMock.replay(consentService, interviewService);
+    EasyMock.expect(userService.getUserWithLogin(isA(String.class))).andReturn(user);
+    EasyMock.replay(consentService, interviewService, userService);
 
     byte[] fdf = producer.buildFdf("http://localhost/file.pdf", "http://localhost/accept", "http://localhost/refuse");
 
     FdfReader reader = new FdfReader(fdf);
 
-    Map<String, Item> fields = reader.getAcroFields().getFields();
+    Map<String, Item> fields = reader.getFields();
+
     for(String fieldName : fields.keySet()) {
       if(fieldName.contains("Participant\\.firstName")) {
         Assert.assertEquals(participant.getFirstName(), reader.getFieldValue(fieldName));
+      }
+
+      if(fieldName.contains("User\\.firstName")) {
+        Assert.assertEquals(user.getFirstName(), reader.getFieldValue(fieldName));
       }
     }
   }
