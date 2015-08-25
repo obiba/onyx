@@ -177,7 +177,7 @@ public abstract class APEXScanDataExtractor {
    */
   protected void computeTZScore(Map<String, Data> data) throws DataAccessException, IllegalArgumentException {
 
-    if(data == null || data.isEmpty()) return;
+    if(null == data || data.isEmpty()) return;
 
     String prefix = getResultPrefix() + "_";
 
@@ -291,7 +291,7 @@ public abstract class APEXScanDataExtractor {
 
       Double T_score = M_value * (Math.pow(X_value / M_value, L_value) - 1.) / (L_value * sigma);
       T_score = Double.valueOf(df.format(T_score));
-      if(Math.abs(T_score) == 0.) T_score = 0.;
+      if(0. == Math.abs(T_score)) T_score = 0.;
 
       String varName = getResultPrefix() + "_" + bmdBoneRangeKey.replace("_BMD", "_T");
       if(data.keySet().contains(varName)) {
@@ -301,10 +301,20 @@ public abstract class APEXScanDataExtractor {
       log.info( varName + " = " + T_score.toString() );
 
       Double Z_score = null;
+      varName = getResultPrefix() + "_" + bmdBoneRangeKey.replace("_BMD", "_Z");
+      if(data.keySet().contains(varName)) {
+        throw new IllegalArgumentException("Instrument variable name already defined: " + varName);
+      }
 
       String gender = getParticipantGender().toUpperCase();
       if(0 == gender.length() || gender.startsWith("F")) gender = " AND SEX = 'F'";
-      else if(gender.startsWith( "M")) gender = " AND SEX = 'M'";
+      else if(gender.startsWith( "M")) {
+        if(bmdBoneRangeKey.equals("U_UD_BMD")) {
+          data.put(varName, DataBuilder.buildDecimal(null));
+          continue;
+        }
+        gender = " AND SEX = 'M'";
+      }
 
       String ethnicity = getParticipantEthnicity().toUpperCase();
       if(0 == ethnicity.length()) ethnicity = " AND ETHNIC IS NULL";
@@ -350,7 +360,7 @@ public abstract class APEXScanDataExtractor {
       }
 
       bracket.compute(age, ageTable);
-      if(bracket.ageSpan != 0.) {
+      if(0. != bracket.ageSpan) {
 
         // Determine the bmd, skewness factor and standard deviation
         // at the bracketing and peak bmd age values.
@@ -388,16 +398,12 @@ public abstract class APEXScanDataExtractor {
 
         Z_score = M_value * (Math.pow(X_value / M_value, L_value) - 1.) / (L_value * sigma);
         Z_score = Double.valueOf(df.format(Z_score));
-        if(Math.abs(Z_score) == 0.) Z_score = 0.;
+        if(0. == Math.abs(Z_score)) Z_score = 0.;
       }
 
-      varName = getResultPrefix() + "_" + bmdBoneRangeKey.replace("_BMD", "_Z");
-      if(data.keySet().contains(varName)) {
-        throw new IllegalArgumentException("Instrument variable name already defined: " + varName);
-      }
       data.put(varName, DataBuilder.buildDecimal(Z_score));
 
-      if(Z_score != null) {
+      if(null != Z_score) {
         log.info( varName + " = " + Z_score.toString() );
       }
       else {
@@ -428,7 +434,7 @@ public abstract class APEXScanDataExtractor {
         scanDate = rs.getString("SCAN_DATE");
       }
 
-      if(scanID != null && scanMode != null) {
+      if(null != scanID && null != scanMode) {
 
         List<StoredDicomFile> selectList = new ArrayList<StoredDicomFile>();
         List<StoredDicomFile> listDicomFiles = server.listSortedDicomFiles();
@@ -449,19 +455,19 @@ public abstract class APEXScanDataExtractor {
             String dcmBodyPart = dicomObject.getString(Tag.BodyPartExamined);
             String dcmSide = dicomObject.getString(Tag.Laterality);
 
-            if(bodyPartName == "LSPINE") {
+            if(bodyPartName.equals("LSPINE")) {
               if(dcmBodyPartKey) {
                 if(bodyPartName.equals(dcmBodyPart)) selectList.add(sdf);
               } else {
                 selectList.add(sdf);
               }
-            } else if(bodyPartName == "ARM") {
+            } else if(bodyPartName.equals("ARM")) {
               if(dcmBodyPartKey) {
-                if(bodyPartName.equals(dcmBodyPart) && dcmSide != null) selectList.add(sdf);
+                if(bodyPartName.equals(dcmBodyPart) && null != dcmSide) selectList.add(sdf);
               }
-            } else if(bodyPartName == "HIP") {
+            } else if(bodyPartName.equals("HIP")) {
               if(dcmBodyPartKey) {
-                if(bodyPartName.equals(dcmBodyPart) && dcmSide != null) selectList.add(sdf);
+                if(bodyPartName.equals(dcmBodyPart) && null != dcmSide) selectList.add(sdf);
               }
             } else {
               if(dcmBodyPartKey && dcmSide == null) {
@@ -476,7 +482,7 @@ public abstract class APEXScanDataExtractor {
         if(!selectList.isEmpty()) {
 
           // Forearm
-          if("ARM".equals(getDicomBodyPartName()) && selectList.size() <= 2) {
+          if("ARM".equals(getDicomBodyPartName()) && 2 >= selectList.size()) {
             data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
             data.put(getResultPrefix() + "_SCAN_MODE", DataBuilder.buildText(scanMode));
 
@@ -484,7 +490,7 @@ public abstract class APEXScanDataExtractor {
             processFilesExtractionForeArm(getSide(), selectList, data);
           }
           // Lateral Spine
-          else if("LSPINE".equals(getDicomBodyPartName()) && selectList.size() == 3) {
+          else if("LSPINE".equals(getDicomBodyPartName()) && 3 == selectList.size()) {
             data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
             data.put(getResultPrefix() + "_SCAN_MODE", DataBuilder.buildText(scanMode));
 
@@ -492,7 +498,7 @@ public abstract class APEXScanDataExtractor {
             processFilesExtractionSpine(listDicomFiles, data);
           }
           // Hip
-          else if("HIP".equals(getDicomBodyPartName()) && selectList.size() <= 2) {
+          else if("HIP".equals(getDicomBodyPartName()) && 2 >= selectList.size()) {
             data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
             data.put(getResultPrefix() + "_SCAN_MODE", DataBuilder.buildText(scanMode));
 
@@ -500,7 +506,7 @@ public abstract class APEXScanDataExtractor {
             processFilesExtractionHip(getSide(), selectList, data);
           }
           // Whole Body
-          else if(null == getDicomBodyPartName() && selectList.size() == 2) {
+          else if(null == getDicomBodyPartName() && 2 == selectList.size()) {
             data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
             data.put(getResultPrefix() + "_SCAN_MODE", DataBuilder.buildText(scanMode));
 
@@ -756,14 +762,14 @@ public abstract class APEXScanDataExtractor {
           ageMin = min;
           ageMax = age == min ? min : max;
         }
-        else if( age > max )
+        else if(age > max)
         {
           ageMin = max;
           ageMax = max;
         }
       }
-      if( ageMin == Double.MIN_VALUE ) ageMin = age;
-      if( ageMax == Double.MAX_VALUE ) ageMax = age;
+      if(Double.MIN_VALUE == ageMin) ageMin = age;
+      if(Double.MAX_VALUE == ageMax) ageMax = age;
       ageSpan = ageMax - ageMin;
     }
   }
