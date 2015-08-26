@@ -310,7 +310,9 @@ public abstract class APEXScanDataExtractor {
       if(0 == gender.length() || gender.startsWith("F")) gender = " AND SEX = 'F'";
       else if(gender.startsWith( "M")) {
         if(bmdBoneRangeKey.equals("U_UD_BMD")) {
-          data.put(varName, DataBuilder.buildDecimal((Double)null));
+          Data empty;
+          empty.setTypeAndValue(DECIMAL,null);
+          data.put(varName, empty);
           continue;
         }
         gender = " AND SEX = 'M'";
