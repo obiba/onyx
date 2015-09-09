@@ -11,6 +11,7 @@ package org.obiba.onyx.print.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Locale;
 
 import org.obiba.magma.NoSuchValueTableException;
@@ -27,9 +28,11 @@ import org.slf4j.LoggerFactory;
 /**
  * PdfReport implementation for reports that are retrieved from a variable to be printed.
  */
-public class PdfVariableReport extends PdfReport {
+public class PdfVariableReport extends PdfReport implements Serializable {
 
   private static final Logger log = LoggerFactory.getLogger(PdfVariableReport.class);
+
+  private static final long serialVersionUID = 7075082930396096224L;
 
   private transient MagmaInstanceProvider magmaInstanceProvider;
 
