@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -35,7 +35,8 @@ public class Upgrade_1_8_0 extends AbstractUpgradeStep {
 
   public void execute(Version currentVersion) {
     log.info("Creating role {} if it doesn't exist.", Role.QUESTIONNAIRE_EDITOR.getName());
-    int roles = jdbcTemplate.queryForInt(ROLE_EXISTS, ImmutableMap.of("role", Role.QUESTIONNAIRE_EDITOR.getName()));
+    int roles = jdbcTemplate
+        .queryForObject(ROLE_EXISTS, ImmutableMap.of("role", Role.QUESTIONNAIRE_EDITOR.getName()), Integer.class);
     if(roles < 1) {
       log.info("Inserting {} role", Role.QUESTIONNAIRE_EDITOR.getName());
       jdbcTemplate.update(INSERT_ROLE, ImmutableMap.of("role", Role.QUESTIONNAIRE_EDITOR.getName()));

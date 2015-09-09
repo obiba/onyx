@@ -205,7 +205,7 @@ public class OraInstrumentRunner implements InstrumentRunner {
   }
 
   private int extractPatientId() {
-    return jdbc.queryForInt("select PatientID from Patients where ID = " + id);
+    return jdbc.queryForObject("select PatientID from Patients where ID = " + id, Integer.class);
   }
 
   public InstrumentExecutionService getInstrumentExecutionService() {
