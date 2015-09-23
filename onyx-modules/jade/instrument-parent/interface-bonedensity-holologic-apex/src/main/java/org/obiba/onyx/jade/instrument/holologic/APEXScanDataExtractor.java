@@ -775,7 +775,7 @@ public abstract class APEXScanDataExtractor {
         StoredDicomFile storedDicomFile = files.get(0);
         String bodyPartExam = storedDicomFile.getDicomObject().getString(Tag.BodyPartExamined);
         if("SPINE".equals(bodyPartExam)) {
-          putDicom(data, getResultPrefix() + "_DICOM_MEASURE", storedDicomFile);
+          putDicom(data, getResultPrefix() + "_DICOM", storedDicomFile);
         }
       }
     } catch(IOException e) {
@@ -807,7 +807,7 @@ public abstract class APEXScanDataExtractor {
       try {
         DicomObject dicomObject = storedDicomFile.getDicomObject();
         if(dicomObject.contains(tag.getValue())) {
-          if(dicomObject.containsValue(tag.getValue()) == false) {
+          if(false == dicomObject.containsValue(tag.getValue())) {
             log.info("Missing P and/or R data in DICOM file: " + tag.name());
             return false;
           }
@@ -827,7 +827,7 @@ public abstract class APEXScanDataExtractor {
    * @return
    */
   protected Map<String, Data> extractScanData(String table, Map<String, Data> data, ResultSetExtractor<Map<String, Data>> rsExtractor) {
-    return getPatScanDb().query("select * from " + table + " where PATIENT_KEY = ? and SCANID = ?", new PreparedStatementSetter() {
+    return getPatScanDb().query("SELECT * FROM " + table + " WHERE PATIENT_KEY = ? AND SCANID = ?", new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
         ps.setString(1, getParticipantKey());
         ps.setString(2, getScanID());
