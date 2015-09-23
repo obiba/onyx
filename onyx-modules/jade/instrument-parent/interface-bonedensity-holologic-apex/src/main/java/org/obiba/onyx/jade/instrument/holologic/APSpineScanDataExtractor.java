@@ -56,7 +56,7 @@ public class APSpineScanDataExtractor extends APEXScanDataExtractor {
 
   @Override
   public String getRefSource() {
-    return "NHANES";
+    return "Hologic";
   }
 
   private final class SpineResultSetExtractor extends ResultSetDataExtractor {
@@ -70,7 +70,7 @@ public class APSpineScanDataExtractor extends APEXScanDataExtractor {
       putLong("NO_REGIONS");
       putLong("STARTING_REGION");
 
-      for(int i = 1; i <= 5; i++) {
+      for(int i = 1; i <= 4; i++) {
         putBoolean("L" + i + "_INCLUDED");
         putDouble("L" + i + "_AREA");
         putDouble("L" + i + "_BMC");
