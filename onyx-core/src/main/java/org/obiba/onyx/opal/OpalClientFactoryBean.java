@@ -11,6 +11,10 @@ public class OpalClientFactoryBean implements FactoryBean<OpalJavaClient> {
 
   private String password;
 
+  private Integer connectionTimeout;
+
+  private Integer soTimeout;
+
   public void setUrl(String url) {
     this.url = url;
   }
@@ -23,6 +27,14 @@ public class OpalClientFactoryBean implements FactoryBean<OpalJavaClient> {
     this.password = password;
   }
 
+  public void setConnectionTimeout(Integer connectionTimeout) {
+    this.connectionTimeout = connectionTimeout;
+  }
+
+  public void setSoTimeout(Integer soTimeout) {
+    this.soTimeout = soTimeout;
+  }
+
   @Override
   public OpalJavaClient getObject() throws Exception {
     if(url == null || url.isEmpty()) throw new IllegalStateException("Opal url cannot be empty.");
@@ -31,7 +43,10 @@ public class OpalClientFactoryBean implements FactoryBean<OpalJavaClient> {
     if(url.endsWith("/ws") == false || url.endsWith("/ws/") == false) {
       opalUrl = url + "/ws";
     }
-    return new OpalJavaClient(opalUrl, username, password);
+    OpalJavaClient opalJavaClient = new OpalJavaClient(opalUrl, username, password);
+    if (connectionTimeout != null) opalJavaClient.setConnectionTimeout(connectionTimeout);
+    if (soTimeout != null) opalJavaClient.setSoTimeout(soTimeout);
+    return opalJavaClient;
   }
 
   @Override

@@ -196,6 +196,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="url" value="${org.obiba.onyx.opal.url}" />
     <property name="username" value="${org.obiba.onyx.opal.username}" />
     <property name="password" value="${org.obiba.onyx.opal.password}" />
+    <property name="connectionTimeout" value="${org.obiba.onyx.opal.connectionTimeout}" />
+    <property name="soTimeout" value="${org.obiba.onyx.opal.soTimeout}" />
   </bean>
 
 </beans>
