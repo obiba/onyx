@@ -221,20 +221,20 @@ public abstract class APEXScanDataExtractor {
         int index = -1;
         if(key.startsWith("L1")) {
           index = 0;
-        } else if(key.startsWith("L2") {
+        } else if(key.startsWith("L2")) {
           index = 1;
-        } else if(key.startsWith("L3") {
+        } else if(key.startsWith("L3")) {
           index = 2;
-        } else if(key.startsWith("L4") {
+        } else if(key.startsWith("L4")) {
           index = 3;
         }
 
         if(-1 != index) {
           if(key.endsWith("_INCLUDED")) {
             included_array[index] = entry.getValue().getValue();
-          } else if(key.endsWith("_AREA") {
+          } else if(key.endsWith("_AREA")) {
             area_array[index] = entry.getValue().getValue();
-          } else if(key.endsWith("_BMC") {
+          } else if(key.endsWith("_BMC")) {
             bmc_array[index] = entry.getValue().getValue();
           }
         }
@@ -274,7 +274,6 @@ public abstract class APEXScanDataExtractor {
       } else if( included_array[1] && !(included_array[0] || included_array[2] || included_array[3])) {
         // bonerange=".2.."
         tot_key="TOT_L2_BMD";
-        tot_key= ;
       } else if( included_array[2] && !(included_array[0] || included_array[1] || included_array[3])) {
         // bonerange="..3."
         tot_key="TOT_L3_BMD";
@@ -435,7 +434,7 @@ public abstract class APEXScanDataExtractor {
       if(0. == Math.abs(T_score)) T_score = 0.;
 
       String varName = getResultPrefix() + "_";
-      if(type.equals("S") && bmdBoneRangeKey.startsWith("TOT_") {
+      if(type.equals("S") && bmdBoneRangeKey.startsWith("TOT_")) {
         varName += "TOT_T";
       } else {
         varName += bmdBoneRangeKey.replace("_BMD", "_T");
@@ -448,7 +447,7 @@ public abstract class APEXScanDataExtractor {
 
       Double Z_score = null;
       varName = getResultPrefix() + "_";
-      if(type.equals("S") && bmdBoneRangeKey.startsWith("TOT_") {
+      if(type.equals("S") && bmdBoneRangeKey.startsWith("TOT_")) {
         varName += "TOT_Z";
       } else {
         varName += bmdBoneRangeKey.replace("_BMD", "_Z");
@@ -627,7 +626,7 @@ public abstract class APEXScanDataExtractor {
               } else {
                 selectList.add(sdf);
               }
-            else if(bodyPartName.equals("SPINE") {
+            } else if(bodyPartName.equals("SPINE")) {
               if(dcmBodyPartKey) {
                 if(dcmBodyPart.endsWith(bodyPartName) && 8 == dcmBitsAllocated) selectList.add(sdf);
               }
