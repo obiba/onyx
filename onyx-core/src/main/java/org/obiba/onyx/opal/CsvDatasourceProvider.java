@@ -9,10 +9,12 @@ import org.obiba.magma.datasource.csv.CsvDatasource;
 import org.obiba.magma.support.CachedDatasource;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.variable.export.EnrollmentIdDatasource;
+import org.obiba.onyx.magma.EhCacheCachedDatasource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cache.Cache;
+import org.springframework.cache.ehcache.EhCacheCache;
 
 public class CsvDatasourceProvider implements InitializingBean {
 
@@ -74,12 +76,16 @@ public class CsvDatasourceProvider implements InitializingBean {
         csvDs.addValueTable(table, file, entityType == null ? "Participant" : entityType);
       }
       log.info("Adding datasource: {}", datasourceName);
+
       if (withCaching && MagmaEngine.get().hasExtension(MagmaCacheExtension.class)) {
         MagmaCacheExtension cacheExtension = MagmaEngine.get().getExtension(MagmaCacheExtension.class);
         log.info("Using datasource cache: {}", datasourceName);
         Cache cache = cacheExtension.getCacheManager().getCache(DATASOURCE_CACHE_PREFIX + datasourceName);
-        if (cache != null) ds = new CachedDatasource(ds, cache);
+        if(cache != null) ds = cache instanceof EhCacheCache
+            ? new EhCacheCachedDatasource(ds, (EhCacheCache) cache)
+            : new CachedDatasource(ds, cache);
       }
+
       if(participantService != null) {
         magmaEngine.addDatasource(new EnrollmentIdDatasource(participantService, ds));
       } else {
