@@ -36,7 +36,7 @@ public class APSpineScanDataExtractor extends APEXScanDataExtractor {
 
   @Override
   public String getDicomBodyPartName() {
-    return "SPINE";
+    return "LSPINE";
   }
 
   @Override

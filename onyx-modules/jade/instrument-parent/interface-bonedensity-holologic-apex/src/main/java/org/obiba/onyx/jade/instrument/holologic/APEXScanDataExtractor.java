@@ -600,25 +600,36 @@ public abstract class APEXScanDataExtractor {
         // null = whole body, expects 2 files
         // HIP = hip, expects 1 to 2 files
         // ARM = forearm, expects 1 to 2 files
+        // the study instance UID is used to further group files together
         //
         String bodyPartName = getDicomBodyPartName();
 
+        boolean first = true;
+        String dcmStudyInstanceUID;
         for(StoredDicomFile sdf : listDicomFiles) {
           try {
             DicomObject dicomObject = sdf.getDicomObject();
+            if( first ) {
+              dcmStudyInstanceUID = dicomObject.getString(Tag.StudyInstanceUID);
+              first = false;
+            }
+            if( !dcmStudyInstanceUID.equals(dicomObject.getString(Tag.StudyInstanceUID))) {
+              continue;
+            }
             boolean dcmBodyPartKey = dicomObject.contains(Tag.BodyPartExamined);
+            int dcmBitsAllocated = dicomObject.getInt(Tag.BitsAllocated);
             String dcmBodyPart = dicomObject.getString(Tag.BodyPartExamined);
             String dcmSide = dicomObject.getString(Tag.Laterality);
 
             if(bodyPartName.equals("LSPINE")) {
               if(dcmBodyPartKey) {
-                if(bodyPartName.equals(dcmBodyPart)) selectList.add(sdf);
+                if(bodyPartName.equals(dcmBodyPart) && 16 == dcmBitsAllocated) selectList.add(sdf);
               } else {
                 selectList.add(sdf);
               }
-            } else if(bodyPartName.equals("SPINE")) {
+            else if(bodyPartName.equals("SPINE") {
               if(dcmBodyPartKey) {
-                if(bodyPartName.equals(dcmBodyPart) selectList.add(sdf);
+                if(dcmBodyPart.endsWith(bodyPartName) && 8 == dcmBitsAllocated) selectList.add(sdf);
               }
             } else if(bodyPartName.equals("ARM")) {
               if(dcmBodyPartKey) {
@@ -641,7 +652,7 @@ public abstract class APEXScanDataExtractor {
         if(!selectList.isEmpty()) {
 
           // Forearm
-          if("ARM".equals(getDicomBodyPartName()) && 2 >= selectList.size()) {
+          if("ARM".equals(bodyPartName) && 2 >= selectList.size()) {
             data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
             data.put(getResultPrefix() + "_SCAN_MODE", DataBuilder.buildText(scanMode));
 
@@ -649,7 +660,7 @@ public abstract class APEXScanDataExtractor {
             processFilesExtractionForeArm(getSide(), selectList, data);
           }
           // Lateral IVA Spine
-          else if("LSPINE".equals(getDicomBodyPartName()) && 3 == selectList.size()) {
+          else if("LSPINE".equals(bodyPartName) && 3 == selectList.size()) {
             data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
             data.put(getResultPrefix() + "_SCAN_MODE", DataBuilder.buildText(scanMode));
 
@@ -657,7 +668,7 @@ public abstract class APEXScanDataExtractor {
             processFilesExtractionLSpine(listDicomFiles, data);
           }
           // AP Lumbar Spine
-          else if("SPINE".equals(getDicomBodyPartName()) && 1 == selectList.size()) {
+          else if("SPINE".equals(bodyPartName) && 1 == selectList.size()) {
             data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
             data.put(getResultPrefix() + "_SCAN_MODE", DataBuilder.buildText(scanMode));
 
@@ -665,7 +676,7 @@ public abstract class APEXScanDataExtractor {
             processFilesExtractionAPSpine(listDicomFiles, data);
           }
           // Hip
-          else if("HIP".equals(getDicomBodyPartName()) && 2 >= selectList.size()) {
+          else if("HIP".equals(bodyPartName) && 2 >= selectList.size()) {
             data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
             data.put(getResultPrefix() + "_SCAN_MODE", DataBuilder.buildText(scanMode));
 
@@ -673,7 +684,7 @@ public abstract class APEXScanDataExtractor {
             processFilesExtractionHip(getSide(), selectList, data);
           }
           // Whole Body
-          else if(null == getDicomBodyPartName() && 2 == selectList.size()) {
+          else if(null == bodyPartName && 2 == selectList.size()) {
             data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
             data.put(getResultPrefix() + "_SCAN_MODE", DataBuilder.buildText(scanMode));
 
@@ -774,7 +785,7 @@ public abstract class APEXScanDataExtractor {
       if(1 == files.size()) {
         StoredDicomFile storedDicomFile = files.get(0);
         String bodyPartExam = storedDicomFile.getDicomObject().getString(Tag.BodyPartExamined);
-        if("SPINE".equals(bodyPartExam)) {
+        if("LSPINE".equals(bodyPartExam)) {
           putDicom(data, getResultPrefix() + "_DICOM", storedDicomFile);
         }
       }
@@ -907,7 +918,7 @@ public abstract class APEXScanDataExtractor {
    * @throws ParseException
    */
   public static Double computeYearsDifference(String s1, String s2) throws ParseException {
-    SimpleDateFormat df = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     Date d1 = df.parse(s1);
     Date d2 = df.parse(s2);
 
