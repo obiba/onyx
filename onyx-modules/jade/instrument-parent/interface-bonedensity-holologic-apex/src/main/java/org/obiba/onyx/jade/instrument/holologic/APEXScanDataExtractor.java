@@ -70,6 +70,27 @@ public abstract class APEXScanDataExtractor {
     ranges.put("INTER_BMD", "..3.");
     ranges.put("WARDS_BMD", "...4");
     ranges.put("HTOT_BMD", "123.");
+
+    // ap lumbar spine
+    ranges.put("L1_BMD", "1...");
+    ranges.put("L2_BMD", ".2..");
+    ranges.put("L3_BMD", "..3.");
+    ranges.put("L4_BMD", "...4");
+    ranges.put("TOT_BMD", "1234");
+    ranges.put("TOT_L1_BMD", "1...");
+    ranges.put("TOT_L2_BMD", ".2..");
+    ranges.put("TOT_L3_BMD", "..3.");
+    ranges.put("TOT_L4_BMD", "...4");
+    ranges.put("TOT_L1L2_BMD", "12..");
+    ranges.put("TOT_L1L3_BMD", "1.3.");
+    ranges.put("TOT_L1L4_BMD", "1..4");
+    ranges.put("TOT_L2L3_BMD", ".23.");
+    ranges.put("TOT_L2L4_BMD", ".2.4");
+    ranges.put("TOT_L3L4_BMD", "..34");
+    ranges.put("TOT_L1L2L3_BMD", "123.");
+    ranges.put("TOT_L1L2L4_BMD", "12.4");
+    ranges.put("TOT_L1L3L4_BMD", "1.34");
+    ranges.put("TOT_L2L3L4_BMD", ".234");
   }
 
   private static final Logger log = LoggerFactory.getLogger(APEXScanDataExtractor.class);
@@ -179,17 +200,136 @@ public abstract class APEXScanDataExtractor {
 
     if(null == data || data.isEmpty()) return;
 
-    String prefix = getResultPrefix() + "_";
-
     Map<String, Double> bmdData = new HashMap<String, Double>();
-    for(Map.Entry<String, Data> entry : data.entrySet()) {
-      String key = entry.getKey();
-      if(key.endsWith("_BMD")) {
-        log.info("key pre: " + key + ", new key: " + key.replace(prefix, ""));
-        key = key.replace(prefix, "");
-        if(ranges.containsKey(key)) {
-          bmdData.put(key, (Double) entry.getValue().getValue());
-          log.info("ranges contains key: " + key);
+    String prefix = getResultPrefix() + "_";
+    String type = getRefType();
+    String source = getRefSource();
+
+    // AP lumbar spine:
+    // - identify the included vertebral levels
+    // - sum the area and sum the bmc of the included vertebral levels
+    // - compute the revised total bmd from summed bmc / summed area
+    // - provide the proper bone range code for total bmd
+    //
+    if(type.equals("S")) {
+      boolean [] included_array = {false,false,false,false};
+      double [] area_array = {0.0,0.0,0.0,0.0};
+      double [] bmc_array = {0.0,0.0,0.0,0.0};
+      double tot_bmd  = 0.0;
+      for(Map.Entry<String, Data> entry : data.entrySet()) {
+        String key = entry.getKey();
+        int index = -1;
+        if(key.startsWith("L1")) {
+          index = 0;
+        } else if(key.startsWith("L2") {
+          index = 1;
+        } else if(key.startsWith("L3") {
+          index = 2;
+        } else if(key.startsWith("L4") {
+          index = 3;
+        }
+
+        if(-1 != index) {
+          if(key.endsWith("_INCLUDED")) {
+            included_array[index] = entry.getValue().getValue();
+          } else if(key.endsWith("_AREA") {
+            area_array[index] = entry.getValue().getValue();
+          } else if(key.endsWith("_BMC") {
+            bmc_array[index] = entry.getValue().getValue();
+          }
+        }
+
+        if(key.endsWith("_BMD")) {
+          log.info("key pre: " + key + ", new key: " + key.replace(prefix, ""));
+          key = key.replace(prefix, "");
+          if(key.equals("TOT_BMD")) {
+            tot_bmd = entry.getValue().getValue();
+          } else {
+            if(ranges.containsKey(key)) {
+              bmdData.put(key, (Double) entry.getValue().getValue());
+              log.info("ranges contains key: " + key);
+            }
+          }
+        }
+      }
+      double tot_area = 0.0;
+      double tot_bmc = 0.0;
+      for(int i = 0; i < 4; i++) {
+        if(included_array[i]) {
+          tot_area += area_array[i];
+          tot_bmc += bmc_array[i];
+        }
+      }
+      if( 0. != tot_area ) {
+        double last_tot_bmd = tot_bmd;
+        tot_bmd = tot_bmc/tot_area;
+        log.info("updating ap lumbar spine total bmd from " +
+          ((Double)last_tot_bmc).toString() + " to " +
+          ((Double)tot_bmc).toString());
+      }
+      String tot_key = "TOT_BMD";
+      if( included_array[0] && !(included_array[1] || included_array[2] || included_array[3])) {
+        //_bonerange="1..."
+        tot_key="TOT_L1_BMD";
+      } else if( included_array[1] && !(included_array[0] || included_array[2] || included_array[3])) {
+        // bonerange=".2.."
+        tot_key="TOT_L2_BMD";
+        tot_key= ;
+      } else if( included_array[2] && !(included_array[0] || included_array[1] || included_array[3])) {
+        // bonerange="..3."
+        tot_key="TOT_L3_BMD";
+      } else if( included_array[3] && !(included_array[0] || included_array[1] || included_array[2])) {
+        // bonerange="...4"
+        tot_key="TOT_L4_BMD";
+      } else if( included_array[0] && included_array[1] && !(included_array[2] || included_array[3])) {
+        // bonerange="12.."
+        tot_key="TOT_L1L2_BMD";
+      } else if( included_array[0] && included_array[2] && !(included_array[1] || included_array[3])) {
+        // bonerange="1.3."
+        tot_key="TOT_L1L3_BMD";
+      } else if( included_array[0] && included_array[3] && !(included_array[1] || included_array[2])) {
+        // bonerange="1..4"
+        tot_key="TOT_L1L4_BMD";
+      } else if( included_array[1] && included_array[2] && !(included_array[0] || included_array[3])) {
+        // bonerange=".23."
+        tot_key="TOT_L2L3_BMD";
+      } else if( included_array[1] && included_array[3] && !(included_array[0] || included_array[2])) {
+        // bonerange=".2.4"
+        tot_key="TOT_L2L4_BMD";
+      } else if( included_array[2] && included_array[3] && !(included_array[0] || included_array[1])) {
+        // bonerange="..34"
+        tot_key="TOT_L3L4_BMD";
+      } else if( included_array[0] && included_array[1] && included_array[2] && !included_array[3]) {
+        // bonerange="123."
+        tot_key="TOT_L1L2L3_BMD";
+      } else if( included_array[0] && included_array[1] && included_array[3] && !included_array[2]) {
+        // bonerange="12.4"
+        tot_key="TOT_L1L2L4_BMD";
+      } else if( included_array[0] && included_array[2] && included_array[3] && !included_array[1]) {
+        // bonerange="1.34"
+        tot_key="TOT_L1L3L4_BMD";
+      } else if( included_array[1] && included_array[2] && included_array[3] && !included_array[0]) {
+        // bonerange=".234"
+        tot_key="TOT_L2L3L4_BMD";
+      } else {
+        // bonerange="1234"
+        tot_key="TOT_BMD";
+      }
+
+      if(ranges.containsKey(tot_key)) {
+        bmdData.put(tot_key, (Double)tot_bmd);
+        log.info("ranges contains key: " + tot_key);
+      }
+    } else {
+      for(Map.Entry<String, Data> entry : data.entrySet()) {
+        String key = entry.getKey();
+        if(key.endsWith("_BMD")) {
+          log.info("key pre: " + key + ", new key: " + key.replace(prefix, ""));
+          key = key.replace(prefix, "");
+          if(ranges.containsKey(key)) {
+            bmdData.put(key, (Double) entry.getValue().getValue());
+            log.info("ranges contains key: " + key);
+          }
         }
       }
     }
@@ -212,9 +352,10 @@ public abstract class APEXScanDataExtractor {
       // Osteoporosis Canada guidelines.
       //
       String sql = "SELECT UNIQUE_ID, AGE_YOUNG FROM ReferenceCurve";
-      sql += " WHERE REFTYPE = '" + getRefType() + "'";
+      sql += " WHERE REFTYPE = '" + type + "'";
       sql += " AND IF_CURRENT = 1 AND SEX = 'F' AND ETHNIC IS NULL AND METHOD IS NULL";
-      sql += " AND SOURCE LIKE '%" + getRefSource() + "%'";
+      sql += " AND SOURCE LIKE '%" + source + "%'";
+      sql += " AND Y_LABEL = 'IDS_REF_LBL_BMD'";
       sql += " AND BONERANGE ";
       sql += (ranges.get(bmdBoneRangeKey).equals("NULL") ? ("IS NULL") : ("= '" + ranges.get(bmdBoneRangeKey) + "'"));
 
@@ -293,7 +434,12 @@ public abstract class APEXScanDataExtractor {
       T_score = Double.valueOf(df.format(T_score));
       if(0. == Math.abs(T_score)) T_score = 0.;
 
-      String varName = getResultPrefix() + "_" + bmdBoneRangeKey.replace("_BMD", "_T");
+      String varName = getResultPrefix() + "_";
+      if(type.equals("S") && bmdBoneRangeKey.startsWith("TOT_") {
+        varName += "TOT_T";
+      } else {
+        varName += bmdBoneRangeKey.replace("_BMD", "_T");
+      }
       if(data.keySet().contains(varName)) {
         throw new IllegalArgumentException("Instrument variable name already defined: " + varName);
       }
@@ -301,11 +447,18 @@ public abstract class APEXScanDataExtractor {
       log.info( varName + " = " + T_score.toString() );
 
       Double Z_score = null;
-      varName = getResultPrefix() + "_" + bmdBoneRangeKey.replace("_BMD", "_Z");
+      varName = getResultPrefix() + "_";
+      if(type.equals("S") && bmdBoneRangeKey.startsWith("TOT_") {
+        varName += "TOT_Z";
+      } else {
+        varName += bmdBoneRangeKey.replace("_BMD", "_Z");
+      }
       if(data.keySet().contains(varName)) {
         throw new IllegalArgumentException("Instrument variable name already defined: " + varName);
       }
 
+      // APEX reference curve db has no ultra distal ulna data for males
+      //
       String gender = getParticipantGender().toUpperCase();
       if(0 == gender.length() || gender.startsWith("F")) gender = " AND SEX = 'F'";
       else if(gender.startsWith( "M")) {
@@ -316,11 +469,12 @@ public abstract class APEXScanDataExtractor {
         gender = " AND SEX = 'M'";
       }
 
+      // APEX reference curve db has no 1/3 distal radius data for black ethnicity and no forearm data for hispanic ethnicity
+      //
       String ethnicity = getParticipantEthnicity().toUpperCase();
       if(0 == ethnicity.length()) ethnicity = " AND ETHNIC IS NULL";
-      else if(ethnicity.startsWith("B")) ethnicity = " AND ETHNIC = 'B'";
-      else if(ethnicity.startsWith("H")) ethnicity = " AND ETHNIC = 'H'";
-      else if(ethnicity.startsWith("O")) ethnicity = " AND ETHNIC = 'O'";
+      else if(ethnicity.startsWith("B") && !(type.equals("R") && bmdBoneRangeKey.equals("R.."))) ethnicity = " AND ETHNIC = 'B'";
+      else if(ethnicity.startsWith("H") && !(type.equals("R")) ethnicity = " AND ETHNIC = 'H'";
       else ethnicity = " AND ETHNIC IS NULL";
 
       sql = "SELECT UNIQUE_ID, AGE_YOUNG FROM ReferenceCurve";
@@ -441,25 +595,41 @@ public abstract class APEXScanDataExtractor {
 
         // there must be at least one dicom file with a body part examined key
         // body part name depends on the data extractor class
-        // LSPINE = spine, expects 3 files
+        // LSPINE = lateral iva spine, expects 3 files
+        // SPINE = AP lumbar spine, expects 1 file
         // null = whole body, expects 2 files
         // HIP = hip, expects 1 to 2 files
         // ARM = forearm, expects 1 to 2 files
+        // the study instance UID is used to further group files together
         //
         String bodyPartName = getDicomBodyPartName();
 
+        boolean first = true;
+        String dcmStudyInstanceUID;
         for(StoredDicomFile sdf : listDicomFiles) {
           try {
             DicomObject dicomObject = sdf.getDicomObject();
+            if( first ) {
+              dcmStudyInstanceUID = dicomObject.getString(Tag.StudyInstanceUID);
+              first = false;
+            }
+            if( !dcmStudyInstanceUID.equals(dicomObject.getString(Tag.StudyInstanceUID))) {
+              continue;
+            }
             boolean dcmBodyPartKey = dicomObject.contains(Tag.BodyPartExamined);
+            int dcmBitsAllocated = dicomObject.getInt(Tag.BitsAllocated);
             String dcmBodyPart = dicomObject.getString(Tag.BodyPartExamined);
             String dcmSide = dicomObject.getString(Tag.Laterality);
 
             if(bodyPartName.equals("LSPINE")) {
               if(dcmBodyPartKey) {
-                if(bodyPartName.equals(dcmBodyPart)) selectList.add(sdf);
+                if(bodyPartName.equals(dcmBodyPart) && 16 == dcmBitsAllocated) selectList.add(sdf);
               } else {
                 selectList.add(sdf);
+              }
+            else if(bodyPartName.equals("SPINE") {
+              if(dcmBodyPartKey) {
+                if(dcmBodyPart.endsWith(bodyPartName) && 8 == dcmBitsAllocated) selectList.add(sdf);
               }
             } else if(bodyPartName.equals("ARM")) {
               if(dcmBodyPartKey) {
@@ -470,7 +640,7 @@ public abstract class APEXScanDataExtractor {
                 if(bodyPartName.equals(dcmBodyPart) && null != dcmSide) selectList.add(sdf);
               }
             } else {
-              if(dcmBodyPartKey && dcmSide == null) {
+              if(dcmBodyPartKey && null == dcmSide) {
                 selectList.add(sdf);
               }
             }
@@ -482,23 +652,31 @@ public abstract class APEXScanDataExtractor {
         if(!selectList.isEmpty()) {
 
           // Forearm
-          if("ARM".equals(getDicomBodyPartName()) && 2 >= selectList.size()) {
+          if("ARM".equals(bodyPartName) && 2 >= selectList.size()) {
             data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
             data.put(getResultPrefix() + "_SCAN_MODE", DataBuilder.buildText(scanMode));
 
             log.info("processing forearm dicom side: " + getSide().toString());
             processFilesExtractionForeArm(getSide(), selectList, data);
           }
-          // Lateral Spine
-          else if("LSPINE".equals(getDicomBodyPartName()) && 3 == selectList.size()) {
+          // Lateral IVA Spine
+          else if("LSPINE".equals(bodyPartName) && 3 == selectList.size()) {
             data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
             data.put(getResultPrefix() + "_SCAN_MODE", DataBuilder.buildText(scanMode));
 
-            log.info("processing spine dicom");
-            processFilesExtractionSpine(listDicomFiles, data);
+            log.info("processing lateral iva spine dicom");
+            processFilesExtractionLSpine(listDicomFiles, data);
+          }
+          // AP Lumbar Spine
+          else if("SPINE".equals(bodyPartName) && 1 == selectList.size()) {
+            data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
+            data.put(getResultPrefix() + "_SCAN_MODE", DataBuilder.buildText(scanMode));
+
+            log.info("processing ap lumbar spine dicom");
+            processFilesExtractionAPSpine(listDicomFiles, data);
           }
           // Hip
-          else if("HIP".equals(getDicomBodyPartName()) && 2 >= selectList.size()) {
+          else if("HIP".equals(bodyPartName) && 2 >= selectList.size()) {
             data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
             data.put(getResultPrefix() + "_SCAN_MODE", DataBuilder.buildText(scanMode));
 
@@ -506,7 +684,7 @@ public abstract class APEXScanDataExtractor {
             processFilesExtractionHip(getSide(), selectList, data);
           }
           // Whole Body
-          else if(null == getDicomBodyPartName() && 2 == selectList.size()) {
+          else if(null == bodyPartName && 2 == selectList.size()) {
             data.put(getResultPrefix() + "_SCANID", DataBuilder.buildText(scanID));
             data.put(getResultPrefix() + "_SCAN_MODE", DataBuilder.buildText(scanMode));
 
@@ -573,23 +751,44 @@ public abstract class APEXScanDataExtractor {
   }
 
   /**
-   * Called by ScanAnalysisResultSetExtractor extractData(). Adds Spine scan dicom files to data collection.
+   * Called by ScanAnalysisResultSetExtractor extractData(). Adds lateral IVA Spine scan dicom files to data collection.
    *
    * @param files
    * @param data
    */
-  private void processFilesExtractionSpine(List<StoredDicomFile> files, Map<String, Data> data) {
+  private void processFilesExtractionLSpine(List<StoredDicomFile> files, Map<String, Data> data) {
     try {
       for(int i = 0; i < files.size(); i++) {
         StoredDicomFile storedDicomFile = files.get(i);
         String bodyPartExam = storedDicomFile.getDicomObject().getString(Tag.BodyPartExamined);
         String modality = storedDicomFile.getDicomObject().getString(Tag.Modality);
-        if("LSPINE".equals(bodyPartExam)) {
+        int dcmBitsAllocated = storedDicomFile.getDicomObject().getInt(Tag.BitsAllocated);
+        if("LSPINE".equals(bodyPartExam) && 16 == dcmBitsAllocated) {
           putDicom(data, getResultPrefix() + "_DICOM_MEASURE", storedDicomFile);
         } else if("PR".equals(modality)) {
           putDicom(data, getResultPrefix() + "_DICOM_PR", storedDicomFile);
         } else {
           putDicom(data, getResultPrefix() + "_DICOM_OT", storedDicomFile);
+        }
+      }
+    } catch(IOException e) {
+    }
+  }
+
+  /**
+   * Called by ScanAnalysisResultSetExtractor extractData(). Adds the AP lumbar Spine scan dicom file to data collection.
+   *
+   * @param files
+   * @param data
+   */
+  private void processFilesExtractionAPSpine(List<StoredDicomFile> files, Map<String, Data> data) {
+    try {
+      if(1 == files.size()) {
+        StoredDicomFile storedDicomFile = files.get(0);
+        String bodyPartExam = storedDicomFile.getDicomObject().getString(Tag.BodyPartExamined);
+        int dcmBitsAllocated = storedDicomFile.getDicomObject().getInt(Tag.BitsAllocated);
+        if("LSPINE".equals(bodyPartExam) && 8 == dcmBitsAllocated) {
+          putDicom(data, getResultPrefix() + "_DICOM", storedDicomFile);
         }
       }
     } catch(IOException e) {
@@ -621,7 +820,7 @@ public abstract class APEXScanDataExtractor {
       try {
         DicomObject dicomObject = storedDicomFile.getDicomObject();
         if(dicomObject.contains(tag.getValue())) {
-          if(dicomObject.containsValue(tag.getValue()) == false) {
+          if(false == dicomObject.containsValue(tag.getValue())) {
             log.info("Missing P and/or R data in DICOM file: " + tag.name());
             return false;
           }
@@ -641,7 +840,7 @@ public abstract class APEXScanDataExtractor {
    * @return
    */
   protected Map<String, Data> extractScanData(String table, Map<String, Data> data, ResultSetExtractor<Map<String, Data>> rsExtractor) {
-    return getPatScanDb().query("select * from " + table + " where PATIENT_KEY = ? and SCANID = ?", new PreparedStatementSetter() {
+    return getPatScanDb().query("SELECT * FROM " + table + " WHERE PATIENT_KEY = ? AND SCANID = ?", new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
         ps.setString(1, getParticipantKey());
         ps.setString(2, getScanID());
@@ -721,7 +920,7 @@ public abstract class APEXScanDataExtractor {
    * @throws ParseException
    */
   public static Double computeYearsDifference(String s1, String s2) throws ParseException {
-    SimpleDateFormat df = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     Date d1 = df.parse(s1);
     Date d2 = df.parse(s2);
 
