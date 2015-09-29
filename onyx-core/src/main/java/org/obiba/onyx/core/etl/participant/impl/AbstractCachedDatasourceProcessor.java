@@ -20,12 +20,14 @@ import org.obiba.magma.support.VariableEntityBean;
 import org.obiba.magma.type.BinaryType;
 import org.obiba.onyx.core.data.DatasourceUtils;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.magma.EhCacheCachedDatasource;
 import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
 
 /**
  * Base class more warming up {@link org.obiba.magma.support.CachedDatasource}.
@@ -99,6 +101,8 @@ public class AbstractCachedDatasourceProcessor {
       for(ValueTable table : datasource.getValueTables()) {
         if(isApplicable(datasource, table)) doCache((CachedValueTable) table, participants, evict);
       }
+
+      if(datasource instanceof EhCacheCachedDatasource) ((EhCacheCachedDatasource) datasource).flushCache();
     } catch(Exception e) {
       log.error("Unable to get tables of datasource: {}", datasource.getName(), e);
     }
@@ -143,5 +147,4 @@ public class AbstractCachedDatasourceProcessor {
       }
     }
   }
-
 }

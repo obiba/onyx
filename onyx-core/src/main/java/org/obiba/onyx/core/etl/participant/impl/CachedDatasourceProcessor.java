@@ -14,6 +14,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.statistics.AppointmentUpdateLog;
 import org.obiba.onyx.core.etl.participant.IInterviewPostProcessor;
 import org.obiba.onyx.core.etl.participant.IParticipantPostProcessor;
+import org.obiba.onyx.magma.EhCacheCachedDatasource;
 import org.obiba.onyx.magma.MagmaInstanceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,6 +105,8 @@ public class CachedDatasourceProcessor extends AbstractCachedDatasourceProcessor
       for(ValueTable table : datasource.getValueTables()) {
         if(isApplicable(datasource, table)) doCache(context, (CachedValueTable) table, participants);
       }
+
+      if(datasource instanceof EhCacheCachedDatasource) ((EhCacheCachedDatasource) datasource).flushCache();
     } catch(Exception e) {
       String msg = "Unable to get tables of datasource: " + datasource.getName();
       log(context, AppointmentUpdateLog.Level.ERROR, e, msg);

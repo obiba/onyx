@@ -6,12 +6,14 @@ import org.obiba.magma.MagmaEngine;
 import org.obiba.magma.support.CachedDatasource;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.variable.export.EnrollmentIdDatasource;
+import org.obiba.onyx.magma.EhCacheCachedDatasource;
 import org.obiba.opal.rest.client.magma.OpalJavaClient;
 import org.obiba.opal.rest.client.magma.RestDatasource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cache.Cache;
+import org.springframework.cache.ehcache.EhCacheCache;
 
 import com.google.common.base.Strings;
 
@@ -63,12 +65,16 @@ public class OpalDatasourceProvider implements InitializingBean {
       String localDatasourceName = Strings.isNullOrEmpty(onyxDatasourceName) ? opalDatasourceName : onyxDatasourceName;
       log.info("Adding datasource: {} -> {}", localDatasourceName, opalDatasourceName);
       Datasource ds = new RestDatasource(localDatasourceName, opalJavaClient, opalDatasourceName);
+
       if (withCaching && MagmaEngine.get().hasExtension(MagmaCacheExtension.class)) {
         MagmaCacheExtension cacheExtension = MagmaEngine.get().getExtension(MagmaCacheExtension.class);
         log.info("Using datasource cache: {}", localDatasourceName);
         Cache cache = cacheExtension.getCacheManager().getCache(DATASOURCE_CACHE_PREFIX + localDatasourceName);
-        if (cache != null) ds = new CachedDatasource(ds, cache);
+        if(cache != null) ds = cache instanceof EhCacheCache
+            ? new EhCacheCachedDatasource(ds, (EhCacheCache) cache)
+            : new CachedDatasource(ds, cache);
       }
+
       magmaEngine.addDatasource(new EnrollmentIdDatasource(participantService, ds));
     }
   }
