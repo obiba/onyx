@@ -762,7 +762,8 @@ public abstract class APEXScanDataExtractor {
         StoredDicomFile storedDicomFile = files.get(i);
         String bodyPartExam = storedDicomFile.getDicomObject().getString(Tag.BodyPartExamined);
         String modality = storedDicomFile.getDicomObject().getString(Tag.Modality);
-        if("LSPINE".equals(bodyPartExam)) {
+        int dcmBitsAllocated = storedDicomFile.getDicomObject().getInt(Tag.BitsAllocated);
+        if("LSPINE".equals(bodyPartExam) && 16 == dcmBitsAllocated) {
           putDicom(data, getResultPrefix() + "_DICOM_MEASURE", storedDicomFile);
         } else if("PR".equals(modality)) {
           putDicom(data, getResultPrefix() + "_DICOM_PR", storedDicomFile);
@@ -785,7 +786,8 @@ public abstract class APEXScanDataExtractor {
       if(1 == files.size()) {
         StoredDicomFile storedDicomFile = files.get(0);
         String bodyPartExam = storedDicomFile.getDicomObject().getString(Tag.BodyPartExamined);
-        if("LSPINE".equals(bodyPartExam)) {
+        int dcmBitsAllocated = storedDicomFile.getDicomObject().getInt(Tag.BitsAllocated);
+        if("LSPINE".equals(bodyPartExam) && 8 == dcmBitsAllocated) {
           putDicom(data, getResultPrefix() + "_DICOM", storedDicomFile);
         }
       }
