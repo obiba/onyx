@@ -264,8 +264,8 @@ public abstract class APEXScanDataExtractor {
         double last_tot_bmd = tot_bmd;
         tot_bmd = tot_bmc/tot_area;
         log.info("updating ap lumbar spine total bmd from " +
-          ((Double)last_tot_bmc).toString() + " to " +
-          ((Double)tot_bmc).toString());
+          ((Double)last_tot_bmd).toString() + " to " +
+          ((Double)tot_bmd).toString());
       }
       String tot_key = "TOT_BMD";
       if( included_array[0] && !(included_array[1] || included_array[2] || included_array[3])) {
@@ -471,10 +471,13 @@ public abstract class APEXScanDataExtractor {
       // APEX reference curve db has no 1/3 distal radius data for black ethnicity and no forearm data for hispanic ethnicity
       //
       String ethnicity = getParticipantEthnicity().toUpperCase();
-      if(0 == ethnicity.length()) ethnicity = " AND ETHNIC IS NULL";
-      else if(ethnicity.startsWith("B") && !(type.equals("R") && bmdBoneRangeKey.equals("R.."))) ethnicity = " AND ETHNIC = 'B'";
-      else if(ethnicity.startsWith("H") && !(type.equals("R")) ethnicity = " AND ETHNIC = 'H'";
-      else ethnicity = " AND ETHNIC IS NULL";
+      if(ethnicity.startsWith("B") && !(type.equals("R") && bmdBoneRangeKey.equals("R.."))) {
+        ethnicity = " AND ETHNIC = 'B'";
+      } else if(ethnicity.startsWith("H") && !type.equals("R")) {
+        ethnicity = " AND ETHNIC = 'H'";
+      } else {
+        ethnicity = " AND ETHNIC IS NULL";
+      }
 
       sql = "SELECT UNIQUE_ID, AGE_YOUNG FROM ReferenceCurve";
       sql += " WHERE REFTYPE = '" + getRefType() + "'";
@@ -604,7 +607,7 @@ public abstract class APEXScanDataExtractor {
         String bodyPartName = getDicomBodyPartName();
 
         boolean first = true;
-        String dcmStudyInstanceUID;
+        String dcmStudyInstanceUID = "";
         for(StoredDicomFile sdf : listDicomFiles) {
           try {
             DicomObject dicomObject = sdf.getDicomObject();

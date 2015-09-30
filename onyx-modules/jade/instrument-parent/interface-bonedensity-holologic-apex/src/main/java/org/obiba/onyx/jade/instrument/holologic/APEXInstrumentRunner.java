@@ -287,7 +287,7 @@ public class APEXInstrumentRunner implements InstrumentRunner {
     log.info("iva spine block in runner end");
 
     log.info("ap spine block in runner start");
-    extractScanData(dataList, new APSpineScanDataExtractor(patScanDb, refCurveDb, participantData, Energy.CLSA_DXA, server, apexReceiver));
+    extractScanData(dataList, new APSpineScanDataExtractor(patScanDb, refCurveDb, participantData, server, apexReceiver));
     log.info("ap spine block in runner end");
 
     return dataList;
