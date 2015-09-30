@@ -473,9 +473,9 @@ public abstract class APEXScanDataExtractor {
       String ethnicity = getParticipantEthnicity().toUpperCase();
       if(ethnicity.startsWith("B") && !(type.equals("R") && bmdBoneRangeKey.equals("R.."))) {
         ethnicity = " AND ETHNIC = 'B'";
-      } else if(ethnicity.startsWith("H") && !type.equals("R")) {
+      } else if(ethnicity.equals("H") && !type.equals("R")) {
         ethnicity = " AND ETHNIC = 'H'";
-      } else {
+      } else if(0 == ethnicity.length() || ethnicity.equals("O") || ethnicity.equals("P") || ethnicity.equals("I")) {
         ethnicity = " AND ETHNIC IS NULL";
       }
 
