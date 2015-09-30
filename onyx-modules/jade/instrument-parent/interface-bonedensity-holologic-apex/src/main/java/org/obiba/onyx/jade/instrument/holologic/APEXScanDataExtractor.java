@@ -471,7 +471,7 @@ public abstract class APEXScanDataExtractor {
       // APEX reference curve db has no 1/3 distal radius data for black ethnicity and no forearm data for hispanic ethnicity
       //
       String ethnicity = getParticipantEthnicity().toUpperCase();
-      if(ethnicity.startsWith("B") && !(type.equals("R") && bmdBoneRangeKey.equals("R.."))) {
+      if(ethnicity.equals("B") && !(type.equals("R") && bmdBoneRangeKey.equals("R.."))) {
         ethnicity = " AND ETHNIC = 'B'";
       } else if(ethnicity.equals("H") && !type.equals("R")) {
         ethnicity = " AND ETHNIC = 'H'";
