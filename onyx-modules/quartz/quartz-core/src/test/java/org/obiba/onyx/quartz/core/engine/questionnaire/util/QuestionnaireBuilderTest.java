@@ -45,7 +45,7 @@ public class QuestionnaireBuilderTest {
 
   @Before
   public void start() {
-    new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
+    MagmaEngine.get().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
   }
 
   @After
