@@ -890,6 +890,12 @@
         </executions>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${maven-dependency-plugin.version}</version>
+      </plugin>
+
     </plugins>
 
     <resources>
@@ -1074,6 +1080,7 @@
     <maven-release-plugin.version>2.3.2</maven-release-plugin.version>
     <maven-source-plugin.version>2.2</maven-source-plugin.version>
     <maven-war-plugin.version>2.6</maven-war-plugin.version>
+    <maven-dependency-plugin.version>2.1</maven-dependency-plugin.version>
 
   </properties>
 
