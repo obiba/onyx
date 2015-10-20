@@ -332,6 +332,7 @@ public class OnyxDataExport {
     }
 
     public void onValueSetCopy(ValueTable source, ValueSet valueSet) {
+      log.debug("Clearing session before copy of value set {} from table {}", valueSet.getVariableEntity().getIdentifier(), source.getName());
       // Clear the session: this empties the first-level cache which is currently filled with the entity's data.
       // Clearing the session also clears any pending write operations (INSERT or UPDATE). This is safe because
       // the copy operation is read-only.
@@ -350,6 +351,8 @@ public class OnyxDataExport {
 
       // Flush the export log (this executes the underlying INSERT statement for the ExportLog within the transaction)
       sessionFactory.getCurrentSession().flush();
+      sessionFactory.getCurrentSession().clear();
+      log.debug("Clearing session after copy of value set {} from table {}", valueSet.getVariableEntity().getIdentifier(), source.getName());
     }
   }
 
