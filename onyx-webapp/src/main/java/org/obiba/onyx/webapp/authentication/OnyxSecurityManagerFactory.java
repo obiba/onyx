@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2012 OBiBa. All rights reserved.
- *  
+ * <p/>
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- *  
+ * <p/>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -35,10 +35,12 @@ import org.apache.shiro.subject.SubjectContext;
 import org.apache.shiro.web.config.WebIniSecurityManagerFactory;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.mgt.WebSecurityManager;
+import org.obiba.shiro.realm.ObibaRealm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -56,12 +58,30 @@ public class OnyxSecurityManagerFactory implements FactoryBean<SecurityManager> 
 
   private Map<String, List<String>> rolesMap;
 
+  private String agateUrl;
+
+  private String agateApplicationName;
+
+  private String agateApplicationKey;
+
   public void setRealms(Set<Realm> realms) {
     this.realms = realms;
   }
 
   public void setIniPath(String iniPath) {
     this.iniPath = iniPath;
+  }
+
+  public void setAgateUrl(String agateUrl) {
+    this.agateUrl = agateUrl;
+  }
+
+  public void setAgateApplicationName(String agateApplicationName) {
+    this.agateApplicationName = agateApplicationName;
+  }
+
+  public void setAgateApplicationKey(String agateApplicationKey) {
+    this.agateApplicationKey = agateApplicationKey;
   }
 
   /**
@@ -123,11 +143,19 @@ public class OnyxSecurityManagerFactory implements FactoryBean<SecurityManager> 
 
     @Override
     protected void applyRealmsToSecurityManager(Collection<Realm> iniRealms, SecurityManager securityManager) {
+      ImmutableList.Builder<Realm> builder = ImmutableList.builder();
       if(realms != null) {
-        super.applyRealmsToSecurityManager(ImmutableList.<Realm> builder().addAll(realms).addAll(iniRealms).build(), securityManager);
-      } else {
-        super.applyRealmsToSecurityManager(iniRealms, securityManager);
+        builder.addAll(realms);
       }
+      if(!Strings.isNullOrEmpty(agateUrl)) {
+        ObibaRealm oRealm = new ObibaRealm();
+        oRealm.setBaseUrl(agateUrl);
+        oRealm.setServiceName(agateApplicationName);
+        oRealm.setServiceKey(agateApplicationKey);
+        builder.add(oRealm);
+      }
+      builder.addAll(iniRealms);
+      super.applyRealmsToSecurityManager(builder.build(), securityManager);
     }
   }
 
@@ -197,17 +225,20 @@ public class OnyxSecurityManagerFactory implements FactoryBean<SecurityManager> 
     }
 
     @Override
-    public void checkPermission(PrincipalCollection subjectPrincipal, Permission permission) throws AuthorizationException {
+    public void checkPermission(PrincipalCollection subjectPrincipal, Permission permission)
+        throws AuthorizationException {
       wrapped.checkPermission(subjectPrincipal, permission);
     }
 
     @Override
-    public void checkPermissions(PrincipalCollection subjectPrincipal, String... permissions) throws AuthorizationException {
+    public void checkPermissions(PrincipalCollection subjectPrincipal, String... permissions)
+        throws AuthorizationException {
       wrapped.checkPermissions(subjectPrincipal, permissions);
     }
 
     @Override
-    public void checkPermissions(PrincipalCollection subjectPrincipal, Collection<Permission> permissions) throws AuthorizationException {
+    public void checkPermissions(PrincipalCollection subjectPrincipal, Collection<Permission> permissions)
+        throws AuthorizationException {
       wrapped.checkPermissions(subjectPrincipal, permissions);
     }
 
@@ -241,13 +272,15 @@ public class OnyxSecurityManagerFactory implements FactoryBean<SecurityManager> 
     }
 
     @Override
-    public void checkRoles(PrincipalCollection subjectPrincipal, Collection<String> roleIdentifiers) throws AuthorizationException {
+    public void checkRoles(PrincipalCollection subjectPrincipal, Collection<String> roleIdentifiers)
+        throws AuthorizationException {
       // TODO
       wrapped.checkRoles(subjectPrincipal, roleIdentifiers);
     }
 
     @Override
-    public void checkRoles(PrincipalCollection subjectPrincipal, String... roleIdentifiers) throws AuthorizationException {
+    public void checkRoles(PrincipalCollection subjectPrincipal, String... roleIdentifiers)
+        throws AuthorizationException {
       // TODO
       wrapped.checkRoles(subjectPrincipal, roleIdentifiers);
     }

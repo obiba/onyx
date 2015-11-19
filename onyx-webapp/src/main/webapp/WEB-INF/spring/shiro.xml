@@ -11,6 +11,9 @@
   <bean id="securityManagerFactory" class="org.obiba.onyx.webapp.authentication.OnyxSecurityManagerFactory" autowire="byType">
     <property name="iniPath" value="${org.obiba.onyx.authentication.shiro.ini}" />
     <property name="rolesMap" value="${org.obiba.onyx.authentication.rolesMap}" />
+    <property name="agateUrl" value="${org.obiba.onyx.agate.url}" />
+    <property name="agateApplicationName" value="${org.obiba.onyx.agate.name}" />
+    <property name="agateApplicationKey" value="${org.obiba.onyx.agate.key}" />
   </bean>
   
   <!-- Define the Onyx Realm implementation -->

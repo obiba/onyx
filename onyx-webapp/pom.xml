@@ -44,6 +44,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.obiba.commons</groupId>
+      <artifactId>obiba-shiro</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <scope>runtime</scope>
