@@ -1071,7 +1071,7 @@
     <spring.version>4.2.1.RELEASE</spring.version>
     <spring-batch.version>3.0.4.RELEASE</spring-batch.version>
     <wicket.version>1.4.21</wicket.version>
-    <wicket-nanogong.version>0.1-SNAPSHOT</wicket-nanogong.version>
+    <wicket-nanogong.version>1.0</wicket-nanogong.version>
     <xstream.version>1.4.8</xstream.version>
 
     <!-- maven plugins -->
