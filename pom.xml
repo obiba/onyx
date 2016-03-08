@@ -1033,7 +1033,7 @@
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 
     <cglib.version>3.1</cglib.version>
-    <commons-collections.version>3.2.1</commons-collections.version>
+    <commons-collections.version>3.2.2</commons-collections.version>
     <commons-dbcp.version>1.4</commons-dbcp.version>
     <commons-httpclient.version>3.1</commons-httpclient.version>
     <dbunit.version>2.5.1</dbunit.version>
