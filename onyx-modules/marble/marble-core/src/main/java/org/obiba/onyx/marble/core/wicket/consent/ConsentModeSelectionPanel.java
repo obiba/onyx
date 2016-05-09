@@ -22,7 +22,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
+import org.obiba.onyx.marble.core.ConsentLocalizedResourceLoader;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
@@ -36,7 +36,7 @@ public class ConsentModeSelectionPanel extends Panel {
   private List<Locale> consentLanguages;
 
   @SpringBean(name = "consentFormTemplateLoader")
-  LocalizedResourceLoader consentFormTemplateLoader;
+  ConsentLocalizedResourceLoader consentFormTemplateLoader;
 
   @SpringBean
   private ActiveConsentService activeConsentService;

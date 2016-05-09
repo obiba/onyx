@@ -14,6 +14,7 @@ import org.obiba.magma.Variable;
 import org.obiba.magma.beans.NoSuchBeanException;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.magma.AbstractOnyxBeanResolver;
+import org.obiba.onyx.magma.StageAttributeVisitor;
 import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class ConsentBeanResolver extends AbstractOnyxBeanResolver {
 
   public Object resolve(Class<?> type, ValueSet valueSet, Variable variable) throws NoSuchBeanException {
     if(type.equals(Consent.class)) {
-      return getConsent(valueSet);
+      return getConsent(valueSet, variable);
     }
 
     return null;
@@ -57,8 +58,8 @@ public class ConsentBeanResolver extends AbstractOnyxBeanResolver {
     return consentService;
   }
 
-  protected Consent getConsent(ValueSet valueSet) {
+  protected Consent getConsent(ValueSet valueSet, Variable variable) {
     Participant participant = getParticipant(valueSet);
-    return consentService.getConsent(participant.getInterview());
+    return consentService.getConsent(participant.getInterview(), variable.getAttributeStringValue(StageAttributeVisitor.STAGE_ATTRIBUTE));
   }
 }

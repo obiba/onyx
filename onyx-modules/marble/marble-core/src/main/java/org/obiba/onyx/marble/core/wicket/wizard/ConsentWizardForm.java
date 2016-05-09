@@ -224,9 +224,10 @@ public class ConsentWizardForm extends WizardForm {
       ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
 
       // Delete previous consent (if exist) for that interview
-      Consent existingConsent = consentService.getConsent(activeInterviewService.getInterview());
+      String stageName = activeInterviewService.getInteractiveStage().getName();
+      Consent existingConsent = consentService.getConsent(activeInterviewService.getInterview(), stageName);
       if(existingConsent != null) {
-        consentService.deletePreviousConsent(activeInterviewService.getInterview());
+        consentService.deletePreviousConsent(activeInterviewService.getInterview(), stageName);
       }
 
       // Save the consent

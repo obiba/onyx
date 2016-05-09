@@ -9,9 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.core.wicket;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -28,18 +25,21 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
-import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
+import org.obiba.onyx.marble.core.ConsentLocalizedResourceLoader;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
 import org.obiba.wicket.test.MockSpringApplication;
+
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
 
 public class MarblePanelTest {
 
@@ -70,7 +70,7 @@ public class MarblePanelTest {
     activeConsentService = createMock(ActiveConsentService.class);
     mockCtx.putBean("activeConsentService", activeConsentService);
 
-    LocalizedResourceLoader consentFormTemplateLoader = new LocalizedResourceLoader() {
+    ConsentLocalizedResourceLoader consentFormTemplateLoader = new ConsentLocalizedResourceLoader() {
       @Override
       public List<Locale> getAvailableLocales() {
         ArrayList<Locale> locales = new ArrayList<Locale>();
@@ -107,7 +107,9 @@ public class MarblePanelTest {
     expect(activeInterviewService.getStageExecution((Stage) EasyMock.anyObject())).andReturn(stageExecution).anyTimes();
 
     Interview interview = new Interview();
+    Stage stage = new Stage();
     expect(activeInterviewService.getInterview()).andReturn(interview).anyTimes();
+    expect(activeInterviewService.getInteractiveStage()).andReturn(stage).anyTimes();
 
     Consent consent;
     expect(activeConsentService.getConsent(true)).andReturn(consent = new Consent());
@@ -115,7 +117,7 @@ public class MarblePanelTest {
     expect(activeConsentService.isConsentFormSubmitted()).andReturn(true).anyTimes();
     expect(consentService.getSupportedConsentLocales()).andReturn(Arrays.asList(new Locale[] { Locale.ENGLISH, Locale.FRENCH }));
     expect(consentService.getSupportedConsentModes()).andReturn(EnumSet.of(ConsentMode.ELECTRONIC, ConsentMode.MANUAL));
-    expect(consentService.getConsent(interview)).andReturn(null);
+    expect(consentService.getConsent(interview, null)).andReturn(null);
     consentService.saveConsent(consent);
 
     EasyMock.replay(stageExecution);

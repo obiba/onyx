@@ -51,7 +51,7 @@ public class LocalizedResourceLoader extends LocalizedResourceHelper implements 
    * @return
    */
   public String getResourceBasename() {
-    return resourcePath + File.separator + resourceName;
+    return resourcePath + File.separator + getResourceName();
   }
 
   /**
@@ -61,6 +61,7 @@ public class LocalizedResourceLoader extends LocalizedResourceHelper implements 
    */
   public List<Locale> getAvailableLocales() {
     final List<Locale> languages = new ArrayList<Locale>();
+    final String resourceName = getResourceName();
 
     Object[] resourceMessageVar = new Object[] { resourcePath, resourceName, resourceExtension };
     log.debug("Searching for available locales for resource (path={}, name={}, extension={})", resourceMessageVar);
@@ -83,7 +84,7 @@ public class LocalizedResourceLoader extends LocalizedResourceHelper implements 
       public boolean accept(File file) {
         String fileName = file.getName();
         log.debug("Filename being filtered is {}", fileName);
-        if(file.isFile() && fileName.startsWith(resourceName + '_') && fileName.endsWith(resourceExtension)) {
+        if(file.isFile() && fileName.startsWith(getResourceName() + '_') && fileName.endsWith(resourceExtension)) {
           String localeString = extractLocaleString(fileName);
 
           Locale locale = null;
@@ -120,12 +121,9 @@ public class LocalizedResourceLoader extends LocalizedResourceHelper implements 
   }
 
   private String extractLocaleString(String fileName) {
-    String localeString = null;
-
     int startIndex = fileName.indexOf('_');
     int endIndex = fileName.lastIndexOf(resourceExtension);
-
-    localeString = fileName.substring(startIndex + 1, endIndex);
+    String localeString = fileName.substring(startIndex + 1, endIndex);
 
     return localeString;
   }
@@ -154,4 +152,7 @@ public class LocalizedResourceLoader extends LocalizedResourceHelper implements 
     this.resourceName = resourceName;
   }
 
+  protected String getResourceName() {
+    return resourceName;
+  }
 }

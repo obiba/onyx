@@ -24,13 +24,13 @@ public interface ConsentService {
    * @param interview Interview for which the consent will be retrieve.
    * @return The consent.
    */
-  public Consent getConsent(Interview interview);
+  public Consent getConsent(Interview interview, String consentName);
 
   /**
    * Marks the previous {@link Consent} of a specific interview (if exist) as deleted.
    * @param interview Interview for which the consent will be retrieve.
    */
-  public void deletePreviousConsent(Interview interview);
+  public void deletePreviousConsent(Interview interview, String consentName);
 
   /**
    * Persists the {@link Consent}.
