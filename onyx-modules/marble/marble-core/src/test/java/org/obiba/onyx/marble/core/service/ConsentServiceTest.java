@@ -28,6 +28,8 @@ public class ConsentServiceTest extends BaseDefaultSpringContextTestCase {
 
   private Participant participant;
 
+  private static final String STAGE_NAME = "Consent";
+
   @Before
   public void setup() {
     consentService = new ConsentServiceImpl();
@@ -52,6 +54,7 @@ public class ConsentServiceTest extends BaseDefaultSpringContextTestCase {
 
   private Consent createConsent(Interview interview, boolean deleted) {
     Consent consent = new Consent();
+    consent.setConsentName(STAGE_NAME);
     consent.setDeleted(deleted);
     consent.setInterview(interview);
 
@@ -74,7 +77,7 @@ public class ConsentServiceTest extends BaseDefaultSpringContextTestCase {
 
     Consent consent = createConsent(interview);
 
-    Consent retrievedConsent = consentService.getConsent(interview);
+    Consent retrievedConsent = consentService.getConsent(interview, STAGE_NAME);
     Assert.assertEquals(retrievedConsent.getId(), consent.getId());
 
     persistenceManager.delete(consent);
@@ -99,7 +102,7 @@ public class ConsentServiceTest extends BaseDefaultSpringContextTestCase {
     Interview interview = createInterview();
     createConsent(interview);
 
-    consentService.deletePreviousConsent(interview);
+    consentService.deletePreviousConsent(interview, STAGE_NAME);
 
     Consent template = new Consent();
     template.setInterview(interview);

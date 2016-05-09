@@ -1,10 +1,18 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:tx="http://www.springframework.org/schema/tx"
-  xsi:schemaLocation="
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
-http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd">
 
   <tx:annotation-driven transaction-manager="transactionManager" />
+
+  <util:properties id="marbleConfigProperties" location="${org.obiba.onyx.marble.path}/module-config.properties"/>
+
+  <bean id="consentPropertiesResolver" class="org.obiba.onyx.marble.core.ConsentPropertiesResolver">
+    <property name="marbleConfigProperties" ref="marbleConfigProperties" />
+  </bean>
 
   <bean class="org.obiba.onyx.marble.engine.MarbleModule">
     <property name="stageManager">
@@ -12,8 +20,8 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
         <property name="stageDescriptor" value="${org.obiba.onyx.marble.path}/stages.xml" />
       </bean>
     </property>
+    <property name="consentPropertiesResolver" ref="consentPropertiesResolver" />
     <property name="consentService" ref="consentService" />
-    <property name="variableToFieldMap" value="${org.obiba.onyx.marble.consent.variableToField}" />
     <property name="beanResolver" ref="consentBeanResolver" />
     <property name="variableEntityProvider">
       <bean class="org.obiba.onyx.magma.HibernateBeanVariableEntityProvider">
@@ -69,9 +77,10 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="dateFormat" value="${org.obiba.onyx.marble.consent.dateFormat}" />
   </bean>
 
-  <bean id="consentFormTemplateLoader" class="org.obiba.onyx.core.io.support.LocalizedResourceLoader">
+  <bean id="consentFormTemplateLoader" class="org.obiba.onyx.marble.core.ConsentLocalizedResourceLoader">
+    <property name="activeInterviewService" ref="activeInterviewService" />
+    <property name="consentPropertiesResolver" ref="consentPropertiesResolver" />
     <property name="resourcePath" value="${org.obiba.onyx.marble.resources.path}" />
-    <property name="resourceName" value="${org.obiba.onyx.marble.consent.basename}" />
     <property name="resourceExtension" value=".pdf" />
   </bean>
 
@@ -93,5 +102,4 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     </property>
     <property name="magmaInstanceProvider" ref="magmaInstanceProvider"/>
   </bean>
-
 </beans>

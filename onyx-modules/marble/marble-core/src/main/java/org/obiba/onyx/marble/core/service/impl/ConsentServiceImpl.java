@@ -30,16 +30,18 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
 
   private List<Locale> supportedConsentLocales;
 
-  public Consent getConsent(Interview interview) {
+  public Consent getConsent(Interview interview, String consentName) {
     Consent template = new Consent();
+    template.setConsentName(consentName);
     template.setInterview(interview);
     template.setDeleted(false);
     return getPersistenceManager().matchOne(template);
   }
 
-  public void deletePreviousConsent(Interview interview) {
+  public void deletePreviousConsent(Interview interview, String consentName) {
     Consent template = new Consent();
     template.setInterview(interview);
+    template.setConsentName(consentName);
     template.setDeleted(false);
 
     // Mark existing consent as deleted

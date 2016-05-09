@@ -48,7 +48,7 @@ public class MarbleInProgressState extends AbstractMarbleStageState {
   public void complete(Action action) {
     log.debug("Marble Stage {} is completing", super.getStage().getName());
 
-    Consent consent = consentService.getConsent(activeInterviewService.getInterview());
+    Consent consent = consentService.getConsent(activeInterviewService.getInterview(), super.getStage().getName());
     consent.setTimeEnd(new Date());
     consentService.saveConsent(consent);
 
@@ -58,7 +58,7 @@ public class MarbleInProgressState extends AbstractMarbleStageState {
   @Override
   public void stop(Action action) {
     log.debug("Marble Stage {} is canceling", super.getStage().getName());
-    consentService.deletePreviousConsent(activeInterviewService.getInterview());
+    consentService.deletePreviousConsent(activeInterviewService.getInterview(), super.getStage().getName());
     castEvent(TransitionEvent.CANCEL);
   }
 

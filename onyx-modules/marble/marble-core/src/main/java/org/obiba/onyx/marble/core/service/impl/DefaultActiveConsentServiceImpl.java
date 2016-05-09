@@ -47,15 +47,16 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
   public Consent getConsent(boolean newInstance) {
 
     Interview currentInterview = activeInterviewService.getInterview();
+    String stageName = activeInterviewService.getInteractiveStage().getName();
 
     // Consent doesn't exist or new object requested.
     if(consent == null || newInstance) {
       consent = new Consent();
+      consent.setConsentName(stageName);
       consent.setInterview(currentInterview);
       consent.setDeleted(false);
 
       log.debug("Created new consent object for interview id = {}", currentInterview.getId());
-
     } else {
       log.debug("Returning consent object found in current session = {}", currentInterview.getId());
     }
