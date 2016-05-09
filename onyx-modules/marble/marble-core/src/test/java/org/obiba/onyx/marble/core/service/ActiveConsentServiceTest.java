@@ -1,22 +1,22 @@
 package org.obiba.onyx.marble.core.service;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.Assert;
-
 import org.apache.wicket.util.io.Streams;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.marble.core.service.impl.DefaultActiveConsentServiceImpl;
 import org.obiba.onyx.marble.domain.consent.Consent;
+
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
 
 public class ActiveConsentServiceTest {
 
@@ -31,7 +31,9 @@ public class ActiveConsentServiceTest {
     activeInterviewService = createMock(ActiveInterviewService.class);
     Interview interview = new Interview();
     interview.setId("1");
+    Stage stage = new Stage();
     expect(activeInterviewService.getInterview()).andReturn(interview);
+    expect(activeInterviewService.getInteractiveStage()).andReturn(stage);
 
     activeConsentService = new DefaultActiveConsentServiceImpl();
     activeConsentService.setActiveInterviewService(activeInterviewService);

@@ -25,13 +25,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.lowagie.text.pdf.AcroFields;
+import com.lowagie.text.pdf.PdfReader;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Interview;
-
-import com.lowagie.text.pdf.AcroFields;
-import com.lowagie.text.pdf.PdfReader;
 
 @Entity
 @Table(appliesTo = "consent", indexes = { @Index(name = "deleted_index", columnNames = { "deleted" }) })
@@ -42,6 +41,9 @@ public class Consent extends AbstractEntity {
   @ManyToOne(optional = false)
   @JoinColumn(name = "interview_id")
   private Interview interview;
+
+  @Column(nullable = false)
+  private String consentName;
 
   @Column(nullable = false)
   private ConsentMode mode;
@@ -170,5 +172,13 @@ public class Consent extends AbstractEntity {
     }
 
     return cachedPdfReader;
+  }
+
+  public String getConsentName() {
+    return consentName;
+  }
+
+  public void setConsentName(String consentName) {
+    this.consentName = consentName;
   }
 }
