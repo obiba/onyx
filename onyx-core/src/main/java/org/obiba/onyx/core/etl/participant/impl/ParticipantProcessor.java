@@ -68,13 +68,21 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     // validation loop for essential attributes
     for(ParticipantAttribute attribute : participantMetadata.getEssentialAttributes()) {
       Data dataToValidate = participantItem.getEssentialAttributeValue(attribute.getName());
-      if(!validateData(participantId, attribute, dataToValidate)) return null;
+      if(!validateData(participantId, attribute, dataToValidate)) {
+        log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
+            "Invalid attribute '" + attribute.getName() + "' value: " + dataToValidate));
+        return null;
+      }
     }
 
     // validation loop for configurable attributes
     for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
-      if(!validateData(participantId, attribute, participantItem.getConfiguredAttributeValue(attribute.getName())))
+      Data dataToValidate = participantItem.getConfiguredAttributeValue(attribute.getName());
+      if(!validateData(participantId, attribute, dataToValidate)) {
+        log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
+            "Invalid attribute '" + attribute.getName() + "' value: " + dataToValidate));
         return null;
+      }
     }
 
     return validateParticipant(participantItem);
