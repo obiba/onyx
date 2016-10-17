@@ -31,6 +31,8 @@ import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.PurgeParticipantDataService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
@@ -42,9 +44,11 @@ import org.springframework.batch.item.ItemProcessor;
  */
 public class ParticipantProcessor implements ItemProcessor<Participant, Participant>, StepExecutionListener {
 
+  private static final Logger log = LoggerFactory.getLogger(ParticipantProcessor.class);
+
   private static Set<String> enrollmentIds = new HashSet<String>();
 
-  private static List<AppointmentUpdateLog> log = new ArrayList<AppointmentUpdateLog>();
+  private static List<AppointmentUpdateLog> updateLogs = new ArrayList<AppointmentUpdateLog>();
 
   private ApplicationConfigurationService applicationConfigurationService;
 
@@ -60,7 +64,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
     // check enrollment id is unique in submitted participants list
     if(!checkUniqueEnrollmentId(participantItem)) {
-      log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR,
+      addLog(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR,
           "Duplicate " + ParticipantMetadata.ENROLLMENT_ID_ATTRIBUTE_NAME + " " + participantId));
       return null;
     }
@@ -69,7 +73,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     for(ParticipantAttribute attribute : participantMetadata.getEssentialAttributes()) {
       Data dataToValidate = participantItem.getEssentialAttributeValue(attribute.getName());
       if(!validateData(participantId, attribute, dataToValidate)) {
-        log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
+        addLog(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
             "Invalid attribute '" + attribute.getName() + "' value: " + dataToValidate));
         return null;
       }
@@ -79,7 +83,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
       Data dataToValidate = participantItem.getConfiguredAttributeValue(attribute.getName());
       if(!validateData(participantId, attribute, dataToValidate)) {
-        log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
+        addLog(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
             "Invalid attribute '" + attribute.getName() + "' value: " + dataToValidate));
         return null;
       }
@@ -95,7 +99,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
     // Validate site code
     if(!applicationConfigurationService.getApplicationConfiguration().getSiteNo().equals(participantItem.getSiteNo())) {
-      log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
+      addLog(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
           "Ignoring participant for site " + participantItem.getSiteNo() + "."));
     } else {
       participant = new Participant();
@@ -106,9 +110,9 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
       if(participant == null) {
         participant = participantItem;
 
-        // log a warning for appointments scheduled in the past but add them to the system anyway
+        // updateLogs a warning for appointments scheduled in the past but add them to the system anyway
         if(!isNewAppointmentDateValid(participant)) {
-          log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
+          addLog(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
               "Appointment date/time is in the past => adding appointment anyway."));
         }
 
@@ -116,7 +120,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
         if(purgeParticipantDataService.isMultipleInterview() == false
             && Strings.isNullOrEmpty(participant.getEnrollmentId()) == false
             && participantService.isParticipantPurged(participant)) {
-          log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
+          addLog(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
               "Multiple Interviews are not allowed for participants"));
           return null;
         }
@@ -128,14 +132,14 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
         // Validate interview status
         if(interview != null && (interview.getStatus() == InterviewStatus.COMPLETED || interview
             .getStatus() == InterviewStatus.CANCELLED)) {
-          log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
+          addLog(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
               "Interview " + interview.getStatus().toString().toLowerCase() + " => participant update ignored."));
           return null;
         }
 
         // Validate appointment date
         if(!isNewAppointmentDateValid(participantItem)) {
-          log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
+          addLog(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
               "Appointment date/time is in the past => participant update ignored."));
           return null;
         }
@@ -147,7 +151,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
         } else {
           // appointment in database exists
           if(participantItem.getAppointment().getDate().equals(participant.getAppointment().getDate())) {
-            log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
+            addLog(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.WARN, participantId,
                 "Appointment date for participant " + participantItem.getAppointment()
                     .getDate() + " same in database => participant update ignored."));
             return null;
@@ -163,7 +167,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
   private boolean validateData(String participantId, ParticipantAttribute attribute, Data data) {
     // check if the attribute is mandatory and not null
     if(!checkMandatoryCondition(attribute, data)) {
-      log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, participantId,
+      addLog(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, participantId,
           "No value for mandatory field " + attribute.getName() + "."));
       return false;
     }
@@ -172,7 +176,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     // is within that list.
     if(attribute.getType().equals(DataType.TEXT) && data != null) {
       if(!checkValueAllowed(attribute, data)) {
-        log.add(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, participantId,
+        addLog(new AppointmentUpdateLog(new Date(), AppointmentUpdateLog.Level.ERROR, participantId,
             "Value not allowed for field " + attribute.getName() + ": " + data.getValueAsString() + "."));
         return false;
       }
@@ -193,6 +197,20 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
     }
 
     return true;
+  }
+
+  private void addLog(AppointmentUpdateLog updateLog) {
+    switch (updateLog.getLevel()) {
+      case WARN:
+        log.warn("{}: {}", updateLog.getParticipantId(), updateLog.getMessage());
+        break;
+      case ERROR:
+        log.error("{}: {}", updateLog.getParticipantId(), updateLog.getMessage());
+        break;
+      default:
+        log.info("{}: {}", updateLog.getParticipantId(), updateLog.getMessage());
+    }
+    updateLogs.add(updateLog);
   }
 
   private boolean checkMandatoryCondition(ParticipantAttribute attribute, Data attributeValue) {
@@ -250,7 +268,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
   public static void initProcessor() {
     enrollmentIds = new HashSet<String>();
-    log = new ArrayList<AppointmentUpdateLog>();
+    updateLogs = new ArrayList<AppointmentUpdateLog>();
   }
 
   public void setParticipantMetadata(ParticipantMetadata participantMetadata) {
@@ -271,7 +289,7 @@ public class ParticipantProcessor implements ItemProcessor<Participant, Particip
 
   @Override
   public ExitStatus afterStep(StepExecution stepExecution) {
-    for(AppointmentUpdateLog appointmentUpdateLog : log) {
+    for(AppointmentUpdateLog appointmentUpdateLog : updateLogs) {
       AppointmentUpdateLog.addLog(stepExecution.getExecutionContext(), appointmentUpdateLog);
     }
     return null;
