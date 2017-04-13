@@ -8,6 +8,8 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.wicket.data;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,12 +24,16 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.IResourceListener;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
+import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
@@ -36,6 +42,8 @@ import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteSe
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.feedback.FeedbackMessage;
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.AbstractTextComponent.ITextFormatProvider;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -50,19 +58,18 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.resource.ByteArrayResource;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converters.DateConverter;
+import org.apache.wicket.util.template.PackagedTextTemplate;
 import org.apache.wicket.util.upload.FileUploadException;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
-import org.obiba.wicket.nanogong.NanoGongApplet;
-import org.obiba.wicket.nanogong.NanoGongApplet.Format;
-import org.obiba.wicket.nanogong.NanoGongApplet.Option;
 import org.obiba.wicket.nanogong.NanoGongApplet.Rate;
 
 /**
@@ -189,8 +196,8 @@ public class DataField extends Panel {
   }
 
   /**
-   * @param string
-   * @param propertyModel
+   * @param id
+   * @param model
    * @param dataType
    * @param samplingRate
    * @param maxDuration
@@ -237,7 +244,7 @@ public class DataField extends Panel {
 
   /**
    * Set the model of the underlying field.
-   * @param data
+   * @param model
    */
   public void setFieldModel(IModel<Data> model) {
     input.getField().setModel(model);
@@ -681,55 +688,52 @@ public class DataField extends Panel {
 
   private class AudioRecorderFragment extends FieldFragment implements IResourceListener {
 
-    final Map<Option, Object> options = new HashMap<NanoGongApplet.Option, Object>();
-
-    public AudioRecorderFragment(String id, final IModel<Data> model, Rate samplingRate, int maxDuration) {
+    public AudioRecorderFragment(String id, final IModel<Data> model, final Rate samplingRate, final int maxDuration) {
       super(id, "audioRecorderFragment", DataField.this, model);
 
-      options.put(Option.AudioFormat, Format.PCM);
-      options.put(Option.SamplingRate, samplingRate);
-      options.put(Option.MaxDuration, String.valueOf(maxDuration));
-      options.put(Option.ShowSpeedButton, "false");
-      options.put(Option.ShowSaveButton, "false");
-      options.put(Option.ShowTime, "true");
-      options.put(Option.Color, "#FFFFFF");
+      field = new FormComponent<FileUpload>("audio-record-source", new Model<FileUpload>()) {
 
-      field = new NanoGongApplet("nanoGong", "140", "60", options) {
         @Override
-        protected void onAudioData(FileUpload fileUpload) {
-          model.setObject(new Data(DataType.DATA, fileUpload.getBytes()));
-          options.put(Option.SoundFileURL, getFileAudioUrl());
-          options.put(Option.Cookies, "JSESSIONID=" + Session.get().getId());
-          for(AudioDataListener listener : listeners) {
-            listener.onDataUploaded();
-          }
+        protected void onComponentTag(ComponentTag tag) {
+          tag.getAttributes().put("type", "audio/webm");
+        }
+      };
+
+      AbstractDefaultAjaxBehavior audioDataComponentBehaviour = new AbstractDefaultAjaxBehavior() {
+        @Override
+        public void renderHead(IHeaderResponse response) {
+          Map<String, Object> map = new HashMap<>();
+          map.put("callbackUrl", this.getCallbackUrl().toString());
+          map.put("maxDuration", maxDuration);
+          map.put("initialSrc", model.getObject() != null ? getFileAudioUrl() : null); // will not interpolate if null
+
+          PackagedTextTemplate ptt = new PackagedTextTemplate(DataField.class, "DataField.js");
+          ptt.interpolate(map);
+          response.renderOnDomReadyJavascript(ptt.getString());
         }
 
         @Override
-        protected void onAudioDataProcessed(AjaxRequestTarget target) {
-          for(AudioDataListener listener : listeners) {
-            listener.onAudioDataProcessed(target);
-          }
-        }
+        protected void respond(AjaxRequestTarget ajaxRequestTarget) {
+          WebRequest request = (WebRequest) RequestCycle.get().getRequest();
+          HttpServletRequest httpRequest = request.getHttpServletRequest();
+          try {
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(httpRequest.getInputStream());
+            byte[] bytes = new byte[httpRequest.getContentLength()];
+            bufferedInputStream.read(bytes);
+            model.setObject(new Data(DataType.DATA, bytes));
+            for(AudioDataListener listener : listeners) {
+              listener.onAudioDataProcessed(ajaxRequestTarget);
+              listener.onDataUploaded();
+            }
 
-        @Override
-        protected void onFileUploadException(FileUploadException exception, Map<String, Object> exceptionModel) {
-          for(AudioDataListener listener : listeners) {
-            listener.onError(exception, exceptionModel);
+          } catch(IOException e) {
+            // could not save
           }
         }
       };
+      field.add(audioDataComponentBehaviour);
       add(field);
 
-    }
-
-    @Override
-    protected void onInitialize() {
-      super.onInitialize();
-      if(getDefaultModelObject() != null) {
-        options.put(Option.SoundFileURL, getFileAudioUrl());
-        options.put(Option.Cookies, "JSESSIONID=" + Session.get().getId());
-      }
     }
 
     private CharSequence getFileAudioUrl() {
@@ -739,7 +743,7 @@ public class DataField extends Panel {
     @Override
     public void onResourceRequested() {
       byte[] clip = (byte[]) ((Data) getDefaultModelObject()).getValue();
-      new ByteArrayResource("audio/x-wav", clip).onResourceRequested();
+      new ByteArrayResource("audio/webm", clip).onResourceRequested();
     }
   }
 

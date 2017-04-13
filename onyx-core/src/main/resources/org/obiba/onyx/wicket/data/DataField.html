@@ -23,5 +23,11 @@
 </wicket:fragment>
 
 <wicket:fragment wicket:id="audioRecorderFragment">
-	<object wicket:id="nanoGong">[nanoGong]</object>
+	<div class="audio-recorder-container">
+		<canvas id="canvas"></canvas>
+		<audio id="my-audio" controls wicket:id="audio-record-source"></audio>
+	</div>
+
+	<button id="startRecordBtn" type="button">Start</button>
+	<button id="stopRecordBtn" type="button">Stop</button>
 </wicket:fragment>
