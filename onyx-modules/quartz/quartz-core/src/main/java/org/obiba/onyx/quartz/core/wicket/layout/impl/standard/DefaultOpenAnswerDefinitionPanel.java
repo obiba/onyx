@@ -252,7 +252,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
   private DataField createAudioRecordingDataField(ValueMap arguments) {
     OpenAnswerDefinitionAudio openAnswerAudio = new OpenAnswerDefinitionAudio(getOpenAnswerDefinition());
 
-    DataField audioField = new DataField("open", new PropertyModel<Data>(this, "data"), getOpenAnswerDefinition().getDataType(), openAnswerAudio.getSamplingRate(), openAnswerAudio.getMaxDuration());
+    DataField audioField = new DataField("open", new PropertyModel<Data>(this, "data"), getOpenAnswerDefinition().getDataType(), openAnswerAudio.getMaxDuration());
     audioField.addListener(new AudioDataListener() {
       private static final long serialVersionUID = 1L;
 

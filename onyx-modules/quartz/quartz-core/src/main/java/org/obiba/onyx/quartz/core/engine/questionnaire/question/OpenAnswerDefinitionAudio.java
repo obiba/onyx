@@ -50,23 +50,6 @@ public class OpenAnswerDefinitionAudio implements Serializable {
     openAnswer.addUIArgument(OpenAnswerType.UI_ARGUMENT_KEY, OpenAnswerType.AUDIO_RECORDING.getUiArgument());
   }
 
-  public Rate getSamplingRate() {
-    try {
-      return Rate.parse(openAnswer.getUIArgumentsValueMap().getString(SAMPLING_RATE_KEY));
-    } catch(Exception e) {
-      // cannot parse rate
-      return Rate._11025;
-    }
-  }
-
-  public void setSamplingRate(Rate rate) {
-    if(rate == null) {
-      openAnswer.removeUIArgument(SAMPLING_RATE_KEY);
-    } else {
-      openAnswer.replaceUIArgument(SAMPLING_RATE_KEY, rate.toString());
-    }
-  }
-
   public int getMaxDuration() {
     ValueMap valueMap = openAnswer.getUIArgumentsValueMap();
     return valueMap == null ? DEFAULT_MAX_DURATION : valueMap.getAsInteger(MAX_DURATION_KEY, DEFAULT_MAX_DURATION);

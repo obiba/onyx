@@ -199,12 +199,11 @@ public class DataField extends Panel {
    * @param id
    * @param model
    * @param dataType
-   * @param samplingRate
    * @param maxDuration
    */
-  public DataField(String id, IModel<Data> model, DataType dataType, Rate samplingRate, int maxDuration) {
+  public DataField(String id, IModel<Data> model, DataType dataType, int maxDuration) {
     super(id);
-    add(input = new AudioRecorderFragment("input", model, samplingRate, maxDuration));
+    add(input = new AudioRecorderFragment("input", model, maxDuration));
     addUnitLabel(null);
   }
 
@@ -688,7 +687,7 @@ public class DataField extends Panel {
 
   private class AudioRecorderFragment extends FieldFragment implements IResourceListener {
 
-    public AudioRecorderFragment(String id, final IModel<Data> model, final Rate samplingRate, final int maxDuration) {
+    public AudioRecorderFragment(String id, final IModel<Data> model, final int maxDuration) {
       super(id, "audioRecorderFragment", DataField.this, model);
 
       field = new FormComponent<FileUpload>("audio-record-source", new Model<FileUpload>()) {

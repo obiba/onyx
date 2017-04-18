@@ -65,8 +65,6 @@ public class AudioOpenAnswerPanel extends Panel implements SaveablePanel {
 
   private final VariableNameBehavior variableNameBehavior;
 
-  private DropDownChoice<Rate> samplingRateDropDown;
-
   private TextField<Integer> maxDurationField;
 
   private Label resultingSizeLabel;
@@ -140,33 +138,6 @@ public class AudioOpenAnswerPanel extends Panel implements SaveablePanel {
 
     OpenAnswerDefinitionAudio openAnswerAudio = new OpenAnswerDefinitionAudio(openAnswer);
 
-    samplingRateDropDown = new DropDownChoice<Rate>("samplingRate", new Model<Rate>(openAnswerAudio.getSamplingRate()),
-        Arrays.asList(Rate.values()), new IChoiceRenderer<Rate>() {
-      @Override
-      public Object getDisplayValue(Rate rate) {
-        return new StringResourceModel("SamplingRate." + rate.toString(), AudioOpenAnswerPanel.this, null).getString();
-      }
-
-      @Override
-      public String getIdValue(Rate rate, int index) {
-        return rate.name();
-      }
-    });
-
-    samplingRateDropDown.setLabel(new ResourceModel("SamplingRate"));
-    samplingRateDropDown.add(new RequiredFormFieldBehavior());
-    samplingRateDropDown.add(new OnChangeAjaxBehavior() {
-      @Override
-      protected void onUpdate(AjaxRequestTarget target) {
-        calculateResultingSize();
-        target.addComponent(resultingSizeContainer);
-      }
-    });
-    samplingRateDropDown.setNullValid(false);
-
-    add(samplingRateDropDown).add(new SimpleFormComponentLabel("samplingRateLabel", samplingRateDropDown));
-    add(new HelpTooltipPanel("samplingRateHelp", new ResourceModel("SamplingRate.Tooltip")));
-
     maxDurationField = new TextField<Integer>("maxDuration", new Model<Integer>(openAnswerAudio.getMaxDuration()));
     maxDurationField.setLabel(new ResourceModel("MaxDuration"));
     maxDurationField.add(new OnChangeAjaxBehavior() {
@@ -192,10 +163,9 @@ public class AudioOpenAnswerPanel extends Panel implements SaveablePanel {
   }
 
   private void calculateResultingSize() {
-    String sr = samplingRateDropDown.getModelObject() == null ? null : samplingRateDropDown.getModelObject().toString();
     String md = maxDurationField.getValue();
-    if(isNotBlank(sr) && isNotBlank(md)) {
-      double megabytes = Bytes.bytes(Double.valueOf(sr) * 2d * Double.valueOf(md)).megabytes();
+    if(isNotBlank(md)) {
+      double megabytes = Bytes.bytes(88200d * Double.valueOf(md)).megabytes(); // using 44 100 Hz sampling rate by default
       resultingSizeLabel.setDefaultModel(new StringResourceModel("ResultingSize", this, null,
           new Object[] { MEGABYTE_FORMATTER.format(megabytes) }));
     }
@@ -210,7 +180,6 @@ public class AudioOpenAnswerPanel extends Panel implements SaveablePanel {
     OpenAnswerDefinitionAudio openAnswerAudio = new OpenAnswerDefinitionAudio(
         (OpenAnswerDefinition) getDefaultModelObject());
     openAnswerAudio.configureAudioOpenAnswerDefinition();
-    openAnswerAudio.setSamplingRate(samplingRateDropDown.getModelObject());
     openAnswerAudio.setMaxDuration(
         StringUtils.isBlank(maxDurationField.getValue()) ? null : Integer.valueOf(maxDurationField.getValue()));
   }
