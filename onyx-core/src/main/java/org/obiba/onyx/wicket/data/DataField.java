@@ -32,7 +32,6 @@ import org.apache.wicket.IResourceListener;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Response;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -70,7 +69,6 @@ import org.apache.wicket.validation.validator.DateValidator;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
-import org.obiba.wicket.nanogong.NanoGongApplet.Rate;
 
 /**
  * Data field is the component representation of {@link Data}.
