@@ -54,6 +54,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.html.resources.JavascriptResourceReference;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -692,7 +693,7 @@ public class DataField extends Panel {
 
         @Override
         protected void onComponentTag(ComponentTag tag) {
-          tag.getAttributes().put("type", "audio/webm");
+          tag.getAttributes().put("type", "audio/x-wav");
         }
       };
 
@@ -706,6 +707,7 @@ public class DataField extends Panel {
 
           PackagedTextTemplate ptt = new PackagedTextTemplate(DataField.class, "DataField.js");
           ptt.interpolate(map);
+          response.renderJavascriptReference(new JavascriptResourceReference(DataField.class, "recorder.js"));
           response.renderOnDomReadyJavascript(ptt.getString());
         }
 
@@ -740,7 +742,7 @@ public class DataField extends Panel {
     @Override
     public void onResourceRequested() {
       byte[] clip = (byte[]) ((Data) getDefaultModelObject()).getValue();
-      new ByteArrayResource("audio/webm", clip).onResourceRequested();
+      new ByteArrayResource("audio/x-wav", clip).onResourceRequested();
     }
   }
 
