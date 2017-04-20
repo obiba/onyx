@@ -693,7 +693,7 @@ public class DataField extends Panel {
 
         @Override
         protected void onComponentTag(ComponentTag tag) {
-          tag.getAttributes().put("type", "audio/x-wav");
+          tag.getAttributes().put("type", "audio/wav");
         }
       };
 
