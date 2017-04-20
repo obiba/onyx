@@ -53,12 +53,12 @@
 
     request.onreadystatechange = function () {
       if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-        var blob = new Blob([request.response]);
+        var blob = new Blob([request.response], {type: "audio/wav"});
         moveBlobToAudioSrc(blob);
       }
     };
 
-    request.open("GET", "${initialSrc}", true);
+    request.open("GET", "${initialSrc}&_=" + Date.now(), true);
     request.responseType = "blob";
     request.setRequestHeader("Accept", "application/octet-stream");
     request.setRequestHeader("Wicket-Ajax", "true");
@@ -71,10 +71,8 @@
    * @param stream
    */
   function record(stream) {
-
-    var audioContext = new AudioContext();
-    var input = audioContext.createMediaStreamSource(stream);
-    var recorder = new Recorder(input);
+    var mediaRecorder = new MediaStreamRecorder(stream);
+    mediaRecorder.mimeType = 'audio/wav';
 
     displayCanvas(false);
     visualize(stream);
@@ -84,7 +82,7 @@
      * Creates a timeout id to stop the recording
      */
     function onButtonStart() {
-      recorder.record();
+      mediaRecorder.start(1.3 * parseInt("${maxDuration}000", 10)); // to avoid calling ondataavailable twice
       displayCanvas(true);
 
       timeout = setTimeout(function () {
@@ -99,13 +97,14 @@
     function onButtonStop() {
       clearTimeout(timeout);
 
-      recorder.stop();
-      recorder.exportWAV(function (blob) {
-        moveBlobToAudioSrc(blob);
-        doWicketFileUploadCall(blob);
-      });
+      mediaRecorder.stop();
       displayCanvas(false);
     }
+
+    mediaRecorder.ondataavailable = function(blob) {
+      moveBlobToAudioSrc(blob);
+      doWicketFileUploadCall(blob);
+    };
 
     document.getElementById("startRecordBtn").onclick = onButtonStart;
     document.getElementById("stopRecordBtn").onclick = onButtonStop;
