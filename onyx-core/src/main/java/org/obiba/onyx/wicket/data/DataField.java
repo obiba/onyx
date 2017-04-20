@@ -32,7 +32,6 @@ import org.apache.wicket.IResourceListener;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Response;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -55,6 +54,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.html.resources.JavascriptResourceReference;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -70,7 +70,6 @@ import org.apache.wicket.validation.validator.DateValidator;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
-import org.obiba.wicket.nanogong.NanoGongApplet.Rate;
 
 /**
  * Data field is the component representation of {@link Data}.
@@ -694,7 +693,7 @@ public class DataField extends Panel {
 
         @Override
         protected void onComponentTag(ComponentTag tag) {
-          tag.getAttributes().put("type", "audio/webm");
+          tag.getAttributes().put("type", "audio/x-wav");
         }
       };
 
@@ -708,6 +707,7 @@ public class DataField extends Panel {
 
           PackagedTextTemplate ptt = new PackagedTextTemplate(DataField.class, "DataField.js");
           ptt.interpolate(map);
+          response.renderJavascriptReference(new JavascriptResourceReference(DataField.class, "recorder.js"));
           response.renderOnDomReadyJavascript(ptt.getString());
         }
 
@@ -742,7 +742,7 @@ public class DataField extends Panel {
     @Override
     public void onResourceRequested() {
       byte[] clip = (byte[]) ((Data) getDefaultModelObject()).getValue();
-      new ByteArrayResource("audio/webm", clip).onResourceRequested();
+      new ByteArrayResource("audio/x-wav", clip).onResourceRequested();
     }
   }
 

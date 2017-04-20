@@ -53,7 +53,7 @@
 
     request.onreadystatechange = function () {
       if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-        var blob = new Blob([request.response], { 'type' : 'audio/webm; codecs=opus' });
+        var blob = new Blob([request.response]);
         moveBlobToAudioSrc(blob);
       }
     };
@@ -71,8 +71,10 @@
    * @param stream
    */
   function record(stream) {
-    var mediaRecorder = new MediaRecorder(stream);
-    var chunks;
+
+    var audioContext = new AudioContext();
+    var input = audioContext.createMediaStreamSource(stream);
+    var recorder = new Recorder(input);
 
     displayCanvas(false);
     visualize(stream);
@@ -82,7 +84,7 @@
      * Creates a timeout id to stop the recording
      */
     function onButtonStart() {
-      mediaRecorder.start();
+      recorder.record();
       displayCanvas(true);
 
       timeout = setTimeout(function () {
@@ -97,24 +99,13 @@
     function onButtonStop() {
       clearTimeout(timeout);
 
-      mediaRecorder.stop();
+      recorder.stop();
+      recorder.exportWAV(function (blob) {
+        moveBlobToAudioSrc(blob);
+        doWicketFileUploadCall(blob);
+      });
       displayCanvas(false);
     }
-
-    mediaRecorder.onstart = function () {
-      chunks = [];
-    };
-
-    mediaRecorder.ondataavailable = function(event) {
-      chunks.push(event.data);
-    };
-
-    mediaRecorder.onstop = function() {
-      var blob = new Blob(chunks, { 'type' : 'audio/webm; codecs=opus' });
-
-      moveBlobToAudioSrc(blob);
-      doWicketFileUploadCall(blob);
-    };
 
     document.getElementById("startRecordBtn").onclick = onButtonStart;
     document.getElementById("stopRecordBtn").onclick = onButtonStop;
