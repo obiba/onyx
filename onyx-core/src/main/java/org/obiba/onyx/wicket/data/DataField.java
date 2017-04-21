@@ -693,7 +693,7 @@ public class DataField extends Panel {
 
         @Override
         protected void onComponentTag(ComponentTag tag) {
-          tag.getAttributes().put("type", "audio/wav");
+
         }
       };
 
@@ -707,7 +707,6 @@ public class DataField extends Panel {
 
           PackagedTextTemplate ptt = new PackagedTextTemplate(DataField.class, "DataField.js");
           ptt.interpolate(map);
-          response.renderJavascriptReference(new JavascriptResourceReference(DataField.class, "recorder.js"));
           response.renderOnDomReadyJavascript(ptt.getString());
         }
 

@@ -25,9 +25,11 @@
 <wicket:fragment wicket:id="audioRecorderFragment">
 	<div class="audio-recorder-container">
 		<canvas id="canvas"></canvas>
-		<audio id="my-audio" controls wicket:id="audio-record-source"></audio>
+		<audio id="my-audio" preload="metadata" controls wicket:id="audio-record-source"></audio>
 	</div>
 
-	<button id="startRecordBtn" type="button">Start</button>
-	<button id="stopRecordBtn" type="button">Stop</button>
+	<div class="audio-recorder-controls-container">
+		<button id="startRecordBtn" type="button">Start</button>
+		<button id="stopRecordBtn" type="button">Stop</button>
+	</div>
 </wicket:fragment>
