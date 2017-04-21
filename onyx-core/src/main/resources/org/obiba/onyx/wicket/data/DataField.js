@@ -20,19 +20,17 @@
    * @param blob
    */
   function doWicketFileUploadCall(blob) {
-    var reader = new FileReader();
-    reader.onloadend = function () {
-      var request = new XMLHttpRequest();
+    var request = new XMLHttpRequest();
 
-      request.open("POST", "${callbackUrl}", true);
-      request.setRequestHeader("Content-Type", "application/octet-stream");
-      request.setRequestHeader("Wicket-Ajax", "true");
-      request.setRequestHeader("Accept", "text/xml");
+    request.open("POST", "${callbackUrl}", true);
+    request.setRequestHeader("Wicket-Ajax", "true");
+    request.setRequestHeader("Accept", "text/xml");
 
-      request.send(reader.result);
+    request.onload = function (event) {
+      console.info("blob uploaded successfully", event);
     };
 
-    reader.readAsArrayBuffer(blob);
+    request.send(blob);
   }
 
   /**
@@ -53,14 +51,12 @@
 
     request.onreadystatechange = function () {
       if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-        var blob = new Blob([request.response], {type: "audio/wav"});
-        moveBlobToAudioSrc(blob);
+        moveBlobToAudioSrc(request.response);
       }
     };
 
     request.open("GET", "${initialSrc}&_=" + Date.now(), true);
     request.responseType = "blob";
-    request.setRequestHeader("Accept", "application/octet-stream");
     request.setRequestHeader("Wicket-Ajax", "true");
 
     request.send()
