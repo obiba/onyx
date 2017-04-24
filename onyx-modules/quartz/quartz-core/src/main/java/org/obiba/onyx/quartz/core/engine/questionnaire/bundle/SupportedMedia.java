@@ -29,7 +29,7 @@ public enum SupportedMedia {
   AUDIO_OGG(AUDIO, "audio/ogg", "oga"), //
   AUDIO_MPEG(AUDIO, "audio/mpeg", "mp3"), //
   AUDIO_MP4(AUDIO, "audio/mp4", "m4a"), //
-  AUDIO_WEBM(AUDIO, "audio/webm, webm"),
+  AUDIO_WEBM(AUDIO, "audio/webm, weba"),
 
   VIDEO_WEBM(VIDEO, "video/webm", "webm"), //
   VIDEO_OGG(VIDEO, "video/ogg", "ogv"), //
