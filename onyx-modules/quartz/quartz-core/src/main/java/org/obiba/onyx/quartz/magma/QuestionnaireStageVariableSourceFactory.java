@@ -649,7 +649,7 @@ public class QuestionnaireStageVariableSourceFactory implements VariableValueSou
     }
 
     private void visitAudioOpenAnswer(OpenAnswerDefinitionAudio audio, Builder builder) {
-      builder.mimeType("audio/x-wav");
+      builder.mimeType("audio/webm");
     }
 
     private void visitSuggestedOpenAnswer(OpenAnswerDefinitionSuggestion suggestion, Builder builder) {
