@@ -68,6 +68,7 @@ import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.core.service.impl.NoSuchInterviewException;
 import org.obiba.onyx.core.service.impl.NoSuchParticipantException;
 import org.obiba.onyx.core.service.impl.ParticipantRegistryLookupException;
 import org.obiba.onyx.engine.variable.export.OnyxDataExport;
@@ -805,6 +806,16 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
+
+          // sessionId should only lock one participant
+          try {
+            if (!getParticipant().getBarcode().equals(interviewManager.getInterviewedParticipant().getBarcode())) {
+              interviewManager.releaseInterview();
+            }
+          } catch (NoSuchInterviewException e) {
+            //
+          }
+
           // Determine if the interview is locked after the user clicks the link. ONYX-664
           if(!interviewManager.isInterviewAvailable(getParticipant())) {
             content = new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), getModel());
