@@ -667,6 +667,11 @@ public class ParticipantSearchPage extends BasePage {
                 onyxDataExport.exportInterviews();
               } catch(Exception e) {
                 log.error("Error on data export.", e);
+
+                StringResourceModel errorResource = new StringResourceModel("ErrorMessage", ParticipantSearchPage.this, new Model(ParticipantSearchPage.this), new String[]{e.getMessage()});
+                error(errorResource.getString());
+                getFeedbackWindow().setContent(new FeedbackPanel("content"));
+                getFeedbackWindow().show(target);
               }
             }
           });
