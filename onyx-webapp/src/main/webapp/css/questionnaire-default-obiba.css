@@ -282,5 +282,5 @@ input.field-invalid {
 
 .audio-recorder-container audio {
 	width: 300px;
-	height: 32px;
+	display: block;
 }

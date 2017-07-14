@@ -39,7 +39,7 @@
    */
   function moveBlobToAudioSrc(blob) {
     var url = window.URL || window.webkitURL;
-    var audioElement = document.querySelector('audio');
+    var audioElement = document.querySelector('#my-audio');
     audioElement.src = url ? url.createObjectURL(blob) : blob;
   }
 
