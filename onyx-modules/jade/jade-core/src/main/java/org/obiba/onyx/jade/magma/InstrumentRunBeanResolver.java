@@ -222,8 +222,8 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
         return datas;
       }
     }
-
-    return Collections.emptyList();
+    // ONYX-1748 returning null will make a null sequence instead of an empty list of values which is consistent with the fact that there were no measures
+    return null;
   }
 
   protected Object resolveContraindication(ValueSet valueSet, Variable variable) {
