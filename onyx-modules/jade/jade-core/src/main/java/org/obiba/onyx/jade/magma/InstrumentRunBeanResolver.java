@@ -155,7 +155,8 @@ public class InstrumentRunBeanResolver extends AbstractOnyxBeanResolver {
         return values;
       }
     }
-    return Collections.emptyList();
+    // ONYX-1748
+    return null;
   }
 
   protected List<Measure> resolveMeasure(ValueSet valueSet, Variable variable) {
