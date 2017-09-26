@@ -39,7 +39,7 @@
    */
   function moveBlobToAudioSrc(blob) {
     var url = window.URL || window.webkitURL;
-    var audioElement = document.querySelector('#my-audio');
+    var audioElement = document.getElementById('my-audio');
     audioElement.src = url ? url.createObjectURL(blob) : blob;
   }
 
@@ -125,7 +125,7 @@
    * @param stream
    */
   function visualize(stream) {
-    var canvas = document.querySelector("canvas");
+    var canvas = document.getElementById("canvas");
     var audioContext = new (window.AudioContext || webkitAudioContext)();
     var canvasContext = canvas.getContext("2d");
 
