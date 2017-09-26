@@ -1079,7 +1079,7 @@
     <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>2.7</maven-deploy-plugin.version>
     <maven.enforcer.plugin>1.2</maven.enforcer.plugin>
-    <maven-findbugs-plugin.version>2.5.2</maven-findbugs-plugin.version>
+    <maven-findbugs-plugin.version>3.0.4</maven-findbugs-plugin.version>
     <maven-javadoc-plugin.version>2.9</maven-javadoc-plugin.version>
     <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
     <maven-pmd-plugin.version>2.7.1</maven-pmd-plugin.version>
