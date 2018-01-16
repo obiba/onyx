@@ -448,7 +448,7 @@ public class ParticipantSearchPage extends BasePage {
 
       });
 
-      columns.add(new AbstractColumn<Participant>(new StringResourceModel("Status", ParticipantSearchPage.this, null)) {
+      columns.add(new AbstractColumn<Participant>(new StringResourceModel("Status", ParticipantSearchPage.this, null), "interview.status") {
 
         public void populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
           cellItem.add(new InterviewStatusFragment(componentId, rowModel));
