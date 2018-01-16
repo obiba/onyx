@@ -53,7 +53,7 @@ public class DataValueConverter {
       valueType = ValueType.Factory.forName(data.getType().name());
       break;
     }
-    return valueType.valueOf(data.getValue());
+    return valueType.valueOf((Object)data.getValue());
   }
 
   public static Value dataToNullValue(DataType type) {

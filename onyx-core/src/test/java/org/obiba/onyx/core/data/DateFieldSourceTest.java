@@ -45,7 +45,8 @@ public class DateFieldSourceTest {
     verify(iDataSourceMock);
 
     Assert.assertEquals(DataType.INTEGER, data.getType());
-    Assert.assertEquals(participant.getBirthMonth(), data.getValue());
+    Long value = data.getValue();
+    Assert.assertEquals(participant.getBirthMonth(), value.longValue());
   }
 
   @Test

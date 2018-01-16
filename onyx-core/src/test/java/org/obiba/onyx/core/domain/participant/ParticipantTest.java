@@ -84,6 +84,6 @@ public class ParticipantTest {
     // Get the value and verify that it matches the value set.
     Data data = participant.getConfiguredAttributeValue(attributeName);
     Assert.assertNotNull(data);
-    Assert.assertEquals(attributeValue.getValue(), data.getValue());
+    Assert.assertEquals(attributeValue.getValue().toString(), data.getValue().toString());
   }
 }

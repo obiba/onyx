@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.IRequestTarget;
@@ -428,17 +429,17 @@ public class ParticipantSearchPage extends BasePage {
 
     private static final long serialVersionUID = -9121583835357007L;
 
-    private List<IColumn<Participant>> columns = new ArrayList<IColumn<Participant>>();
+    private List<IColumn<Participant>> columns = new ArrayList<>();
 
-    private List<IColumn<Participant>> additional = new ArrayList<IColumn<Participant>>();
+    private List<IColumn<Participant>> additional = new ArrayList<>();
 
     public ParticipantListColumnProvider() {
       if(participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.ENROLLED)) {
-        columns.add(new PropertyColumn<Participant>(new StringResourceModel("EnrollmentId", ParticipantSearchPage.this, null), "enrollmentId", "enrollmentId"));
+        columns.add(new PropertyColumn<>(new StringResourceModel("EnrollmentId", ParticipantSearchPage.this, null), "enrollmentId", "enrollmentId"));
       }
-      columns.add(new PropertyColumn<Participant>(new StringResourceModel("ParticipantCode", ParticipantSearchPage.this, null), "barcode", "barcode"));
-      columns.add(new PropertyColumn<Participant>(new StringResourceModel("LastName", ParticipantSearchPage.this, null), "lastName", "lastName"));
-      columns.add(new PropertyColumn<Participant>(new StringResourceModel("FirstName", ParticipantSearchPage.this, null), "firstName", "firstName"));
+      columns.add(new PropertyColumn<>(new StringResourceModel("ParticipantCode", ParticipantSearchPage.this, null), "barcode", "barcode"));
+      columns.add(new PropertyColumn<>(new StringResourceModel("LastName", ParticipantSearchPage.this, null), "lastName", "lastName"));
+      columns.add(new PropertyColumn<>(new StringResourceModel("FirstName", ParticipantSearchPage.this, null), "firstName", "firstName"));
       columns.add(new AbstractColumn<Participant>(new StringResourceModel("Appointment", ParticipantSearchPage.this, null), "appointment.date") {
 
         @Override
@@ -456,6 +457,23 @@ public class ParticipantSearchPage extends BasePage {
 
       });
 
+      columns.add(new AbstractColumn<Participant>(new StringResourceModel("ExportedInterview", ParticipantSearchPage.this, null)) {
+        @Override
+        public void populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
+          cellItem.add(new ExportStatusFragment(componentId, rowModel));
+        }
+
+        @Override
+        public String getSortProperty() {
+          return super.getSortProperty();
+        }
+
+        @Override
+        public boolean isSortable() {
+          return true;
+        }
+      });
+
       columns.add(new AbstractColumn<Participant>(new StringResourceModel("Actions", ParticipantSearchPage.this, null)) {
 
         public void populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
@@ -464,7 +482,7 @@ public class ParticipantSearchPage extends BasePage {
 
       });
 
-      columns.add(new AbstractColumn<Participant>(new Model<String>("")) {
+      columns.add(new AbstractColumn<Participant>(new Model<>("")) {
 
         public void populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
           cellItem.add(new LockedInterviewFragment(componentId, rowModel));
@@ -708,41 +726,39 @@ public class ParticipantSearchPage extends BasePage {
 
       private final IModel<InterviewStatus> statusModel;
 
-      private boolean isExported;
-
-      public StatusModel(IModel<Participant> modelObject, String expression, boolean isExportedParticipant) {
+      StatusModel(IModel<Participant> modelObject, String expression) {
         super();
-        statusModel = new PropertyModel<InterviewStatus>(modelObject, expression);
-        isExported = isExportedParticipant;
+        statusModel = new PropertyModel<>(modelObject, expression);
       }
 
       @Override
       public String getObject() {
         if(statusModel.getObject() != null) {
-          if(!isExported) {
-            return "obiba-state-" + statusModel.getObject().toString().toLowerCase().replace("_", "");
-          } else {
-            return "obiba-state-exported";
-          }
+          return "obiba-state-" + statusModel.getObject().toString().toLowerCase().replace("_", "");
         }
         return "";
       }
     }
 
-    public InterviewStatusFragment(String id, IModel<Participant> participantModel) {
+    InterviewStatusFragment(String id, IModel<Participant> participantModel) {
       super(id, "interviewStatus", ParticipantSearchPage.this, participantModel);
-
-      Label statusLabel;
-      boolean isExportedParticipant = isParticipantExported(participantModel.getObject());
-      if(isExportedParticipant) {
-        statusLabel = new Label("status", new StringResourceModel("ExportedInterview", ParticipantSearchPage.this, null));
-      } else {
-        statusLabel = new Label("status", new StringResourceModel("InterviewStatus.${status}", ParticipantSearchPage.this, new PropertyModel<Interview>(participantModel, "interview"), ""));
-      }
-      statusLabel.add(new AttributeAppender("class", new StatusModel(participantModel, "interview.status", isExportedParticipant), " "));
+      Label statusLabel = new Label("status", new StringResourceModel("InterviewStatus.${status}", ParticipantSearchPage.this, new PropertyModel<Interview>(participantModel, "interview"), ""));
+      statusLabel.add(new AttributeAppender("class", new StatusModel(participantModel, "interview.status"), " "));
       add(statusLabel);
-
     }
+  }
+
+  private class ExportStatusFragment extends Fragment {
+
+    ExportStatusFragment(String id, IModel<Participant> participantModel) {
+      super(id, "exportStatus", ParticipantSearchPage.this, participantModel);
+      Label statusLabel = new Label("exported");
+      if(isParticipantExported(participantModel.getObject())) {
+        statusLabel.add(new AttributeAppender("class", new Model<String>("obiba-state-exported"), " "));
+      }
+      add(statusLabel);
+    }
+
   }
 
   private class LockedInterviewFragment extends Fragment {
@@ -755,11 +771,11 @@ public class ParticipantSearchPage extends BasePage {
       ContextImage image = new ContextImage("lock", new Model<String>("icons/locked.png"));
       add(image);
 
-      if(interviewManager.isInterviewAvailable((Participant) participantModel.getObject())) {
+      if(interviewManager.isInterviewAvailable(participantModel.getObject())) {
         image.setVisible(false);
       } else {
         // Display tooltip.
-        String interviewer = interviewManager.getInterviewer((Participant) participantModel.getObject());
+        String interviewer = interviewManager.getInterviewer(participantModel.getObject());
         StringResourceModel tooltipResource = new StringResourceModel("InterviewerHasLockOnInterview", ParticipantSearchPage.this, new Model<String>(interviewer), interviewer);
         add(new AttributeAppender("title", true, tooltipResource, " "));
         add(new DisplayTooltipBehaviour(getMarkupId(), "{positionLeft: true, left: -5}"));
@@ -771,20 +787,19 @@ public class ParticipantSearchPage extends BasePage {
    * This fragment uses link visibility in order to hide/display links within the list of available links. It replaces
    * the previous use of AjaxLinkList which would add/not add a component to the list in order to hide/display it. The
    * problem with this approach is that when the model changes, a component that should now be displayed cannot since it
-   * isn't present in the list.
-   * @see ONYX-169
+   * isn't present in the list (see ONYX-169).
    */
   private class ActionListFragment extends Fragment {
 
     private abstract class ActionLink extends AjaxLink<Participant> {
 
-      public ActionLink(String id, IModel<Participant> participantModel) {
+      ActionLink(String id, IModel<Participant> participantModel) {
         super(id, participantModel);
       }
 
     }
 
-    public ActionListFragment(String id, IModel<Participant> participantModel) {
+    ActionListFragment(String id, IModel<Participant> participantModel) {
       super(id, "actionList", ParticipantSearchPage.this, participantModel);
 
       RepeatingView repeater = new RepeatingView("link");
@@ -863,7 +878,7 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          setResponsePage(new ParticipantReceptionPage(getModel(), ParticipantSearchPage.this));
+          setResponsePage(new ParticipantReceptionPage(new PropertyModel<>(getModel(), "particpant"), ParticipantSearchPage.this));
         }
 
         @Override
@@ -912,15 +927,7 @@ public class ParticipantSearchPage extends BasePage {
 
     private static final long serialVersionUID = 1L;
 
-    public ParticipantEntityList(String id, Class<Participant> type, IColumnProvider<Participant> columns, IModel<String> title) {
-      super(id, queryService, type, columns, title);
-    }
-
-    public ParticipantEntityList(String id, Participant template, IColumnProvider<Participant> columns, IModel<String> title) {
-      super(id, queryService, template, columns, title);
-    }
-
-    public ParticipantEntityList(String id, SortableDataProvider<Participant> dataProvider, IColumnProvider<Participant> columns, IModel<String> title) {
+    ParticipantEntityList(String id, SortableDataProvider<Participant> dataProvider, IColumnProvider<Participant> columns, IModel<String> title) {
       super(id, dataProvider, columns, title);
     }
 
@@ -948,4 +955,5 @@ public class ParticipantSearchPage extends BasePage {
       ((AjaxRequestTarget) target).appendJavascript("styleParticipantSearchNavigationBar();");
     }
   }
+
 }

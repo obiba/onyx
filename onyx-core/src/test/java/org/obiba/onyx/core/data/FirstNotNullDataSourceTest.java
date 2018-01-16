@@ -62,7 +62,8 @@ public class FirstNotNullDataSourceTest {
     verify(iDataSourceMock2);
 
     Assert.assertEquals(DataType.INTEGER, data.getType());
-    Assert.assertEquals(65, data.getValue());
+    Integer value = data.getValue();
+    Assert.assertEquals(65, value.intValue());
     Assert.assertEquals("kg", unit);
   }
 

@@ -49,7 +49,8 @@ public class CurrentDateSourceTest {
     Calendar current = Calendar.getInstance();
 
     Assert.assertEquals(DataType.INTEGER, data.getType());
-    Assert.assertEquals(current.get(Calendar.MONTH), data.getValue());
+    Integer value = data.getValue();
+    Assert.assertEquals(current.get(Calendar.MONTH), value.intValue());
   }
 
   @Test
@@ -161,7 +162,8 @@ public class CurrentDateSourceTest {
     current.add(Calendar.MONTH, 6);
 
     Assert.assertEquals(DataType.INTEGER, data.getType());
-    Assert.assertEquals(current.get(Calendar.YEAR), data.getValue());
+    Integer value = data.getValue();
+    Assert.assertEquals(current.get(Calendar.YEAR), value.intValue());
   }
 
   private Participant createParticipant() {
