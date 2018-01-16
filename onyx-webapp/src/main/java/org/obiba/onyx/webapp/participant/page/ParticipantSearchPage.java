@@ -462,16 +462,6 @@ public class ParticipantSearchPage extends BasePage {
         public void populateItem(Item<ICellPopulator<Participant>> cellItem, String componentId, IModel<Participant> rowModel) {
           cellItem.add(new ExportStatusFragment(componentId, rowModel));
         }
-
-        @Override
-        public String getSortProperty() {
-          return super.getSortProperty();
-        }
-
-        @Override
-        public boolean isSortable() {
-          return true;
-        }
       });
 
       columns.add(new AbstractColumn<Participant>(new StringResourceModel("Actions", ParticipantSearchPage.this, null)) {
