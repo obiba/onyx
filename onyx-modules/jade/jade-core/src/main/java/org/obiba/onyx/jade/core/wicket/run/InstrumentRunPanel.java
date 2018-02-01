@@ -10,9 +10,13 @@
 package org.obiba.onyx.jade.core.wicket.run;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.wicket.Component;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
@@ -197,6 +201,7 @@ public class InstrumentRunPanel extends Panel {
     add(kvPanel);
 
     InstrumentRun run = (InstrumentRun) getDefaultModelObject();
+    Map<Integer, List<RepeatableParameterValue>> repeatableParameterMap = Maps.newHashMap();
     for(Object parameter : parameters) {
       InstrumentParameter param = (InstrumentParameter) parameter;
 
@@ -213,7 +218,11 @@ public class InstrumentRunPanel extends Panel {
           if(getMeasure() != null && !getMeasure().getId().equals(measure.getId())) continue;
           for(InstrumentRunValue runValue : measure.getInstrumentRunValues()) {
             if(runValue.getInstrumentParameter().equals(param.getCode())) {
-              addRow(kvPanel, param, runValue, pos);
+              // group params by position (measure occurrence)
+              if (!repeatableParameterMap.containsKey(pos)) {
+                repeatableParameterMap.put(pos, Lists.newArrayList());
+              }
+              repeatableParameterMap.get(pos).add(new RepeatableParameterValue(param, runValue));
             }
           }
           if(pos != null) pos++;
@@ -221,7 +230,25 @@ public class InstrumentRunPanel extends Panel {
       }
     }
 
+    if (!repeatableParameterMap.isEmpty()) {
+      repeatableParameterMap.keySet().stream().sorted().forEach(pos ->
+        repeatableParameterMap.get(pos).forEach(paramValue -> {
+          addRow(kvPanel, paramValue.param, paramValue.runValue, pos);
+        })
+      );
+    }
+
     return kvPanel;
+  }
+
+  private class RepeatableParameterValue {
+    private final InstrumentParameter param;
+    private final InstrumentRunValue runValue;
+
+    private RepeatableParameterValue(InstrumentParameter param, InstrumentRunValue runValue) {
+      this.param = param;
+      this.runValue = runValue;
+    }
   }
 
   @SuppressWarnings("serial")
