@@ -1,20 +1,43 @@
-<wicket:panel>
+<wicket:panel xmlns:wicket="http://www.w3.org/1999/xhtml">
   <div wicket:id="instrument-instructions" class="instrument-instructions"></div>
   
   <div class="wizard-title">
-    <span wicket:id="instructions"/>
+    <span wicket:id="instructions"></span>
   </div>
   <ul>
-    <li wicket:id="repeat"><span wicket:id="instruction"/></li>
+    <li wicket:id="repeat"><span wicket:id="instruction"></span></li>
   </ul>
-  
-  <div>
+
+  <div wicket:id="radioGroup">
+    <wicket:message key="captureMessage">[Select a data capture method]</wicket:message>
+    <wicket:container wicket:id="radioItem">
+      <input type="radio" wicket:id="radio" />
+      <label wicket:id="radioLabel"></label>
+    </wicket:container>
+  </div>
+  <br/>
+  <div wicket:id="automaticCapture"></div>
+  <div wicket:id="manualCapture"></div>
+  <div wicket:id="measures"></div>
+
+  <wicket:fragment wicket:id="automaticCaptureFragment">
     <span wicket:id="general">[Click Start button to launch automatic measurement]</span>
     <input class="obiba-button ui-corner-all" type="button" wicket:id="start" wicket:message="value:Start" />
-  </div>
-  
-  <br/>
-  
-  <div wicket:id="measures"/>
+  </wicket:fragment>
+
+  <wicket:fragment wicket:id="manualCaptureFragment">
+    <div class="wizard-title" wicket:id="title"></div>
+    <table>
+      <span wicket:id="manualOutputs"/>
+    </table>
+    <br/>
+  </wicket:fragment>
+
+  <wicket:fragment wicket:id="manualOutputsFragment">
+    <tr wicket:id="repeat">
+      <td><label wicket:id="label"><span wicket:id="labelText"/></label></td>
+      <td><span wicket:id="field"/></td>
+    </tr>
+  </wicket:fragment>
 
 </wicket:panel>

@@ -1,16 +1,16 @@
-<wicket:panel>
-  <div>
-    <wicket:enclosure>
-      <wicket:message key="manualButtonDescription">[Click Add button to enter values manually]</wicket:message>
-      <input class="obiba-button ui-corner-all" type="button" wicket:id="manualButton" wicket:message="value:Add" />
-    </wicket:enclosure>
-  </div>
+<wicket:panel xmlns:wicket="http://www.w3.org/1999/xhtml">
+  <div wicket:id="manualCapture"></div>
   <br>
-  <div wicket:id="measuresList"/>
+  <div wicket:id="measuresList"></div>
   <div wicket:id="manualEntryDialog"></div>
   <br>
-  <div wicket:id="skipMeasure"/>  
-  
+  <div wicket:id="skipMeasure"></div>
+
+  <wicket:fragment wicket:id="manualRepeatedCaptureFragment">
+    <wicket:message key="manualRepeatedButtonDescription">[Click Add button to enter values manually]</wicket:message>
+    <input class="obiba-button ui-corner-all" type="button" wicket:id="manualButton" wicket:message="value:Add" />
+  </wicket:fragment>
+
   <wicket:fragment wicket:id="skipMeasureFragment">
     <input type="checkbox" wicket:id="skipMeasurements"/><wicket:message key="skipRemainingMeasurements"/><br><br>
     <textarea cols="83" rows="3" wicket:id="comment" name="comment"></textarea>

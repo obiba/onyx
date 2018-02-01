@@ -13,6 +13,7 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -21,6 +22,7 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
+import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
@@ -39,6 +41,8 @@ public class InstrumentLaunchPanelTest {
   //
 
   private ExtendedApplicationContextMock applicationContextMock;
+
+  private EntityQueryService queryService;
 
   private ActiveInstrumentRunService activeInstrumentRunServiceMock;
 
@@ -76,12 +80,11 @@ public class InstrumentLaunchPanelTest {
     verify(activeInstrumentRunServiceMock);
 
     // Verify visibility of the "enter values manually" button (this implies the visibility of its parent).
-    AjaxLink manualButton = (AjaxLink) instrumentLaunchPanel.get("measures:manualButton");
-    assertNotNull(manualButton);
-    MarkupContainer parent = manualButton.getParent();
-    assertNotNull(parent);
-    assertTrue(manualButton.isVisible());
-    assertTrue(parent.isVisible());
+    AjaxLink manualButton = (AjaxLink) instrumentLaunchPanel.get("measures:manualCapture:manualButton");
+    assertNull(manualButton);
+    //MarkupContainer parent = manualButton.getParent();
+    //assertNotNull(parent);
+    //assertTrue(manualButton.isVisible());
   }
 
   @Test
@@ -137,6 +140,9 @@ public class InstrumentLaunchPanelTest {
 
   private void initApplicationContext() {
     applicationContextMock = new ExtendedApplicationContextMock();
+
+    queryService = createMock(EntityQueryService.class);
+    applicationContextMock.putBean("queryService", queryService);
 
     activeInstrumentRunServiceMock = createMock(ActiveInstrumentRunService.class);
     applicationContextMock.putBean("activeInstrumentRunService", activeInstrumentRunServiceMock);

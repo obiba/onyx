@@ -48,9 +48,11 @@ public class MeasuresPanel extends Panel {
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
+  private final InstrumentType instrumentType;
+
   private MeasuresListPanel measuresList;
 
-  private AjaxLink<Object> addButton;
+  private ManualRepeatedCaptureFragment manualRepeatedCapture;
 
   private SkipMeasureFragment skipMeasure;
 
@@ -58,25 +60,26 @@ public class MeasuresPanel extends Panel {
 
   public MeasuresPanel(String id) {
     super(id);
+    setOutputMarkupId(true);
 
-    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    instrumentType = activeInstrumentRunService.getInstrumentType();
 
     skipMeasurement = (getInstrumentRun().getSkipComment() != null);
 
-    addMeasuresList(instrumentType);
-    addAddButton(instrumentType);
-    addSkipMeasure(instrumentType);
+    addMeasuresList();
+    addManualCapture();
+    addSkipMeasure();
   }
 
-  private void addMeasuresList(InstrumentType instrumentType) {
+  private void addMeasuresList() {
     add(measuresList = new MeasuresListPanel("measuresList") {
 
       private static final long serialVersionUID = 1L;
 
       @Override
       public void onRefresh(AjaxRequestTarget target) {
-        addButton.setEnabled(measuresList.getMeasureCount() < measuresList.getExpectedMeasureCount());
-        target.addComponent(addButton);
+        manualRepeatedCapture.setAddButtonEnabled(measuresList.getMeasureCount() < measuresList.getExpectedMeasureCount());
+        target.addComponent(manualRepeatedCapture);
 
         skipMeasure.refresh(target);
 
@@ -126,29 +129,13 @@ public class MeasuresPanel extends Panel {
     return manualEntryDialog;
   }
 
-  private void addAddButton(InstrumentType instrumentType) {
-    final Dialog manualEntryDialog = addManualEntryDialog();
-
-    addButton = new AjaxLink<Object>("manualButton") {
-
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        manualEntryDialog.getForm().setEnabled(true);
-        manualEntryDialog.show(target);
-        onAddClick(target);
-      }
-
-    };
-    addButton.setOutputMarkupId(true);
-    addButton.add(new ButtonDisableBehavior());
-    add(addButton);
-
-    addButton.setVisible(instrumentType.hasManualCaptureOutputParameters());
+  private void addManualCapture() {
+    manualRepeatedCapture = new ManualRepeatedCaptureFragment("manualCapture", addManualEntryDialog());
+    add(manualRepeatedCapture);
+    manualRepeatedCapture.setVisible(instrumentType.isRepeatable());
   }
 
-  private void addSkipMeasure(InstrumentType instrumentType) {
+  private void addSkipMeasure() {
     skipMeasure = new SkipMeasureFragment("skipMeasure");
     skipMeasure.setVisible(instrumentType.isRepeatable() && instrumentType.isAllowPartial());
     skipMeasure.setOutputMarkupId(true);
@@ -212,6 +199,41 @@ public class MeasuresPanel extends Panel {
     return activeInstrumentRunService.getInstrumentRun();
   }
 
+  public void showManualCapture(boolean visible) {
+    manualRepeatedCapture.setVisible(instrumentType.isRepeatable() && visible);
+  }
+
+  public class ManualRepeatedCaptureFragment extends Fragment {
+
+    private AjaxLink<Object> addButton;
+
+    public ManualRepeatedCaptureFragment(String id, final Dialog manualEntryDialog) {
+      super(id, "manualRepeatedCaptureFragment", MeasuresPanel.this);
+      setOutputMarkupId(true);
+      addButton = new AjaxLink<Object>("manualButton") {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          manualEntryDialog.getForm().setEnabled(true);
+          manualEntryDialog.show(target);
+          onAddClick(target);
+        }
+
+      };
+      addButton.setOutputMarkupId(true);
+      addButton.add(new ButtonDisableBehavior());
+      addButton.setVisible(instrumentType.hasManualCaptureOutputParameters());
+      add(addButton);
+    }
+
+    public void setAddButtonEnabled(boolean enabled) {
+      addButton.setEnabled(enabled);
+    }
+  }
+
+
   /**
    * Ski measurement widget: a checkbox and a text area for comments.
    */
@@ -244,8 +266,8 @@ public class MeasuresPanel extends Panel {
           WizardStepPanel step = (WizardStepPanel) form.get("step");
           step.handleWizardState(form, target);
 
-          addButton.setEnabled(!isSkipMeasurement());
-          target.addComponent(addButton);
+          manualRepeatedCapture.setAddButtonEnabled(!isSkipMeasurement());
+          target.addComponent(manualRepeatedCapture);
 
           MeasuresPanel.this.onSkipUpdate(target);
         }

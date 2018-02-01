@@ -1,28 +1,27 @@
-<wicket:panel>
-    <div wicket:id="instrument-instructions" class="instrument-instructions"></div>
-    
-	<table>
-		<span wicket:id="inputs" />
-		<span wicket:id="outputs" />
-	</table>
+<wicket:panel xmlns:wicket="http://www.w3.org/1999/xhtml">
+  <div wicket:id="instrument-instructions" class="instrument-instructions"></div>
+  <table>
+    <span wicket:id="inputs"/>
+    <span wicket:id="outputs"/>
+  </table>
   <br>
   <div wicket:id="measures"/>
+  <wicket:fragment wicket:id="inputFragment">
+    <tr>
+      <td colspan="2" class="wizard-title"><span class="wizard-title" wicket:id="title"/></td>
+    </tr>
+    <tr wicket:id="repeat">
+      <td><label wicket:id="label"><span wicket:id="labelText"/></label></td>
+      <td><span wicket:id="field"/></td>
+    </tr>
+  </wicket:fragment>
+  <wicket:fragment wicket:id="outputFragment">
+    <tr>
+      <td colspan="2" class="wizard-title"><span class="wizard-title" wicket:id="title"/></td>
+    </tr>
+    <tr wicket:id="repeat">
+      <td><label wicket:id="label"><span wicket:id="labelText"/></label></td>
+      <td><span wicket:id="field"/></td>
+    </tr>
+  </wicket:fragment>
 </wicket:panel>
-<wicket:fragment wicket:id="inputFragment">
-	<tr>
-		<td colspan="2" class="wizard-title"><span class="wizard-title" wicket:id="title"/></td>
-	</tr>
-	<tr wicket:id="repeat">
-		<td><label wicket:id="label"><span wicket:id="labelText" /></label></td>
-		<td><span wicket:id="field"/></td>
-	</tr>
-</wicket:fragment>
-<wicket:fragment wicket:id="outputFragment">
-	<tr>
-		<td colspan="2" class="wizard-title"><span class="wizard-title" wicket:id="title"/></td>
-	</tr>
-	<tr wicket:id="repeat">
-			<td><label wicket:id="label"><span wicket:id="labelText" /></label></td>
-			<td><span wicket:id="field"/></td>
-		</tr>
-</wicket:fragment>

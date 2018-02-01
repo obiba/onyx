@@ -128,6 +128,13 @@ public class InstrumentType implements Serializable {
     return false;
   }
 
+  public boolean hasManualCaptureOutputParameters(boolean repeatable) {
+    for(InstrumentOutputParameter parameter : getOutputParameters()) {
+      if(isManualCapture(parameter) && isRepeatable(parameter) == repeatable) return true;
+    }
+    return false;
+  }
+
   /**
    * Returns a list of {@link InstrumentOutputParameter}s that permit manual capture. Normally these parameters would be
    * captured automatically, but if required they may also be captured manually.
@@ -380,7 +387,6 @@ public class InstrumentType implements Serializable {
 
   /**
    * Shall we expect data from a remote instrument application ?
-   * @param instrument
    * @return
    */
   public boolean isInteractive() {

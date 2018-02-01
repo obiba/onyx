@@ -47,6 +47,8 @@ public class InstrumentLaunchStep extends WizardStepPanel {
 
   private boolean launched = false;
 
+  private InstrumentLaunchPanel instrumentLaunchPanel;
+
   public InstrumentLaunchStep(String id) {
     super(id);
     setOutputMarkupId(true);
@@ -87,7 +89,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
   @Override
   public void onStepInNext(final WizardForm form, AjaxRequestTarget target) {
     super.onStepInNext(form, target);
-    setContent(target, new InstrumentLaunchPanel(getContentId()) {
+    setContent(target, instrumentLaunchPanel = new InstrumentLaunchPanel(getContentId()) {
 
       @Override
       public void onInstrumentLaunch() {
@@ -102,6 +104,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     super.onStepOutNext(form, target);
+    instrumentLaunchPanel.saveManualOutputInstrumentRunValues();
 
     if(launched || instrumentRunContainsValues()) {
 
