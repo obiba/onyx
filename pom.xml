@@ -1056,12 +1056,12 @@
     <liquibase.version>1.9.4</liquibase.version>
     <logback.version>1.1.3</logback.version>
     <obiba.commons.version>1.9.3</obiba.commons.version>
-    <opal.version>2.10.6</opal.version>
+    <opal.version>2.10.7</opal.version>
     <opencsv.version>2.3</opencsv.version>
     <quartz-scheduler.version>2.2.1</quartz-scheduler.version>
     <poi.version>3.9</poi.version>
     <rhino-js.version>1.7.7.1</rhino-js.version>
-    <magma.version>1.16.19</magma.version>
+    <magma.version>1.16.20</magma.version>
     <meparser.version>0.0.6</meparser.version>
     <mysql-connector-java.version>5.1.36</mysql-connector-java.version>
     <pmd.ruleset.dir>${basedir}</pmd.ruleset.dir>
