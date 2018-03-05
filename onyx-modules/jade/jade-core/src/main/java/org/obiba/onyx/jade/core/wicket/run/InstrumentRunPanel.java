@@ -10,10 +10,7 @@
 package org.obiba.onyx.jade.core.wicket.run;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -220,7 +217,7 @@ public class InstrumentRunPanel extends Panel {
             if(runValue.getInstrumentParameter().equals(param.getCode())) {
               // group params by position (measure occurrence)
               if (!repeatableParameterMap.containsKey(pos)) {
-                repeatableParameterMap.put(pos, Lists.newArrayList());
+                repeatableParameterMap.put(pos, new ArrayList<RepeatableParameterValue>());
               }
               repeatableParameterMap.get(pos).add(new RepeatableParameterValue(param, runValue));
             }
@@ -231,11 +228,13 @@ public class InstrumentRunPanel extends Panel {
     }
 
     if (!repeatableParameterMap.isEmpty()) {
-      repeatableParameterMap.keySet().stream().sorted().forEach(pos ->
-        repeatableParameterMap.get(pos).forEach(paramValue -> {
+      List<Integer> positions = Lists.newArrayList(repeatableParameterMap.keySet());
+      Collections.sort(positions);
+      for (Integer pos : positions) {
+        for (RepeatableParameterValue paramValue : repeatableParameterMap.get(pos)) {
           addRow(kvPanel, paramValue.param, paramValue.runValue, pos);
-        })
-      );
+        }
+      }
     }
 
     return kvPanel;

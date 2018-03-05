@@ -20,7 +20,7 @@ import org.obiba.onyx.util.data.DataBuilder;
 
 /**
  * This implementation of the {@link ParticipantRegistry} returns one of four fixed {@link Participant}s and is intended
- * for use during development. Providing the unique ids 1-4 will return one of the {@code Particpant}s. Id 5 will
+ * for use during development. Providing the unique ids 1-4 will return one of the {@code Participant}s. Id 5 will
  * produce a {@link ParticipantRegistryLookupException}. Anything else will produce a {@link NoSuchParticipantException}
  * .
  */

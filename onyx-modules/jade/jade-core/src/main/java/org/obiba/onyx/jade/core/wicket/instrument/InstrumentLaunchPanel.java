@@ -314,9 +314,8 @@ public abstract class InstrumentLaunchPanel extends Panel {
       RepeatingView repeat = new RepeatingView("repeat");
       add(repeat);
 
-      instrumentType.getManualCaptureOutputParameters().stream()
-        .filter(param -> !instrumentType.isRepeatable(param))
-        .forEach(param -> {
+      for (InstrumentOutputParameter param : instrumentType.getManualCaptureOutputParameters()) {
+        if (!instrumentType.isRepeatable(param)) {
           WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
           repeat.add(item);
 
@@ -333,7 +332,8 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
           Label labelText = new Label("labelText", new MessageSourceResolvableStringModel(param.getLabel()));
           label.add(labelText);
-        });
+        }
+      }
     }
 
     private DataField makeDataField(InstrumentOutputParameter param, final IModel<InstrumentRunValue> runValueModel) {

@@ -435,11 +435,11 @@ public class ParticipantSearchPage extends BasePage {
 
     public ParticipantListColumnProvider() {
       if(participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.ENROLLED)) {
-        columns.add(new PropertyColumn<>(new StringResourceModel("EnrollmentId", ParticipantSearchPage.this, null), "enrollmentId", "enrollmentId"));
+        columns.add(new PropertyColumn<Participant>(new StringResourceModel("EnrollmentId", ParticipantSearchPage.this, null), "enrollmentId", "enrollmentId"));
       }
-      columns.add(new PropertyColumn<>(new StringResourceModel("ParticipantCode", ParticipantSearchPage.this, null), "barcode", "barcode"));
-      columns.add(new PropertyColumn<>(new StringResourceModel("LastName", ParticipantSearchPage.this, null), "lastName", "lastName"));
-      columns.add(new PropertyColumn<>(new StringResourceModel("FirstName", ParticipantSearchPage.this, null), "firstName", "firstName"));
+      columns.add(new PropertyColumn<Participant>(new StringResourceModel("ParticipantCode", ParticipantSearchPage.this, null), "barcode", "barcode"));
+      columns.add(new PropertyColumn<Participant>(new StringResourceModel("LastName", ParticipantSearchPage.this, null), "lastName", "lastName"));
+      columns.add(new PropertyColumn<Participant>(new StringResourceModel("FirstName", ParticipantSearchPage.this, null), "firstName", "firstName"));
       columns.add(new AbstractColumn<Participant>(new StringResourceModel("Appointment", ParticipantSearchPage.this, null), "appointment.date") {
 
         @Override
@@ -868,7 +868,7 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          setResponsePage(new ParticipantReceptionPage(new PropertyModel<>(getModel(), "particpant"), ParticipantSearchPage.this));
+          setResponsePage(new ParticipantReceptionPage(new PropertyModel<Participant>(getModel(), "participant"), ParticipantSearchPage.this));
         }
 
         @Override
