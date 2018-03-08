@@ -77,6 +77,7 @@
     <property name="sessionFactory" ref="sessionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="instrumentsPath" value="${org.obiba.onyx.jade.instruments.codebase.path}" />
+    <property name="baseUrl" value="${org.obiba.onyx.baseUrl}" />
     <property name="instrumentTypes" ref="instrumentTypeFactory" />
   </bean>
 

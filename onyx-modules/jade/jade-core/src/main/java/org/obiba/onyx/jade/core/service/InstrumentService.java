@@ -57,6 +57,13 @@ public interface InstrumentService {
   public String getInstrumentInstallPath(InstrumentType type);
 
   /**
+   * Get the base URL to inject in the JNLP files if default behaviour is not suitable (because of a proxy).
+   *
+   * @return
+   */
+  public String getBaseUrl();
+
+  /**
    * Get the instrument types for given workstation.
    * @param workstation
    * @return

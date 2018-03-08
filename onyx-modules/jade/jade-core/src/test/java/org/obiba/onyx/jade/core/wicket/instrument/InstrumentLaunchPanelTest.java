@@ -9,15 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.instrument;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -72,12 +68,16 @@ public class InstrumentLaunchPanelTest {
     expect(activeInstrumentRunServiceMock.getInstrumentType()).andReturn(instrumentType).anyTimes();
     expect(activeInstrumentRunServiceMock.updateReadOnlyInputParameterRunValue()).andReturn(null).anyTimes();
     expect(activeInstrumentRunServiceMock.getInstrumentRun()).andReturn(new InstrumentRun()).anyTimes();
+    expect(instrumentServiceMock.getInstrumentInstallPath(instrumentType)).andReturn(null);
+    expect(instrumentServiceMock.getBaseUrl()).andReturn("");
 
     replay(activeInstrumentRunServiceMock);
+    replay(instrumentServiceMock);
 
     InstrumentLaunchPanel instrumentLaunchPanel = createInstrumentLaunchPanel();
 
     verify(activeInstrumentRunServiceMock);
+    verify(instrumentServiceMock);
 
     // Verify visibility of the "enter values manually" button (this implies the visibility of its parent).
     AjaxLink manualButton = (AjaxLink) instrumentLaunchPanel.get("measures:manualCapture:manualButton");
@@ -94,12 +94,16 @@ public class InstrumentLaunchPanelTest {
     expect(activeInstrumentRunServiceMock.getInstrumentType()).andReturn(instrumentType).anyTimes();
     expect(activeInstrumentRunServiceMock.updateReadOnlyInputParameterRunValue()).andReturn(null).anyTimes();
     expect(activeInstrumentRunServiceMock.getInstrumentRun()).andReturn(new InstrumentRun());
+    expect(instrumentServiceMock.getInstrumentInstallPath(instrumentType)).andReturn(null);
+    expect(instrumentServiceMock.getBaseUrl()).andReturn("");
 
     replay(activeInstrumentRunServiceMock);
+    replay(instrumentServiceMock);
 
     InstrumentLaunchPanel instrumentLaunchPanel = createInstrumentLaunchPanel();
 
     verify(activeInstrumentRunServiceMock);
+    verify(instrumentServiceMock);
 
     // Verify invisibility of the "enter values manually" button. At least one of the following
     // must be true: Either the button is itself invisible or its parent is (effectively making
@@ -115,12 +119,16 @@ public class InstrumentLaunchPanelTest {
     expect(activeInstrumentRunServiceMock.getInstrumentType()).andReturn(instrumentType).anyTimes();
     expect(activeInstrumentRunServiceMock.updateReadOnlyInputParameterRunValue()).andReturn(null).anyTimes();
     expect(activeInstrumentRunServiceMock.getInstrumentRun()).andReturn(new InstrumentRun());
+    expect(instrumentServiceMock.getInstrumentInstallPath(instrumentType)).andReturn(null);
+    expect(instrumentServiceMock.getBaseUrl()).andReturn("");
 
     replay(activeInstrumentRunServiceMock);
+    replay(instrumentServiceMock);
 
     InstrumentLaunchPanel instrumentLaunchPanel = createInstrumentLaunchPanel();
 
     verify(activeInstrumentRunServiceMock);
+    verify(instrumentServiceMock);
 
     // Verify presence of manual entry dialog.
     Dialog manualEntryDialog = (Dialog) instrumentLaunchPanel.get("measures:manualEntryDialog");

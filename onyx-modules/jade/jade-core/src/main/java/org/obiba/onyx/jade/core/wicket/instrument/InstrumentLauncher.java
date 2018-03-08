@@ -20,6 +20,7 @@ import java.util.Properties;
 
 import javax.servlet.ServletContext;
 
+import com.google.common.base.Strings;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Resource;
 import org.apache.wicket.ResourceReference;
@@ -47,10 +48,13 @@ public class InstrumentLauncher implements Serializable {
 
   private final String instrumentCodeBase;
 
-  public InstrumentLauncher(InstrumentType instrument, String instrumentCodeBase) {
+  private final String baseUrl;
+
+  public InstrumentLauncher(InstrumentType instrument, String instrumentCodeBase, String baseUrl) {
     super();
     this.customProperties = instrument.getProperties();
     this.instrumentCodeBase = instrumentCodeBase;
+    this.baseUrl = baseUrl;
   }
 
   @SuppressWarnings("serial")
@@ -120,8 +124,11 @@ public class InstrumentLauncher implements Serializable {
   }
 
   private String makeUrl(String path) {
-    WebRequest wr = (WebRequest) RequestCycle.get().getRequest();
-    return wr.getHttpServletRequest().getRequestURL().append(path).toString();
+    if (Strings.isNullOrEmpty(baseUrl)) {
+      WebRequest wr = (WebRequest) RequestCycle.get().getRequest();
+      return wr.getHttpServletRequest().getRequestURL().append(path).toString();
+    }
+    return baseUrl + (baseUrl.endsWith("/") ? "" : "/") + path;
   }
 
   private class PropertiesVariableInterpolator extends VariableInterpolator {

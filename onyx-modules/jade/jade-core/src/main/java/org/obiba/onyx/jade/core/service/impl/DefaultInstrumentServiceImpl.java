@@ -32,6 +32,8 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
 
   private String instrumentsPath;
 
+  private String baseUrl;
+
   private Map<String, InstrumentType> instrumentTypes;
 
   private UserSessionService userSessionService;
@@ -46,6 +48,14 @@ public abstract class DefaultInstrumentServiceImpl extends PersistenceManagerAwa
 
   public void setInstrumentsPath(String instrumentsPath) {
     this.instrumentsPath = instrumentsPath;
+  }
+
+  public void setBaseUrl(String baseUrl) {
+    this.baseUrl = baseUrl;
+  }
+
+  public String getBaseUrl() {
+    return baseUrl;
   }
 
   public InstrumentType getInstrumentType(String name) {

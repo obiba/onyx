@@ -1,19 +1,13 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.instrument;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -22,7 +16,6 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.*;
-import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -60,6 +53,12 @@ import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Get the input parameters that are from read-only sources and give the instructions to the operator:
@@ -144,7 +143,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
     });
     add(radioGroup);
     radioGroup.setVisible(instrumentType.hasManualCaptureOutputParameters());
-    ListView radioList = new ListView<String>("radioItem", Arrays.asList(new String[] { AUTOMATIC, MANUAL })) {
+    ListView radioList = new ListView<String>("radioItem", Arrays.asList(new String[]{AUTOMATIC, MANUAL})) {
 
       @Override
       protected void populateItem(final ListItem item) {
@@ -193,20 +192,20 @@ public abstract class InstrumentLaunchPanel extends Panel {
     }
 
     String errMessage = activeInstrumentRunService.updateReadOnlyInputParameterRunValue();
-    if(errMessage != null) error(errMessage);
+    if (errMessage != null) error(errMessage);
 
     RepeatingView repeat = new RepeatingView("repeat");
     add(repeat);
 
     // get all the input run values that requires manual capture
     boolean manualCaptureRequired = false;
-    for(InstrumentInputParameter param : instrumentType.getInputParameters(InstrumentParameterCaptureMethod.MANUAL)) {
+    for (InstrumentInputParameter param : instrumentType.getInputParameters(InstrumentParameterCaptureMethod.MANUAL)) {
 
       final String paramCode = param.getCode();
 
       // We don't want to display parameters that were manually entered by the user in the previous step.
       // These will be automatically sent to the instrument.
-      if(param.getDataSource() != null) {
+      if (param.getDataSource() != null) {
 
         manualCaptureRequired = true;
 
@@ -220,10 +219,10 @@ public abstract class InstrumentLaunchPanel extends Panel {
             ValueMap map = new ValueMap();
             map.put("description", new MessageSourceResolvableStringModel(param.getLabel()).getObject());
             Data data = runValue.getData(param.getDataType());
-            if(data != null && data.getValue() != null) {
+            if (data != null && data.getValue() != null) {
               map.put("value", new SpringStringResourceModel(data.getValueAsString()).getString());
               String unit = param.getMeasurementUnit();
-              if(unit == null) {
+              if (unit == null) {
                 unit = "";
               }
               map.put("unit", unit);
@@ -240,7 +239,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
   }
 
   public void saveManualOutputInstrumentRunValues() {
-    for(IModel<InstrumentRunValue> runValueModel : outputRunValueModels) {
+    for (IModel<InstrumentRunValue> runValueModel : outputRunValueModels) {
       activeInstrumentRunService.update(runValueModel.getObject());
     }
   }
@@ -251,14 +250,14 @@ public abstract class InstrumentLaunchPanel extends Panel {
   public abstract void onInstrumentLaunch();
 
   public boolean isSkipMeasurement() {
-    if(measures != null) {
+    if (measures != null) {
       return measures.isSkipMeasurement();
     }
     return false;
   }
 
   public boolean isMeasureComplete() {
-    if(measures != null) {
+    if (measures != null) {
       return measures.isMeasureComplete();
     }
     return false;
@@ -276,7 +275,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
         new Model<ValueMap>(new ValueMap("name=" + instrumentType.getName())))));
 
       String codebase = instrumentService.getInstrumentInstallPath(instrumentType);
-      final InstrumentLauncher launcher = new InstrumentLauncher(instrumentType, codebase);
+      final InstrumentLauncher launcher = new InstrumentLauncher(instrumentType, codebase, instrumentService.getBaseUrl());
       startButton = new Link<Object>("start") {
 
         @Override
@@ -338,13 +337,13 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     private DataField makeDataField(InstrumentOutputParameter param, final IModel<InstrumentRunValue> runValueModel) {
       List<Data> choices = null;
-      if(param.getDataSource() == null) {
+      if (param.getDataSource() == null) {
         choices = param.getAllowedValues();
       }
 
       DataField field;
 
-      if(choices != null && choices.size() > 0) {
+      if (choices != null && choices.size() > 0) {
         field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), choices, new IChoiceRenderer() {
 
           public Object getDisplayValue(Object object) {
@@ -369,7 +368,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
           }
         };
 
-        if(param.getDataType().equals(DataType.TEXT) && (field.getField().getClass().equals(java.awt.TextField.class) || field.getField().getClass().equals(TextArea.class))) {
+        if (param.getDataType().equals(DataType.TEXT) && (field.getField().getClass().equals(java.awt.TextField.class) || field.getField().getClass().equals(TextArea.class))) {
           field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(2000), param.getDataType()));
         }
       }
