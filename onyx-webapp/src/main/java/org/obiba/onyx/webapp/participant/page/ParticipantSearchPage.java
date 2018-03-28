@@ -868,7 +868,7 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          setResponsePage(new ParticipantReceptionPage(new PropertyModel<Participant>(getModel(), "participant"), ParticipantSearchPage.this));
+          setResponsePage(new ParticipantReceptionPage(new PropertyModel<Participant>(getModel().getObject().getAppointment(), "participant"), ParticipantSearchPage.this));
         }
 
         @Override
