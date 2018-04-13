@@ -21,6 +21,9 @@
    * @param blob
    */
   function doWicketFileUploadCall(blob) {
+    var formData = new FormData();
+    formData.append("file", blob);
+
     var request = new XMLHttpRequest();
 
     request.open("POST", "${callbackUrl}", true);
@@ -31,7 +34,7 @@
       console.info("blob uploaded successfully", event);
     };
 
-    request.send(blob);
+    request.send(formData);
   }
 
   /**

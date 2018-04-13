@@ -8,8 +8,8 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.wicket.data;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -54,7 +54,6 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.html.resources.JavascriptResourceReference;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -63,8 +62,12 @@ import org.apache.wicket.resource.ByteArrayResource;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converters.DateConverter;
+import org.apache.wicket.util.io.IOUtils;
 import org.apache.wicket.util.template.PackagedTextTemplate;
+import org.apache.wicket.util.upload.FileItemIterator;
+import org.apache.wicket.util.upload.FileItemStream;
 import org.apache.wicket.util.upload.FileUploadException;
+import org.apache.wicket.util.upload.ServletFileUpload;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -714,19 +717,39 @@ public class DataField extends Panel {
         protected void respond(AjaxRequestTarget ajaxRequestTarget) {
           WebRequest request = (WebRequest) RequestCycle.get().getRequest();
           HttpServletRequest httpRequest = request.getHttpServletRequest();
-          try {
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(httpRequest.getInputStream());
-            byte[] bytes = new byte[httpRequest.getContentLength()];
-            bufferedInputStream.read(bytes);
-            model.setObject(new Data(DataType.DATA, bytes));
-            for(AudioDataListener listener : listeners) {
-              listener.onAudioDataProcessed(ajaxRequestTarget);
-              listener.onDataUploaded();
-            }
 
-          } catch(IOException e) {
-            // could not save
+          boolean multipartContent = ServletFileUpload.isMultipartContent(httpRequest);
+
+          if (multipartContent) {
+            ServletFileUpload upload = new ServletFileUpload();
+
+            try {
+              FileItemIterator iterator = upload.getItemIterator(httpRequest);
+              FileItemStream item = null;
+              InputStream stream = null;
+
+              while (iterator.hasNext()) {
+                item = iterator.next();
+
+                if (item.isFormField()) {
+                  continue;
+                }
+
+                stream = item.openStream();
+
+                byte[] bytes = IOUtils.toByteArray(stream);
+                model.setObject(new Data(DataType.DATA, bytes));
+                for(AudioDataListener listener : listeners) {
+                  listener.onAudioDataProcessed(ajaxRequestTarget);
+                  listener.onDataUploaded();
+                }
+              }
+
+            } catch(FileUploadException | IOException e) {
+              // upload / save failed
+            }
           }
+
         }
       };
       field.add(audioDataComponentBehaviour);
