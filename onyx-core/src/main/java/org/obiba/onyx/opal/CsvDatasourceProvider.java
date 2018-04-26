@@ -2,6 +2,7 @@ package org.obiba.onyx.opal;
 
 import java.io.File;
 
+import com.google.common.base.Strings;
 import org.obiba.magma.Datasource;
 import org.obiba.magma.MagmaCacheExtension;
 import org.obiba.magma.MagmaEngine;
@@ -70,9 +71,12 @@ public class CsvDatasourceProvider implements InitializingBean {
       CsvDatasource csvDs = new CsvDatasource(datasourceName);
       Datasource ds = csvDs;
       if(file.isDirectory()) {
-        csvDs.addValueTable(file);
+        File dataFile = new File(file, CsvDatasource.DATA_FILE);
+        File variablesFile = new File(file, CsvDatasource.VARIABLES_FILE);
+        String table = getOrExtractTableName(file);
+        csvDs.addValueTable(table, variablesFile, dataFile, entityType);
       } else {
-        String table = tableName == null ? file.getName().substring(0, file.getName().lastIndexOf('.')) : tableName;
+        String table = getOrExtractTableName(file);
         csvDs.addValueTable(table, file, entityType == null ? "Participant" : entityType);
       }
       log.info("Adding datasource: {}", datasourceName);
@@ -92,5 +96,17 @@ public class CsvDatasourceProvider implements InitializingBean {
         magmaEngine.addDatasource(ds);
       }
     }
+  }
+
+  /**
+   * Return the provided table name, or the file name (if directory) or the file base name (if regular file).
+   *
+   * @param fileOrDirectory
+   * @return
+   */
+  private String getOrExtractTableName(File fileOrDirectory) {
+    if (!Strings.isNullOrEmpty(tableName)) return tableName;
+    if (fileOrDirectory.isDirectory()) return fileOrDirectory.getName();
+    return fileOrDirectory.getName().substring(0, fileOrDirectory.getName().lastIndexOf('.'));
   }
 }
