@@ -18,17 +18,18 @@ public class DateUtil {
    * Returns the number of calendar days between two dates.
    *
    * @param startDate start date
-   * @param endDate end date
-   * @return number of days between start date and end date (<code>-1</code> if the former is after the latter)
+   * @param endDate   end date
+   * @return number of days between start date and end date (<code>-1</code> if the former is after the latter or if any of the dates is null)
    */
   public static int getDaysBetween(Date startDate, Date endDate) {
     int daysBetween = -1;
+    if (startDate == null || endDate == null) return -1;
 
-	if(startDate.after(endDate)) return daysBetween;
+    if (startDate.after(endDate)) return daysBetween;
 
     Calendar c = Calendar.getInstance();
 
-    if(startDate.after(endDate)) return daysBetween;
+    if (startDate.after(endDate)) return daysBetween;
 
     c.setTime(startDate);
     int startYear = c.get(Calendar.YEAR);
@@ -38,13 +39,13 @@ public class DateUtil {
     int endYear = c.get(Calendar.YEAR);
     int endDay = c.get(Calendar.DAY_OF_YEAR);
 
-    if(startYear == endYear) {
+    if (startYear == endYear) {
       daysBetween = endDay - startDay;
     } else {
       c.setTime(startDate);
       daysBetween = c.getActualMaximum(Calendar.DAY_OF_YEAR) - startDay;
 
-      for(int year = startYear + 1; year < endYear; year++) {
+      for (int year = startYear + 1; year < endYear; year++) {
         c.set(Calendar.YEAR, year);
         daysBetween += c.getActualMaximum(Calendar.DAY_OF_YEAR);
       }

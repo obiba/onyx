@@ -59,9 +59,12 @@ public class DateUtilTest {
     daysBetween = DateUtil.getDaysBetween(dateYear2009, dateYear2010);
     Assert.assertEquals(23, daysBetween);
 
-    // Calculate the days between two dates in different years, EndDate in the past.
-    // daysBetween = DateUtil.getDaysBetween(dateYear2010, dateYear2009);
-    // Assert.assertEquals(-23, daysBetween);
-
+    // Case null values.
+    daysBetween = DateUtil.getDaysBetween(null, dateYear2009);
+    Assert.assertEquals(-1, daysBetween);
+    daysBetween = DateUtil.getDaysBetween(dateYear2009, null);
+    Assert.assertEquals(-1, daysBetween);
+    daysBetween = DateUtil.getDaysBetween(null, null);
+    Assert.assertEquals(-1, daysBetween);
   }
 }
