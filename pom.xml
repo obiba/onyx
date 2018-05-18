@@ -8,7 +8,7 @@
   <groupId>org.obiba.onyx</groupId>
   <artifactId>onyx</artifactId>
   <packaging>pom</packaging>
-  <version>1.11-SNAPSHOT</version>
+  <version>1.11.0</version>
 
   <licenses>
     <license>
@@ -1016,7 +1016,7 @@
     <connection>scm:git:git://github.com/obiba/onyx.git</connection>
     <developerConnection>scm:git:https://github.com/obiba/onyx.git</developerConnection>
     <url>https://github.com/obiba/onyx</url>
-    <tag>onyx-1.11.x</tag>
+    <tag>1.11.0</tag>
   </scm>
 
   <issueManagement>
