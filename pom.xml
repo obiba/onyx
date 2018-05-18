@@ -833,7 +833,7 @@
           <autoVersionSubmodules>true</autoVersionSubmodules>
           <!-- Need to install artifacts due to onyx-integration-test's use of dependency-plugin -->
           <preparationGoals>clean install</preparationGoals>
-          <releaseProfiles>release</releaseProfiles>
+          <releaseProfiles>ci-build,release</releaseProfiles>
         </configuration>
       </plugin>
 
