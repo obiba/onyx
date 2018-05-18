@@ -1005,7 +1005,7 @@
     <connection>scm:git:git://github.com/obiba/onyx.git</connection>
     <developerConnection>scm:git:https://github.com/obiba/onyx.git</developerConnection>
     <url>https://github.com/obiba/onyx</url>
-    <tag>HEAD</tag>
+    <tag>onyx-1.11.x</tag>
   </scm>
 
   <issueManagement>
