@@ -7,7 +7,7 @@
 
   <import resource="classpath*:/META-INF/onyx-job.xml" />
 
-  <bean id="batchDefaultSerializer" class="org.springframework.batch.core.repository.dao.DefaultExecutionContextSerializer" />
+  <bean id="batchDefaultSerializer" class="org.springframework.batch.core.repository.dao.Jackson2ExecutionContextStringSerializer" />
 
   <!-- Spring batch database schema property -->
   <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean">
