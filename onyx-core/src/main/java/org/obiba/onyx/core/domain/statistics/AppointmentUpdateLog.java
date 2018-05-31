@@ -16,6 +16,10 @@ import java.util.Date;
 
 import org.springframework.batch.item.ExecutionContext;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * 
  */
@@ -27,15 +31,19 @@ public class AppointmentUpdateLog implements Serializable {
   private static final long serialVersionUID = 1L;
 
   public enum Level {
-    INFO, WARN, ERROR;
+    INFO, WARN, ERROR
   }
 
+  @JsonProperty
   private Date date;
 
+  @JsonProperty
   private Level level;
 
+  @JsonProperty
   private String participantId;
 
+  @JsonProperty
   private String message;
 
   //
@@ -48,7 +56,8 @@ public class AppointmentUpdateLog implements Serializable {
     this.participantId = null;
   }
 
-  public AppointmentUpdateLog(Date date, Level level, String participantId, String message) {
+  @JsonCreator
+  public AppointmentUpdateLog(@JsonProperty("date") Date date, @JsonProperty("level") Level level, @JsonProperty("message") String participantId, @JsonProperty("participantId") String message) {
     this.date = date;
     this.level = level;
     this.participantId = participantId;
@@ -109,11 +118,13 @@ public class AppointmentUpdateLog implements Serializable {
     this.message = message;
   };
 
+  @JsonIgnore
   public String getFormatedDate() {
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     return formatter.format(getDate());
   }
 
+  @JsonIgnore
   public String getFormatedTime() {
     SimpleDateFormat formatter = new SimpleDateFormat("hh:mm:ss");
     return formatter.format(getDate());
