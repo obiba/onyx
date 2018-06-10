@@ -15,7 +15,6 @@ import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.SupportedMedia;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition.OpenAnswerType;
 import org.obiba.onyx.util.data.DataType;
-import org.obiba.wicket.nanogong.NanoGongApplet.Rate;
 import org.springframework.util.Assert;
 
 /**

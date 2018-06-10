@@ -74,9 +74,9 @@
           </configuration>
         </plugin>
         <plugin>
-          <groupId>org.codehaus.mojo.webstart</groupId>
+          <groupId>org.codehaus.mojo</groupId>
           <artifactId>webstart-maven-plugin</artifactId>
-          <version>1.0-alpha-2p01</version>
+          <version>1.0-beta-7</version>
           <executions>
             <execution>
               <id>make-jnlp</id>
