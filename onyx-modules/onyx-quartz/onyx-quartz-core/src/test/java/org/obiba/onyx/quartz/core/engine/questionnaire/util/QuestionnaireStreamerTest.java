@@ -21,6 +21,7 @@ import org.junit.Assert;
 
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.util.FileUtil;
@@ -46,6 +47,7 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
 
   private ApplicationContext applicationContextMock;
 
+  @Ignore
   @Test
   public void testQuestionnaireStreamer() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
