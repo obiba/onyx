@@ -2,11 +2,11 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Jade</name>
-  <description>Physical Measurement Parent POM</description>
+  <name>Marble</name>
+  <description>Consent Parent POM</description>
 
-  <groupId>org.obiba.jade</groupId>
-  <artifactId>jade</artifactId>
+  <groupId>org.obiba.onyx</groupId>
+  <artifactId>onyx-marble</artifactId>
   <packaging>pom</packaging>
 
   <parent>
@@ -17,10 +17,7 @@
   </parent>
 
   <modules>
-    <module>instrument-bootstrap</module>
-    <module>jade-core</module>
-    <module>jade-remote-api</module>
-    <module>jade-remote-server</module>
+    <module>onyx-marble-core</module>
   </modules>
 
 </project>

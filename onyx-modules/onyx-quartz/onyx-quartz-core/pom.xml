@@ -5,13 +5,13 @@
 	<name>Quartz Core</name>
 	<description>Questionnaire Onyx Module</description>
 
-	<groupId>org.obiba.quartz</groupId>
-	<artifactId>quartz-core</artifactId>
+	<groupId>org.obiba.onyx</groupId>
+	<artifactId>onyx-quartz-core</artifactId>
 	<packaging>jar</packaging>
 
 	<parent>
-		<artifactId>quartz</artifactId>
-		<groupId>org.obiba.quartz</groupId>
+		<artifactId>onyx-quartz</artifactId>
+		<groupId>org.obiba.onyx</groupId>
 		<version>1.12-SNAPSHOT</version>
 	</parent>
 

@@ -2,11 +2,11 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Quartz</name>
-  <description>Questionnaire Parent POM</description>
+  <name>Ruby</name>
+  <description>Samples Parent POM</description>
 
-  <groupId>org.obiba.quartz</groupId>
-  <artifactId>quartz</artifactId>
+  <groupId>org.obiba.onyx</groupId>
+  <artifactId>onyx-ruby</artifactId>
   <packaging>pom</packaging>
 
   <parent>
@@ -17,7 +17,7 @@
   </parent>
 
   <modules>
-    <module>quartz-core</module>
+    <module>onyx-ruby-core</module>
   </modules>
 
 </project>

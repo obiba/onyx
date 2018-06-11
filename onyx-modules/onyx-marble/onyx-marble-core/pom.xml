@@ -2,17 +2,18 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Ruby Core</name>
-  <description>Samples Module</description>
+  <name>Marble Core</name>
+  <description>Marble Core</description>
 
-  <groupId>org.obiba.ruby</groupId>
-  <artifactId>ruby-core</artifactId>
+  <groupId>org.obiba.onyx</groupId>
+  <artifactId>onyx-marble-core</artifactId>
   <packaging>jar</packaging>
 
   <parent>
-    <artifactId>ruby</artifactId>
-    <groupId>org.obiba.ruby</groupId>
+    <artifactId>onyx-marble</artifactId>
+    <groupId>org.obiba.onyx</groupId>
     <version>1.12-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <dependencies>
@@ -20,50 +21,66 @@
       <groupId>org.obiba.onyx</groupId>
       <artifactId>onyx-util</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.obiba.onyx</groupId>
       <artifactId>onyx-core</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.obiba.commons</groupId>
       <artifactId>obiba-core</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.obiba.commons</groupId>
       <artifactId>obiba-wicket</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-orm</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-aop</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.hibernate.common</groupId>
       <artifactId>hibernate-commons-annotations</artifactId>
     </dependency>
+
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
+
+    <!--
+      Even though we don't use it, the JTA jar is required due because the Spring class hierarchy and hibernate
+      references javax.transaction.TransactionManager
+    -->
     <dependency>
       <groupId>javax.transaction</groupId>
       <artifactId>jta</artifactId>
     </dependency>
+
     <dependency>
       <groupId>javax.annotation</groupId>
       <artifactId>jsr250-api</artifactId>
@@ -80,14 +97,17 @@
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-extensions</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-spring</artifactId>
     </dependency>
 
   </dependencies>
+
 </project>

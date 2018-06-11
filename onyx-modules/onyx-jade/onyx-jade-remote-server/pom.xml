@@ -5,13 +5,13 @@
   <name>Jade Remote Server</name>
   <description>Physical Measurement Remote Server</description>
 
-  <groupId>org.obiba.jade</groupId>
-  <artifactId>jade-remote-server</artifactId>
+  <groupId>org.obiba.onyx</groupId>
+  <artifactId>onyx-jade-remote-server</artifactId>
   <packaging>jar</packaging>
 
   <parent>
-    <artifactId>jade</artifactId>
-    <groupId>org.obiba.jade</groupId>
+    <artifactId>onyx-jade</artifactId>
+    <groupId>org.obiba.onyx</groupId>
     <version>1.12-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
@@ -23,13 +23,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.obiba.jade</groupId>
-      <artifactId>jade-core</artifactId>
+      <groupId>org.obiba.onyx</groupId>
+      <artifactId>onyx-jade-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.obiba.jade</groupId>
-      <artifactId>jade-remote-api</artifactId>
+      <groupId>org.obiba.onyx</groupId>
+      <artifactId>onyx-jade-remote-api</artifactId>
       <version>${project.version}</version>
     </dependency>
 
