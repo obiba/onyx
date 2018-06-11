@@ -5,7 +5,7 @@
   <name>Onyx Instrument Bootstrap</name>
   <description>Onyx Instrument Bootstrap</description>
 
-  <groupId>org.obiba.jade.onyx</groupId>
+  <groupId>org.obiba.onyx</groupId>
   <artifactId>onyx-instrument-bootstrap</artifactId>
   <packaging>jar</packaging>
 
