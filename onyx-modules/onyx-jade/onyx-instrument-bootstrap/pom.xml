@@ -23,8 +23,8 @@
       As such, we must keep them to a minimal. -->
 
     <dependency>
-      <groupId>org.obiba.jade</groupId>
-      <artifactId>jade-remote-api</artifactId>
+      <groupId>org.obiba.onyx</groupId>
+      <artifactId>onyx-jade-remote-api</artifactId>
       <version>${project.version}</version>
     </dependency>
 
