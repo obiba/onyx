@@ -17,10 +17,10 @@
   </parent>
 
   <modules>
-    <module>marble</module>
-    <module>jade</module>
-    <module>quartz</module>
-    <module>ruby</module>
+    <module>onyx-marble</module>
+    <module>onyx-jade</module>
+    <module>onyx-quartz</module>
+    <module>onyx-ruby</module>
   </modules>
 
   <dependencyManagement>
