@@ -16,7 +16,12 @@ public class QuestionAttributesTest {
 
   @Before
   public void start() {
-    new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
+    try {
+      new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
+    } catch(IllegalStateException e) {
+      MagmaEngine.get().shutdown();
+      new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
+    }
   }
 
   @After
