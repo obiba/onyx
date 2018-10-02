@@ -43,12 +43,7 @@ public class QuestionnaireBundleImplTest {
   @Before
   public void setUp() throws IOException {
 
-    try {
-      new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
-    } catch(IllegalStateException e) {
-      MagmaEngine.get().shutdown();
-      new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
-    }
+    new MagmaEngine().extend(new MagmaJsExtension()).extend(new MagmaXStreamExtension());
 
     // Create the root directory for the bundle manager tests. If it exists
     // already, delete it to start clean.
