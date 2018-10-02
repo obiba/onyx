@@ -42,6 +42,11 @@ public class ExternalAppLauncherHelper {
   // Parameters of external software command
   protected String parameterStr;
 
+  // separator to split executable and/or parameters
+  protected String tokenizer;
+
+  protected boolean windowsCommand = true;
+
   public void launch() {
     if(isSotfwareAlreadyStarted()) {
       JOptionPane.showMessageDialog(null,
@@ -55,13 +60,31 @@ public class ExternalAppLauncherHelper {
   public void launchExternalSoftware() {
 
     List<String> command = new ArrayList<String>();
-    command.add("cmd");
-    command.add("/c");
+    if (windowsCommand) {
+      command.add("cmd");
+      command.add("/c");
+    }
 
-    if(getParameterStr() == null) command.add(getExecutable());
-    else command.add(getExecutable() + " " + getParameterStr());
+    if (tokenizer != null) {
+      for (String token : executable.split(tokenizer)) {
+        command.add(token);
+      }
+    } else
+      command.add(executable);
 
-    log.info("Launching {} (Work directory={})", command, getWorkDir());
+    if(parameterStr != null) {
+      if (tokenizer != null) {
+        for (String token : parameterStr.split(tokenizer)) {
+          command.add(token);
+        }
+      } else
+        command.add(parameterStr);
+    }
+    StringBuilder commandStr = new StringBuilder();
+    for (String token : command) {
+      commandStr.append(token).append(" ");
+    }
+    log.info("Launching {} (Work directory={})", commandStr.toString(), getWorkDir());
 
     ProcessBuilder builder = new ProcessBuilder(command);
     builder.directory(new File(getWorkDir()));
@@ -121,12 +144,28 @@ public class ExternalAppLauncherHelper {
 
   }
 
+  public void setWindowsCommand(boolean windowsCommand) {
+    this.windowsCommand = windowsCommand;
+  }
+
+  public boolean isWindowsCommand() {
+    return windowsCommand;
+  }
+
   public String getExecutable() {
     return executable;
   }
 
   public void setExecutable(String executable) {
     this.executable = executable;
+  }
+
+  public void setTokenizer(String tokenizer) {
+    this.tokenizer = tokenizer;
+  }
+
+  public String getTokenizer() {
+    return tokenizer;
   }
 
   public String getParameterStr() {
