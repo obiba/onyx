@@ -80,11 +80,7 @@ public class ExternalAppLauncherHelper {
       } else
         command.add(parameterStr);
     }
-    StringBuilder commandStr = new StringBuilder();
-    for (String token : command) {
-      commandStr.append(token).append(" ");
-    }
-    log.info("Launching {} (Work directory={})", commandStr.toString(), getWorkDir());
+    log.info("Launching {} (Work directory={})", command, getWorkDir());
 
     ProcessBuilder builder = new ProcessBuilder(command);
     builder.directory(new File(getWorkDir()));
