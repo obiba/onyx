@@ -1091,6 +1091,7 @@
     <connection>scm:git:https://github.com/obiba/onyx.git</connection>
     <developerConnection>scm:git:https://github.com/obiba/onyx.git</developerConnection>
     <url>https://github.com/obiba/onyx</url>
+    <tag>onyx-1.12.x</tag>
   </scm>
 
   <issueManagement>
