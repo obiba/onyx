@@ -61,7 +61,7 @@
     <shiro.version>1.2.4</shiro.version>
     <slf4j.version>1.7.12</slf4j.version>
     <spring.version>4.3.19.RELEASE</spring.version>
-    <spring-batch.version>3.0.7.RELEASE</spring-batch.version>
+    <spring-batch.version>3.0.10.RELEASE</spring-batch.version>
     <wicket.version>1.4.21</wicket.version>
     <wicket-nanogong.version>1.0</wicket-nanogong.version>
     <xstream.version>1.4.8</xstream.version>
