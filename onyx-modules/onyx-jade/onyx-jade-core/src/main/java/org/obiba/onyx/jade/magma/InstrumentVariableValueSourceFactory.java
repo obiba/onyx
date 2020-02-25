@@ -100,7 +100,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     Set<VariableValueSource> sources = null;
 
     // Create Instrument sources.
-    setProperties(ImmutableSet.of("name", "vendor", "model", "serialNumber", "barcode"));
+    setProperties(ImmutableSet.of("name", "vendor", "model", "serialNumber", "barcode", "workstation"));
     setPrefix(INSTRUMENT);
     sources = super.createSources();
 
