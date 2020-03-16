@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.core.service.EntityQueryService;
 import org.obiba.magma.Category;
 import org.obiba.magma.Value;
 import org.obiba.magma.ValueSet;
@@ -32,6 +34,7 @@ import org.obiba.magma.beans.BeanVariableValueSourceFactory;
 import org.obiba.magma.type.DateTimeType;
 import org.obiba.magma.type.TextType;
 import org.obiba.onyx.core.domain.Attribute;
+import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.statistics.ExportLog;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentMeasurementType;
@@ -83,6 +86,9 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
   @Autowired
   private CustomVariablesRegistry customVariablesRegistry;
 
+  @Autowired
+  private EntityQueryService queryService;
+
   //
   // Constructors
   //
@@ -110,6 +116,7 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
     // Create Instrument captureStartDate and captureEndDate sources.
     sources.add(createInstrumentCaptureStartDateSource());
     sources.add(createInstrumentCaptureEndDateSource());
+    sources.add(createSiteNameSource());
 
     // Create sources for instrument calibrations.
     sources.addAll(createInstrumentCalibrationSources());
@@ -119,6 +126,8 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
 
     // Create sources for custom variables.
     sources.addAll(customVariablesRegistry.getVariables("Instruments"));
+
+
 
     return sources;
   }
@@ -196,6 +205,44 @@ public class InstrumentVariableValueSourceFactory extends BeanVariableValueSourc
       @Override
       public ValueType getValueType() {
         return DateTimeType.get();
+      }
+
+      @Override
+      public VectorSource asVectorSource() {
+        return null;
+      }
+
+    };
+  }
+
+  private VariableValueSource createSiteNameSource() {
+    final ApplicationConfiguration applicationConfiguration = queryService.matchOne(new ApplicationConfiguration());
+    return new VariableValueSource() {
+
+      @Override
+      public String getName() {
+        return INSTRUMENT + '.' + "siteName";
+      }
+
+      @Override
+      public Variable getVariable() {
+        Variable.Builder builder = new Variable.Builder(getName(), getValueType(), INSTRUMENT);
+        return builder.build();
+      }
+
+      @Override
+      public Value getValue(ValueSet valueSet) {
+        return getValueType().valueOf(applicationConfiguration.getSiteName());
+      }
+
+      @Override
+      public boolean supportVectorSource() {
+        return false;
+      }
+
+      @Override
+      public ValueType getValueType() {
+        return TextType.get();
       }
 
       @Override
