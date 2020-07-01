@@ -50,7 +50,7 @@
     <obiba.commons.version>1.10.2</obiba.commons.version>
     <opal.version>2.12.0</opal.version>
     <opencsv.version>2.3</opencsv.version>
-    <quartz-scheduler.version>2.2.1</quartz-scheduler.version>
+    <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
     <poi.version>3.9</poi.version>
     <rhino-js.version>1.7.7.1</rhino-js.version>
     <magma.version>1.17.2</magma.version>
